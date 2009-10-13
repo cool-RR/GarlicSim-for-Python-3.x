@@ -6,7 +6,7 @@ This module defines several functions that might be useful when working with
 queues.
 """
 
-import queue
+import queue as queue_module
 
 def dump_queue(queue):
     """
@@ -28,7 +28,7 @@ def dump_queue(queue):
         while True:
             thing = queue.get(block=False)
             result.append(thing)
-    except queue.Empty:
+    except queue_module.Empty:
         pass
     
     #for thing in iter(queue.get, Stopper): # todo sentinel=

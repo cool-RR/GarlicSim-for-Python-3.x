@@ -132,7 +132,7 @@ class Project(object):
                 )
             
             crunching_profile.clock_target = max(
-                crunching_profile.clock_target,
+                crunching_profile.clock_target or 0,
                 new_clock_target
             )
                 
