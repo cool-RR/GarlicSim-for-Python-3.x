@@ -7,7 +7,7 @@ information.
 """
 
 import garlicsim
-from crunchers import CruncherThread, CruncherProcess
+from .crunchers import CruncherThread, CruncherProcess
 from .crunching_profile import CrunchingProfile
 
 import garlicsim.general_misc.dict_tools

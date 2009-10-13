@@ -6,7 +6,6 @@ This module defines the list_simulate function. See its documentation for more
 information.
 """
 
-import garlicsim
 import garlicsim.misc
 from . import history_browser as history_browser_module # Avoiding name clash
 

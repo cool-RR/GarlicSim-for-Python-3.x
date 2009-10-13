@@ -8,7 +8,6 @@ information.
 # todo: should be something that fishes step_options_profile from *args.
 """
 
-import garlicsim
 import garlicsim.misc
 from . import history_browser as history_browser_module # Avoiding name clash
 
