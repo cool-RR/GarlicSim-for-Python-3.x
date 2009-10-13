@@ -2,17 +2,11 @@
 # This program is distributed under the LGPL2.1 license.
 
 """
-This module defines several functions that might be useful
-when working with queues.
+This module defines several functions that might be useful when working with
+queues.
 """
 
 import Queue
-
-class Stopper(object):
-    pass
-
-class SecondStopper(object):
-    pass
 
 def dump_queue(queue):
     """
@@ -23,29 +17,36 @@ def dump_queue(queue):
     result = []
 
     # START DEBUG CODE
-    initial_size = queue.qsize()
-    print("Queue has %s items initially." % initial_size)
+    #initial_size = queue.qsize()
+    #print("Queue has %s items initially." % initial_size)
     #  END  DEBUG CODE
 
-    queue.put(Stopper)
+    #queue.put(Stopper)
     #queue.put(SecondStopper)
     
-    for thing in iter(queue.get, Stopper): # todo sentinel=
-        result.append(thing)
+    try:
+        while True:
+            thing = queue.get(block=False)
+            result.append(thing)
+    except Queue.Empty:
+        pass
+    
+    #for thing in iter(queue.get, Stopper): # todo sentinel=
+    #    result.append(thing)
     
     #result = result[:-1]
     
     # START DEBUG CODE
-    current_size = queue.qsize()
-    total_size = current_size + len(result)
-    print("Dumping complete:")
-    if current_size == initial_size:
-        print("No items were added to the queue.")
-    else:
-        print("%s items were added to the queue." % \
-              (total_size - initial_size))
-    print("Extracted %s items from the queue, queue has %s items left" \
-    % (len(result), current_size))
+    #current_size = queue.qsize()
+    #total_size = current_size + len(result)
+    #print("Dumping complete:")
+    #if current_size == initial_size:
+        #print("No items were added to the queue.")
+    #else:
+        #print("%s items were added to the queue." % \
+              #(total_size - initial_size))
+    #print("Extracted %s items from the queue, queue has %s items left" \
+    #% (len(result), current_size))
     #  END  DEBUG CODE
             
     return result
@@ -53,7 +54,8 @@ def dump_queue(queue):
 
 def queue_get_item(queue, i):
     """
-    Retrieves an item from a queue according to the specified index.
+    Get an item from the queue by index number without removing any items.
+    
     Note: This was designed for Queue.Queue. Don't try to use this, for
     example, on multiprocessing.Queue.
     """
@@ -62,8 +64,8 @@ def queue_get_item(queue, i):
 
 def queue_as_list(queue):
     """
-    Returns a list that contains all the items in the queue in order.
-    This is without emptying the queue.
+    Get all the items in the queue as a list without removing them.
+    
     Note: This was designed for Queue.Queue. Don't try to use this, for
     example, on multiprocessing.Queue.
     """

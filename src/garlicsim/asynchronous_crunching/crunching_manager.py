@@ -7,11 +7,12 @@ information.
 """
 
 import garlicsim
-import garlicsim.general_misc.dict_tools
-import garlicsim.general_misc.queue_tools as queue_tools
-from garlicsim.general_misc.infinity import FunnyInfinity
 from crunchers import CruncherThread, CruncherProcess
 from crunching_profile import CrunchingProfile
+
+import garlicsim.general_misc.dict_tools
+import garlicsim.general_misc.queue_tools as queue_tools
+import garlicsim.general_misc.third_party.decorator
 from garlicsim.general_misc.infinity import Infinity
 
 
@@ -20,15 +21,16 @@ PreferredCruncher = [CruncherThread, CruncherProcess][1]
 
 __all__ = ["CrunchingManager"]
 
-def with_tree_lock(method):
+@garlicsim.general_misc.third_party.decorator.decorator
+def with_tree_lock(method, *args, **kwargs):
     """
     A decorator used in CrunchingManager's methods to use the tree lock (in
     write mode) as a context manager when calling the method.
     """
-    def fixed(self, *args, **kwargs):
-        with self.project.tree_lock.write:
-            return method(self, *args, **kwargs)
-    return fixed
+    self = args[0]
+    with self.project.tree_lock.write:
+        return method(*args, **kwargs)
+
 
 class CrunchingManager(object):
     """
@@ -36,9 +38,9 @@ class CrunchingManager(object):
     Every project creates a crunching manager. The job of the crunching manager
     is to coordinate the crunchers, creating and retiring them as necessary.
     The main use of a crunching manager is through its sync_workers methods,
-    which goes over all the crunchers and all the leaves of the tree that need
-    to be crunched, making sure the crunchers are working exactly on these
-    leaves, and collecting work from them to implement into the tree.
+    which goes over all the crunchers and all the nodes of the tree that need
+    to be crunched, making sure the crunchers are working on these nodes, and
+    collecting work from them to implement into the tree.
     """
     def __init__(self, project):        
         self.project = project
@@ -54,10 +56,17 @@ class CrunchingManager(object):
         """
         
         self.old_nodes_to_crunch = {}
+        """
+        Here we store a copy of the `.nodes_to_crunch` attribute of the
+        project. This is used to tell whether the project updated its
+        crunching profiles, and if so we should update the crunchers' profiles.
+        """
         
     @with_tree_lock
     def sync_crunchers(self, temp_infinity_node=None):
         """
+        Take work from the crunchers, and give them new instructions if needed.
+        
         Talks with all the crunchers, takes work from them for implementing
         into the tree, retiring crunchers or recruiting new crunchers as
         necessary.
@@ -69,9 +78,6 @@ class CrunchingManager(object):
 
         Returns the total amount of nodes that were added to the tree in the
         process.
-        
-        todo: maybe only the cruncher will be responsible for stopping when
-        it's done? It's no dumb drone no more.
         """
         tree = self.project.tree
         nodes_to_crunch = self.project.nodes_to_crunch
@@ -94,6 +100,37 @@ class CrunchingManager(object):
                     CrunchingProfile(clock_target=Infinity)
             
             
+        total_added_nodes = self.__sync_crunchers(temp_infinity_node)
+                    
+                        
+
+        if temp_infinity_node:
+            
+            leaves = temp_infinity_node.get_all_leaves()
+            assert len(leaves) == 1 # maybe just warn here?
+            (leaf, distances) = leaves.popitem()
+            clock_distance = distances["clock_distance"]
+            
+            if had_temp_infinity_node:    
+                nodes_to_crunch[leaf].clock_target = \
+                    old_temp_infinity_node_clock_target - clock_distance
+            else:
+                del nodes_to_crunch[leaf]
+
+        self.__make_old_nodes_to_crunch()
+                
+        return total_added_nodes
+        
+    def __sync_crunchers(self, temp_infinity_node):
+        """
+        Used by sync_crunchers. Does the actual work of syncing the crunchers.
+        """
+        #todo: should not get temp_infinity_node!
+        
+        #todo: will the cruncher of a temp_infinity_node stop after finite time
+        
+        nodes_to_crunch = self.project.nodes_to_crunch
+        
         total_added_nodes = 0
 
         for (node, cruncher) in self.crunchers.copy().items():
@@ -136,31 +173,23 @@ class CrunchingManager(object):
                 else:
                     self.__conditional_create_cruncher(new_leaf, profile)
                     
-                        
-
-        if temp_infinity_node:
-            
-            leaves = temp_infinity_node.get_all_leaves()
-            assert len(leaves) == 1 # maybe just warn here?
-            (leaf, distances) = leaves.popitem()
-            clock_distance = distances["clock_distance"]
-            
-            if had_temp_infinity_node:    
-                nodes_to_crunch[leaf].clock_target = \
-                    old_temp_infinity_node_clock_target - clock_distance
-            else:
-                del nodes_to_crunch[leaf]
-
-        self.__make_old_nodes_to_crunch()
-                
         return total_added_nodes
-        
+    
     def __make_old_nodes_to_crunch(self):
+        '''
+        Make and store a copy of the .nodes_to_crunch attribute of the project.
+        
+        This is used to tell whether the project updated its crunching
+        profiles, and if so we should update the crunchers' profiles.
+        '''
         self.old_nodes_to_crunch = garlicsim.general_misc.dict_tools.deepcopy_values(
             self.project.nodes_to_crunch
         )
     
     def __conditional_create_cruncher(self, node, crunching_profile=None):
+        '''
+        Create a cruncher to crunch the node, unless there is reason not to.
+        '''
         if node.still_in_editing is False:
             step_function = self.project.simpack_grokker.step
             if self.Cruncher == CruncherProcess:
@@ -178,8 +207,9 @@ class CrunchingManager(object):
     
     def __add_work_to_tree(self, cruncher, node, retire=False):
         """
-        Takes work from the cruncher and adds to the tree at the specified
-        node. If `retire` is set to True, retires the cruncher.
+        Take work from the cruncher and add to the tree at the specified node.
+        
+        If `retire` is set to True, retires the cruncher.
         
         Returns (number, leaf), where `number` is the number of nodes that
         were added, and `leaf` is the last node that was added.

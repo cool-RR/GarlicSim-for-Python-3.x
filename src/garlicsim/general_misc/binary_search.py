@@ -4,9 +4,7 @@
 """
 A module for doing a binary search in a sequence.
 
-Todo: create a different mode where all objects are wrapped in a list/tuple
-before being returned. This will allow this module to handle sequences that
-have None as legitimate members.
+Todo: wrap all things in tuples!
 
 todo: add option to specify cmp.
 """
@@ -47,6 +45,12 @@ def binary_search(sequence, function, value, rounding="closest"):
     item.
     """
     assert rounding in ["high", "low", "exact", "both", "closest"]
+    
+    if not sequence:
+        if rounding == 'both':
+            return (None, None)
+        else:
+            return None
     
     get = lambda number: function(sequence[number])
 

@@ -9,18 +9,21 @@ information.
 """
 
 import garlicsim
+import garlicsim.misc
 import history_browser as history_browser_module # Avoiding name clash
 
 __all__ = ["simulate"]
 
 def simulate(simpack, state, iterations=1, *args, **kwargs):
     """
-    Simulates from the given state, using the given simpack, for the given
-    number of iterations. Returns the final state of the simulation.
+    Simulate from the given state for the given number of iterations.
+
+    A simpack must be passed as the first parameter. Any extraneous parameters
+    will be passed to the step function.
     
-    Any extraneous parameters will be passed to the step function.
+    Returns the final state of the simulation.
     """
-    simpack_grokker = garlicsim.simpack_grokker.SimpackGrokker(simpack)
+    simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
     if simpack_grokker.history_dependent:
         return __history_simulate(simpack_grokker, state, iterations,
                                   *args, **kwargs)
@@ -31,11 +34,14 @@ def simulate(simpack, state, iterations=1, *args, **kwargs):
     
 def __history_simulate(simpack_grokker, state, iterations=1, *args, **kwargs):
     """
-    For history-dependent simulations only: Simulates from the given state,
-    using the given simpack, for the given number of iterations. Returns the
-    final state of the simulation.
-        
-    Any extraneous parameters will be passed to the step function.
+    For history-dependent simulations only:
+    
+    Simulate from the given state for the given number of iterations.
+
+    A simpack must be passed as the first parameter. Any extraneous parameters
+    will be passed to the step function.
+    
+    Returns the final state of the simulation.
     """
     tree = garlicsim.data_structures.Tree()
     root = tree.add_state(state, parent=None)
@@ -58,11 +64,14 @@ def __history_simulate(simpack_grokker, state, iterations=1, *args, **kwargs):
 def __non_history_simulate(simpack_grokker, state, iterations,
                            *args, **kwargs):
     """
-    For non-history-dependent simulations only: Simulates from the given state,
-    using the given simpack, for the given number of iterations. Returns the
-    final state of the simulation.
-        
-    Any extraneous parameters will be passed to the step function.
+    For non-history-dependent simulations only:
+    
+    Simulate from the given state for the given number of iterations.
+
+    A simpack must be passed as the first parameter. Any extraneous parameters
+    will be passed to the step function.
+    
+    Returns the final state of the simulation.
     """
     iterator = simpack_grokker.step_generator(state, *args, **kwargs)
     for i in range(iterations):
