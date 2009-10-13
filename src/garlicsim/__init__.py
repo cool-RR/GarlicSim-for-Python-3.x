@@ -22,9 +22,9 @@ todo: organize all namespaces
 todo: decide policies regaring import (whether from, as, or regular)
 """
 
-from . import general_misc
-from . import misc
-from .synchronous_crunching import simulate, list_simulate
-from .asynchronous_crunching import Project
+import garlicsim.general_misc
+import garlicsim.misc
+from garlicsim.synchronous_crunching import simulate, list_simulate
+from garlicsim.asynchronous_crunching import Project
 
 __all__ = ["Project", "simulate", "list_simulate"]
