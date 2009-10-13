@@ -8,7 +8,7 @@ information.
 
 import garlicsim
 import garlicsim.misc
-import history_browser as history_browser_module # Avoiding name clash
+from . import history_browser as history_browser_module # Avoiding name clash
 
 __all__ = ["list_simulate"]
 
@@ -53,7 +53,7 @@ def __history_list_simulate(simpack_grokker, state, iterations,
     
     current_node = root
     for i in range(iterations):
-        current_state = iterator.next()
+        current_state = next(iterator)
         current_node = tree.add_state(current_state, parent=current_node)
     
     return [node.state for node in path]
@@ -80,7 +80,7 @@ def __non_history_list_simulate(simpack_grokker, state, iterations,
     
     current_node = root
     for i in range(iterations):
-        current_state = iterator.next()
+        current_state = next(iterator)
         current_node = tree.add_state(current_state, parent=current_node)
     
     return [node.state for node in path]

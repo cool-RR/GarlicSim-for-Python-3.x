@@ -6,8 +6,8 @@ A module that defines the Path class. See its documentation for more
 information.
 """
 
-from node import Node
-from block import Block
+from .node import Node
+from .block import Block
 # Note we are doing `from tree import Tree` in the bottom of the file.
 
 import garlicsim.general_misc.binary_search as binary_search
@@ -165,7 +165,7 @@ class Path(object):
         if len(kids) == 1:
             return kids[0]
         
-        if self.decisions.has_key(thing) or self.decisions.has_key(real_thing):
+        if thing in self.decisions or real_thing in self.decisions:
             return self.decisions.get(thing, None) or \
                    self.decisions.get(real_thing, None)
         
@@ -401,4 +401,4 @@ class Path(object):
         self.decisions.update(new_path.decisions)
         
     
-from tree import Tree
+from .tree import Tree

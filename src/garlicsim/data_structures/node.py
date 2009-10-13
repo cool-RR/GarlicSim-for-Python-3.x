@@ -6,7 +6,7 @@ A module that defines the Node class. See its documentation for more
 information.
 """
 
-from state import State
+from .state import State
 # Note we are doing `from path import Path` in the bottom of the file.
 from garlicsim.general_misc.infinity import Infinity
 
@@ -192,4 +192,4 @@ class Node(object):
     def is_first_on_block(self):
         return self.block and (self.block.index(self) == 0)
 
-from path import Path
+from .path import Path

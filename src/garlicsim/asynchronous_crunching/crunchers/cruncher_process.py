@@ -8,7 +8,7 @@ more information.
 
 import multiprocessing
 import copy
-import Queue as queue
+import queue as queue
 
 import garlicsim
 from garlicsim.asynchronous_crunching import \

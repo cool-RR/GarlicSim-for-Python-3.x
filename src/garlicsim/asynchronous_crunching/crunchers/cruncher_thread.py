@@ -7,7 +7,7 @@ more information.
 """
 
 import threading
-import Queue as queue
+import queue as queue
 import copy
 
 import garlicsim

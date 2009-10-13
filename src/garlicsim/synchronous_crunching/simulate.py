@@ -10,7 +10,7 @@ information.
 
 import garlicsim
 import garlicsim.misc
-import history_browser as history_browser_module # Avoiding name clash
+from . import history_browser as history_browser_module # Avoiding name clash
 
 __all__ = ["simulate"]
 
@@ -52,7 +52,7 @@ def __history_simulate(simpack_grokker, state, iterations=1, *args, **kwargs):
     
     current_node = root
     for i in range(iterations):
-        current_state = iterator.next()
+        current_state = next(iterator)
         current_node = tree.add_state(current_state, parent=current_node)
         
     final_state = current_state
@@ -75,7 +75,7 @@ def __non_history_simulate(simpack_grokker, state, iterations,
     """
     iterator = simpack_grokker.step_generator(state, *args, **kwargs)
     for i in range(iterations):
-        current_state = iterator.next()
+        current_state = next(iterator)
         
     final_state = current_state
     # Which is still here as the last value from the for loop

@@ -12,7 +12,7 @@ __all__ = ["HistoryBrowser"]
 
 get_state_clock = lambda state: state.clock
 
-class HistoryBrowser(object):
+class HistoryBrowser(object, metaclass=abc.ABCMeta):
     """
     An abstract base class for history browsers, created with the abc module 
     from Python's standard library. See abc's documentation for more
@@ -24,7 +24,6 @@ class HistoryBrowser(object):
     the simulation. It is relevant only to simulations that are
     history-dependent.
     """
-    __metaclass__ = abc.ABCMeta
     
     @abc.abstractmethod
     def get_last_state(self):

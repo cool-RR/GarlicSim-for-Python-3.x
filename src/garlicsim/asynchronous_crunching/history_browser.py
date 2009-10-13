@@ -9,7 +9,7 @@ for more info.
 import threading
 
 import garlicsim.misc.history_browser
-from obsolete_cruncher_error import ObsoleteCruncherError
+from .obsolete_cruncher_error import ObsoleteCruncherError
 
 import garlicsim.general_misc.binary_search as binary_search
 import garlicsim.general_misc.queue_tools as queue_tools
@@ -266,7 +266,7 @@ class HistoryBrowser(garlicsim.misc.history_browser.HistoryBrowser):
         # current_thread = threading.currentThread()
         # This was used instead of self.cruncher. Don't know why. 11/10/2009.
         
-        nodes_to_crunchers = self.project.crunching_manager.crunchers.items()
+        nodes_to_crunchers = list(self.project.crunching_manager.crunchers.items())
         
         nodes_that_are_us = \
             [node for (node, cruncher) in nodes_to_crunchers \

@@ -27,7 +27,7 @@ Another reason for CruncherThread is that on single-core computer it might
 be faster than CruncherProcess because of the memory-sharing.
 """
 
-from cruncher_thread import CruncherThread
-from cruncher_process import CruncherProcess
+from .cruncher_thread import CruncherThread
+from .cruncher_process import CruncherProcess
 
 __all__ = ["CruncherProcess", "CruncherThread"]

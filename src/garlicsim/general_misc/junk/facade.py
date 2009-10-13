@@ -1,4 +1,4 @@
-import cPickle
+import pickle
 
 """
 class Fuga(object):
@@ -11,7 +11,7 @@ class Object(object):
 
 def naturally_picklable(thing):
     try:
-        cPickle.dumps(thing)
+        pickle.dumps(thing)
         return True
     except:
         return False
@@ -33,7 +33,7 @@ def prepare_for_pickling(thing):
     my_object = Object()
     new_dict = my_object.__dict__ = {}
     
-    for key, value in old_dict.items():
+    for key, value in list(old_dict.items()):
         if naturally_picklable(value):
             new_dict[key] = value
         else:
@@ -55,9 +55,9 @@ def fuga(module):
     return (lambda x: x, (preepy(module),))
 
 def dumps(thing):
-    return cPickle.dumps(prepare_for_pickling(thing))
+    return pickle.dumps(prepare_for_pickling(thing))
         
-import copy_reg
+import copyreg
 module_type = type(copy_reg)
-copy_reg.pickle(module_type, fuga)
-cPickle.dumps(copy_reg)
+copyreg.pickle(module_type, fuga)
+pickle.dumps(copy_reg)

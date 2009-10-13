@@ -8,7 +8,7 @@ information.
 
 import garlicsim.data_structures
 import garlicsim.misc.simpack_grokker
-import crunching_manager
+from . import crunching_manager
 
 import garlicsim.general_misc.read_write_lock as read_write_lock
 from garlicsim.general_misc.infinity import Infinity
@@ -121,7 +121,7 @@ class Project(object):
         """
         leaves = node.get_all_leaves(max_clock_distance=wanted_clock_distance)
         new_clock_target = node.state.clock + wanted_clock_distance
-        for item in leaves.items():
+        for item in list(leaves.items()):
             
             leaf = item[0]
             

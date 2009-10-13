@@ -15,7 +15,7 @@ def dump_queue(queue):
 
     # START DEBUG CODE
     initial_size = queue.qsize()
-    print("Queue has %s items initially." % initial_size)
+    print(("Queue has %s items initially." % initial_size))
     #  END  DEBUG CODE
 
     queue.put(Stopper)
@@ -31,10 +31,10 @@ def dump_queue(queue):
     if current_size == initial_size:
         print("No items were added to the queue.")
     else:
-        print("%s items were added to the queue." % \
-              (total_size - initial_size))
-    print("Extracted %s items from the queue, queue has %s items left" \
-    % (len(result), current_size))
+        print(("%s items were added to the queue." % \
+              (total_size - initial_size)))
+    print(("Extracted %s items from the queue, queue has %s items left" \
+    % (len(result), current_size)))
     #  END  DEBUG CODE
             
     return result
@@ -47,7 +47,7 @@ class Process(multiprocessing.Process):
         self.q = multiprocessing.Queue()
     def run(self):
         for i in range(100):
-            self.q.put([range(20) for j in range(10)])
+            self.q.put([list(range(20)) for j in range(10)])
             sys.stdout.write('Put item %s.\n' % i)
             sys.stdout.flush()
 

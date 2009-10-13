@@ -13,8 +13,8 @@ if __name__ == "__main__":
     
     project.crunch_all_leaves(node, 100)
     
-    print(project.sync_crunchers())
+    print((project.sync_crunchers()))
     
     time.sleep(5)
     
-    print(project.sync_crunchers())
+    print((project.sync_crunchers()))

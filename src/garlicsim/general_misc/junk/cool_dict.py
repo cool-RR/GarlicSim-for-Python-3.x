@@ -17,7 +17,7 @@ class CoolDict(dict):
         Same as `cool_dict[key] = value`, except if the cool dict already has
         `key`, and its value is higher than `value`.
         """
-        has_key = self.has_key(key)
+        has_key = key in self
         if not has_key:
             self[key] = value
         else:
@@ -28,7 +28,7 @@ class CoolDict(dict):
         Same as `cool_dict[key] = value`, except if the cool dict already has
         `key`, and its value is lower than `value`.
         """
-        has_key = self.has_key(key)
+        has_key = key in self
         if not has_key:
             self[key] = value
         else:
@@ -44,8 +44,8 @@ class CoolDict(dict):
         raise NotImplementedError # todo
     
     def transfer_value(self, key, new_key):
-        assert self.has_key(key)
-        assert not self.has_key(new_key)
+        assert key in self
+        assert new_key not in self
         
         value = self[key]
         self[new_key] = value

@@ -31,7 +31,7 @@ def simple_non_history_step_from_step_generator(generator, old_state,
     Given a step generator and a state, acts as a simple step function.
     """
     iterator = generator(old_state, *args, **kwargs)
-    return iterator.next()
+    return next(iterator)
 
 def simple_history_step_from_step_generator(generator, history_browser,
                                             *args, **kwargs):
@@ -39,4 +39,4 @@ def simple_history_step_from_step_generator(generator, history_browser,
     Given a history step generator and a state, acts as a simple step function.
     """
     iterator = generator(history_browser, *args, **kwargs)
-    return iterator.next()
+    return next(iterator)

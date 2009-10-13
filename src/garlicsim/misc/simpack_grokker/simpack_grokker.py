@@ -8,7 +8,7 @@ See their documentation for more details.
 
 import functools
 
-from step_function_manipulators import \
+from .step_function_manipulators import \
      simple_history_step_from_step_generator, \
      simple_non_history_step_from_step_generator, \
      non_history_step_generator_from_simple_step, \

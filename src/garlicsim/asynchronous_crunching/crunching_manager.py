@@ -8,7 +8,7 @@ information.
 
 import garlicsim
 from crunchers import CruncherThread, CruncherProcess
-from crunching_profile import CrunchingProfile
+from .crunching_profile import CrunchingProfile
 
 import garlicsim.general_misc.dict_tools
 import garlicsim.general_misc.queue_tools as queue_tools
@@ -85,7 +85,7 @@ class CrunchingManager(object):
         if temp_infinity_node:
             
             had_temp_infinity_node = \
-                nodes_to_crunch.has_key(temp_infinity_node)
+                temp_infinity_node in nodes_to_crunch
 
             if had_temp_infinity_node:
                 
@@ -133,7 +133,7 @@ class CrunchingManager(object):
         
         total_added_nodes = 0
 
-        for (node, cruncher) in self.crunchers.copy().items():
+        for (node, cruncher) in list(self.crunchers.copy().items()):
             if not (node in nodes_to_crunch):
                 (added_nodes, new_leaf) = \
                     self.__add_work_to_tree(cruncher, node, retire=True)
@@ -141,9 +141,9 @@ class CrunchingManager(object):
                 del self.crunchers[node]
 
 
-        for (node, profile) in nodes_to_crunch.copy().items():
+        for (node, profile) in list(nodes_to_crunch.copy().items()):
             
-            if self.crunchers.has_key(node) is False:
+            if (node in self.crunchers) is False:
                 self.__conditional_create_cruncher(node, profile)
                 continue
 

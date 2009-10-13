@@ -8,7 +8,7 @@ their documentation for more information.
 
 import copy
 
-from block import Block
+from .block import Block
 # Note we are doing `from node import Node` in the bottom of the file.
 
 __all__ = ["Tree", "TreeError"]
@@ -131,4 +131,4 @@ tree while specifying a template_node.""")
         """
         return len(self.nodes)
     
-from node import Node
+from .node import Node
