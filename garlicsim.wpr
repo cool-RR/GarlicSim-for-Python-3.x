@@ -14,3 +14,4 @@ proj.file-list = [loc('src/garlicsim/simulate.py'),
                   loc('src/garlicsim/synchronous_crunching/path_simulate.py')]
 proj.file-type = 'shared'
 proj.main-file = loc('src/garlicsim/__init__.py')
+
