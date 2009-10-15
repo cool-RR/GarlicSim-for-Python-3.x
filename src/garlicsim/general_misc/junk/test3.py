@@ -9,7 +9,7 @@ import multiprocessing
 
 STOPPED = 'STOP'
 
-def dump_queue(queue):
+def dump(queue):
     result = []
     
     for thing in iter(queue.get, STOPPED):
@@ -39,4 +39,3 @@ if __name__ == '__main__':
     x.wait()
     l = dump_queue(p.q)
     print(len(l))
-    p.join()
