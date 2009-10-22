@@ -1,5 +1,8 @@
+# Copyright 2009 Ram Rachum.
+# This program is distributed under the LGPL2.1 license.
+
 import garlicsim.data_structures
-import garlicsim
+from garlicsim.misc.persistent_read_only_object import PersistentReadOnlyObject
 import copy
 
 import random
@@ -10,7 +13,8 @@ ROUNDS=7
 NUMBER_OF_PLAYERS=70
 
 
-BaseForHandicap = [object, garlicsim.PersistentReadOnlyObject] [1]
+BaseForHandicap = [object, PersistentReadOnlyObject][1]
+
 
 class Handicap(BaseForHandicap):
     def __init__(self, thing, meow):
@@ -57,10 +61,10 @@ def step(source_state,*args,**kwargs):
     return state
 
 def new_match_step(state):
-    """
+    '''
     Note: this function is not strictly a "step function":
     it manipulates the state that is given to it and then returns it.
-    """
+    '''
     pool=state.player_pool
     loser=player_with_least_points(pool)
     pool.remove(loser)
@@ -73,10 +77,10 @@ def new_match_step(state):
     return state
 
 def pair_pool(player_pool):
-    """
+    '''
     Takes a player pool and returns a list of random pairs of players.
     Every player will be a member of exactly one pair.
-    """
+    '''
     assert len(player_pool)%2==0
     result=[]
     pool=player_pool[:]

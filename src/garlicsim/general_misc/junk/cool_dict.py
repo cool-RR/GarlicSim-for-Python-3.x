@@ -1,34 +1,36 @@
 # Copyright 2009 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
-"""
+'''
 This module defines the CoolDict class. See its documentation for more
 information.
-"""
+'''
+
+# remove has_key from all places
 
 import copy
 
 class CoolDict(dict):
-    """
+    '''
     A class derived from dict which defines some extra methods.
-    """
+    '''
     def raise_to(self, key, value):
-        """
+        '''
         Same as `cool_dict[key] = value`, except if the cool dict already has
         `key`, and its value is higher than `value`.
-        """
-        has_key = key in self
+        '''
+        has_key = self.has_key(key)
         if not has_key:
             self[key] = value
         else:
             self[key] = max(value, self[key])
             
     def lower_to(self, key, value):
-        """
+        '''
         Same as `cool_dict[key] = value`, except if the cool dict already has
         `key`, and its value is lower than `value`.
-        """
-        has_key = key in self
+        '''
+        has_key = self.has_key(key)
         if not has_key:
             self[key] = value
         else:

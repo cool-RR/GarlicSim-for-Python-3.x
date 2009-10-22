@@ -1,9 +1,9 @@
 import pickle
 
-"""
+'''
 class Fuga(object):
     def __init__(
-"""
+'''
     
     
 class Object(object):

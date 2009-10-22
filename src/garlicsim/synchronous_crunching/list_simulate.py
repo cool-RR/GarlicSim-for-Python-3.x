@@ -1,10 +1,10 @@
 # Copyright 2009 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
-"""
+'''
 This module defines the list_simulate function. See its documentation for more
 information.
-"""
+'''
 
 import garlicsim.misc
 from . import history_browser as history_browser_module # Avoiding name clash
@@ -12,7 +12,7 @@ from . import history_browser as history_browser_module # Avoiding name clash
 __all__ = ["list_simulate"]
 
 def list_simulate(simpack, state, iterations, *args, **kwargs):
-    """
+    '''
     Simulate from the given state for the given number of iterations.
 
     A simpack must be passed as the first parameter. Any extraneous parameters
@@ -20,7 +20,7 @@ def list_simulate(simpack, state, iterations, *args, **kwargs):
     
     Returns a list that spans all the states, from the initial one given to
     the final one.
-    """
+    '''
     simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
     if simpack_grokker.history_dependent:
         return __history_list_simulate(simpack_grokker, state, iterations,
@@ -32,7 +32,7 @@ def list_simulate(simpack, state, iterations, *args, **kwargs):
     
 def __history_list_simulate(simpack_grokker, state, iterations,
                             *args, **kwargs):
-    """
+    '''
     For history-dependent simulations only:
     
     Simulate from the given state for the given number of iterations.
@@ -42,7 +42,7 @@ def __history_list_simulate(simpack_grokker, state, iterations,
     
     Returns a list that spans all the states, from the initial one given to
     the final one.
-    """
+    '''
     tree = garlicsim.data_structures.Tree()
     root = tree.add_state(state, parent=None)
     path = root.make_containing_path()
@@ -60,7 +60,7 @@ def __history_list_simulate(simpack_grokker, state, iterations,
 
 def __non_history_list_simulate(simpack_grokker, state, iterations,
                                 *args, **kwargs):
-    """
+    '''
     For non-history-dependent simulations only:
     
     Simulate from the given state for the given number of iterations.
@@ -70,7 +70,7 @@ def __non_history_list_simulate(simpack_grokker, state, iterations,
     
     Returns a list that spans all the states, from the initial one given to
     the final one.
-    """
+    '''
     tree = garlicsim.data_structures.Tree()
     root = tree.add_state(state, parent=None)
     path = root.make_containing_path()
