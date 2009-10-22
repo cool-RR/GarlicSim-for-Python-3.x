@@ -16,7 +16,7 @@ import garlicsim.data_structures
 import garlicsim.misc.simpack_grokker
 import garlicsim.misc.step_options_profile
 
-from . import crunching_manager
+from .crunching_manager import CrunchingManager
 from .job import Job
 from .crunching_profile import CrunchingProfile
 

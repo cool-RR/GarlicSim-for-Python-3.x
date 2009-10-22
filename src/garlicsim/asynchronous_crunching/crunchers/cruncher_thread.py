@@ -44,12 +44,12 @@ class CruncherThread(threading.Thread):
         
         self.daemon = True
 
-        self.work_queue = Queue.Queue()
+        self.work_queue = queue.Queue()
         '''
         Queue for putting completed work to be picked up by the main thread.
         '''
 
-        self.order_queue = Queue.Queue()
+        self.order_queue = queue.Queue()
         '''
         Queue for receiving instructions from the main thread.
         '''
@@ -130,7 +130,7 @@ class CruncherThread(threading.Thread):
         '''
         try:
             return self.order_queue.get(block=False)
-        except Queue.Empty:
+        except queue.Empty:
             return None
     
     def process_order(self, order):

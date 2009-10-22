@@ -1,6 +1,6 @@
 import time
 import garlicsim
-from simulation_packages import life
+from garlicsim.bundled.simulation_packages import life
 
 if __name__ == '__main__':
     state = life.make_random_state(10, 10)
@@ -22,13 +22,15 @@ if __name__ == '__main__':
     
     root = project.root_this_state(state)
     
-    project.crunch_all_leaves(root, 100)
+    project.begin_crunching(root, 100)
     
     print(project.sync_crunchers())
     
-    for i in range(5):
-        time.sleep(1)
-        print(project.sync_crunchers())
+    while True:
+        time.sleep(0.5)
+        j = project.sync_crunchers()
+        print(j)
+        if j == 0: break
     
     
     

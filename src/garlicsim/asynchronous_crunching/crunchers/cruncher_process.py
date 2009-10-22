@@ -141,7 +141,7 @@ class CruncherProcess(multiprocessing.Process):
         '''
         try:
             return self.order_queue.get(block=False)
-        except Queue.Empty:
+        except queue.Empty:
             return None
     
     def process_order(self, order):
