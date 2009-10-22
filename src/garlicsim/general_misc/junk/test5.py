@@ -20,17 +20,24 @@ if __name__ == '__main__':
     
     project = garlicsim.Project(life)
     
+    # project.crunching_manager.Cruncher = \
+    #     garlicsim.asynchronous_crunching.crunchers.CruncherProcess
+    
     root = project.root_this_state(state)
     
-    project.begin_crunching(root, 100)
+    meow = 100
+    
+    project.begin_crunching(root, meow)
     
     print(project.sync_crunchers())
     
+    count = 0
     while True:
-        time.sleep(0.5)
+        time.sleep(0.05)
         j = project.sync_crunchers()
         print(j)
-        if j == 0: break
+        count += j
+        if count == meow: break
     
     
-    
+    print(root.get_all_leaves().popitem()[0].state)
