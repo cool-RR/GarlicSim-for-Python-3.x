@@ -7,7 +7,7 @@ information.
 '''
 
 import weakref
-import cPickle
+import pickle
 
 
 class ChangeTracker(object): 
@@ -34,7 +34,7 @@ class ChangeTracker(object):
         object changed since the last time it was checked in.
         '''
         
-        new_pickle = cPickle.dumps(thing)
+        new_pickle = pickle.dumps(thing)
         
         if thing not in self.library:
             self.library[thing] = new_pickle
