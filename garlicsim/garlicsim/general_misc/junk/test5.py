@@ -3,13 +3,15 @@ import garlicsim
 from garlicsim.bundled.simulation_packages import life
 from garlicsim.bundled.simulation_packages import prisoner
 
-simpack = prisoner
+simpack = life
 
 if __name__ == '__main__':
     
     state = simpack.make_random_state(10, 10)
     
+    
     print(state)
+    
     
     new_state = garlicsim.simulate(simpack, state, 10)
     
@@ -22,19 +24,20 @@ if __name__ == '__main__':
     
     project = garlicsim.Project(simpack)
     
-    # project.crunching_manager.Cruncher = \
-    #     garlicsim.asynchronous_crunching.crunchers.CruncherProcess
+    project.crunching_manager.Cruncher = \
+        garlicsim.asynchronous_crunching.crunchers_warehouse.crunchers['CruncherProcess']
     
     root = project.root_this_state(state)
     
 
-    project.begin_crunching(root, 100)
+    project.begin_crunching(root, 500)
     
     print(project.sync_crunchers())
     
-    time.sleep(0.3)
+    time.sleep(2.0)
     print(project.sync_crunchers())
-    node = project.tree.all_possible_paths()[0][-5]
+    path = project.tree.all_possible_paths()[0]
+    node = path[len(path)//2]
     new_node = project.simulate(node, 20)
     
     count = 0
@@ -47,3 +50,4 @@ if __name__ == '__main__':
     
     
     print(root.get_all_leaves().popitem()[0].state)
+    print(garlicsim.data_structures.State.__repr__(root.get_all_leaves().popitem()[0].state))

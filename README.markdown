@@ -1,19 +1,6 @@
-# How to run #
-
-Run `run_gui.py` in the root folder to launch the GUI. Then, File -> New. Choose one of the simulation packages, press Ok. A dialog will pop up, press Ok. Double click the seek bar to toggle playing.
-
 Requires:
 
-* [Python 2.6](http://www.python.org/download/releases/2.6.4/) (Scroll down to the "Python versions" section for other versions.)
-
-Optional:
-
-* [Psyco](http://psyco.sourceforge.net/)
-* on Windows only: [Python for Windows Extensions](http://sourceforge.net/projects/pywin32/)
-
-Gui requires:
-
-* [wxPython](http://www.wxpython.org/) (Not needed for non-gui usage.)
+* [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.
 
 # What is GarlicSim? #
 
@@ -45,15 +32,9 @@ Mockup:
 
 ![](http://garlicsim.org/images/mockup_thumb.gif)
 
-# Core and GUI #
+-------
 
-This repository contains two packages, `garlicsim`, which is the core logic, and `garlicsim_wx`, which is the wxPython-based GUI. 
-
-The `garlicsim` package is the important one, and its code is well-organized and very readable. It is distributed under the **LGPL2.1 license**.
-
-`garlicsim_wx` is in a far less mature state than `garlicsim`. Also, it is not licensed as open source. (Though the source code is available and not obfuscated.) I have not yet decided if the gui will be developed as an open source project or as commercial software, so in the meantime it is officially closed source.
-
-Both packages are copyright 2009 Ram Rachum. 
+The `garlicsim` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
 
 # Python versions #
 
