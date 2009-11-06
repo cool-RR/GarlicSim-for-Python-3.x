@@ -20,21 +20,11 @@ For a more thorugh introduction to how GarlicSim works, check out the ** [Introd
 
 GarlicSim itself is written in pure Python. When writing simpacks it is possible to use C code for greater speed.
 
--------
-
-Current screenshot, showing the [Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) simulation package shipped with the program:
-
-![](http://garlicsim.org/images/screenshot.gif)
-
--------
-
-Mockup:
-
-![](http://garlicsim.org/images/mockup_thumb.gif)
-
--------
-
 The `garlicsim` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
+
+# Looking for gui? #
+
+This is the fork of GarlicSim for Python version 3.1. If you are interested in a gui for GarlicSim, check out the forks for the 2.x versions below. (There is no gui on 3.1 because the underlying wxPython does not support it yet.)
 
 # Python versions #
 
