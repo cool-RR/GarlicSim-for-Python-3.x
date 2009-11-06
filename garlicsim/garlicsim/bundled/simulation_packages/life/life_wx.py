@@ -10,7 +10,7 @@ import functools
 import wx
 
 import garlicsim.data_structures
-import custom_widgets
+from . import custom_widgets
 
 def initialize(gui_project):
     '''Initialize the gui.'''

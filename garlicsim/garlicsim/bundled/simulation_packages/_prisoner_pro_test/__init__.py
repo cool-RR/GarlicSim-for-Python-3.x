@@ -5,7 +5,7 @@
 A simulation package for testing garlicsim.misc.PersistentReadOnlyObject.
 '''
 
-from prisoner import *
+from .prisoner import *
 
 wx_installed=False
 try:
@@ -15,4 +15,4 @@ except ImportError:
     pass
 
 if wx_installed:
-    from prisoner_wx import *
+    from .prisoner_wx import *

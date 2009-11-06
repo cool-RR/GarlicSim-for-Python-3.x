@@ -60,7 +60,7 @@ def iterate(queue, block=False):
     while True:
         try:
             yield queue.get(block=block)
-        except Queue.Empty:
+        except queue_module.Empty:
             raise StopIteration
 
 

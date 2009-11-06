@@ -6,7 +6,7 @@ A simulation package for testing garlicsim's ability to handle
 history-dependent simulations.
 '''
 
-from history_test import *
+from .history_test import *
 
 try:
     import wx
@@ -15,4 +15,4 @@ except ImportError:
     wx_installed = False
 
 if wx_installed:
-    from history_test_wx import *
+    from .history_test_wx import *

@@ -6,7 +6,7 @@ A simulation package for a repeating game of prisoner's dillema between
 a population of players with different strategies.
 '''
 
-from prisoner import *
+from .prisoner import *
 
 wx_installed=False
 try:
@@ -16,4 +16,4 @@ except ImportError:
     pass
 
 if wx_installed:
-    from prisoner_wx import *
+    from .prisoner_wx import *

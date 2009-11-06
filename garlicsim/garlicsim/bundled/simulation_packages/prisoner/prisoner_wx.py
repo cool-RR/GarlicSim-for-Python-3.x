@@ -8,7 +8,7 @@ import math
 import wx
 import wx.lib.agw.piectrl as piectrl
 
-from prisoner import *
+from .prisoner import *
 
 
 def initialize(gui_project):

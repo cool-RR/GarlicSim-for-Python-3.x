@@ -1,43 +1,49 @@
 import time
 import garlicsim
 from garlicsim.bundled.simulation_packages import life
+from garlicsim.bundled.simulation_packages import prisoner
+
+simpack = prisoner
 
 if __name__ == '__main__':
-    state = life.make_random_state(10, 10)
+    
+    state = simpack.make_random_state(10, 10)
     
     print(state)
     
-    '''
-    new_state = garlicsim.simulate(life, state, 10)
+    new_state = garlicsim.simulate(simpack, state, 10)
     
     print(new_state)
     
-    result = garlicsim.list_simulate(life, state, 10)
+    result = garlicsim.list_simulate(simpack, state, 10)
     
     assert result[-1] == new_state
-    '''
     
     
-    project = garlicsim.Project(life)
+    project = garlicsim.Project(simpack)
     
     # project.crunching_manager.Cruncher = \
     #     garlicsim.asynchronous_crunching.crunchers.CruncherProcess
     
     root = project.root_this_state(state)
     
-    meow = 100
-    
-    project.begin_crunching(root, meow)
+
+    project.begin_crunching(root, 100)
     
     print(project.sync_crunchers())
+    
+    time.sleep(0.3)
+    print(project.sync_crunchers())
+    node = project.tree.all_possible_paths()[0][-5]
+    new_node = project.simulate(node, 20)
     
     count = 0
     while True:
         time.sleep(0.05)
         j = project.sync_crunchers()
         print(j)
-        count += j
-        if count == meow: break
+        if not project.crunching_manager.jobs:
+            break
     
     
     print(root.get_all_leaves().popitem()[0].state)
