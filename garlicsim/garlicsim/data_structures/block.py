@@ -6,6 +6,8 @@ A module that defines the Block class and the related BlockError exception. See
 the documentation of Block for more information.
 '''
 
+from garlicsim.general_misc import logic_tools
+
 __all__ = ["Block", "BlockError"]
 
 class BlockError(Exception):
@@ -22,18 +24,20 @@ class Block(object):
 
     When you're doing a simulation, often you'll have a succession of 1000+
     natural nodes, which were created "organically", each from its parent,
-    by simulation. There is no point in displaying a 1000 nodes in the tree
-    browser: Therefore they are grouped together into a block.
+    by simulation. Having a block to group these nodes together imporves
+    efficiency.
 
     Who qualifies to get wrapped in a block? A succession of untouched nodes,
     which:
     1. Is at least 2 nodes in number.
+    
     2. All members, except the last one, must have no children except
        their successor in the block.
     3. The last node may have any kinds of children.
+    4. All members share the same step_profile.
 
     If you want to check whether a certain node is in a block or not,
-    check its ".block" attribute. TODODOC
+    check its ".block" attribute.
 
     '''
     def __init__(self, node_list):
@@ -57,9 +61,9 @@ class Block(object):
             node.block = self
             return
         
-        if node.step_options_profile != self.get_step_options_profile():
+        if node.step_profile != self.get_step_profile():
             raise BlockError('''Tried to add node which has a different
-step_options_profile.''')
+step_profile.''')
             
         
         # If the flow reached here, the block is not empty.
@@ -99,15 +103,17 @@ successor or a direct ancestor of the block.''')
             self.append_node(node_list[0])
             return
         
-        step_option_profiles = \
-            set([node.step_options_profile for node in node_list])
-        if len(step_option_profiles) > 1:
+        if not logic_tools.all_equal((node.step_profile for node
+                                      in node_list)):
             raise BlockError('''Tried to add node list that doesn't share the \
 same step options profile.''')
+        
+        sample_step_profile = node_list[0].step_profile
+        
         if self.__node_list and \
-           list(step_option_profiles)[0] != self.get_step_options_profile():
+           sample_step_profile != self.get_step_profile():
             raise BlockError('''Tried to add nodelist which contains node \
-that has a different step_options_profile.''')
+that has a different step_profile.''')
         
         # We now make sure the node_list is successive, untouched, and has no
         # unwanted children.
@@ -137,6 +143,7 @@ doesn't have exactly one child, and not as the last node in the block.''')
         for node in node_list:
             node.block = self
 
+            
     def split(self, node):
         '''
         Split the block into two blocks.
@@ -166,6 +173,7 @@ doesn't have exactly one child, and not as the last node in the block.''')
             node.block = None
         self.__node_list = []
 
+        
     def __delitem__(self, i):
         '''
         Remove a node from the block. Can only remove an edge node.
@@ -181,37 +189,61 @@ middle of a block''')
                 raise IndexError('''Tried to remove a node by index, while \
 the index was bigger than the block's length.''')
 
+            
     def __contains__(self, node):
         '''
         Return whether the block contains `node`.
         '''
         return node.block == self
 
+    
     def __iter__(self):
         return self.__node_list.__iter__()
 
+    
     def __len__(self):
         '''
         Return the number of nodes in the block.
         '''
         return len(self.__node_list)
 
+    
     def __getitem__(self, i):
         return self.__node_list[i]
 
+    
     def index(self, node):
         '''
         Return the index number of the specified node in the block.
         '''
         return self.__node_list.index(node)
     
-    def get_step_options_profile(self):
+    
+    def get_step_profile(self):
         '''
         Get the step options profile of the nodes in this block.
         
         This profile must be identical in all of the nodes in the block.
         '''
-        return self.__node_list[0].step_options_profile
+        return self.__node_list[0].step_profile
+    
+    
+    def __repr__(self):
+        '''
+        Get a string representation of the block.
+        
+        Example output:
+        <garlicsim.data_structures.block.Block of length 40 crunched with
+        StepProfile(t=0.1) at 0x1c84d70>
+        '''
+        return '<%s.%s of length %s, crunched with %s at %s>' % \
+               (
+                   self.__class__.__module__,
+                   self.__class__.__name__,
+                   len(self),
+                   self.get_step_profile(),
+                   hex(id(self))
+               )
         
 
         

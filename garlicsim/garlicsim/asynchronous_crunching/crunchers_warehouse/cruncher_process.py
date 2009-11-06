@@ -13,8 +13,13 @@ Backports of it for Python 2.4 and 2.5 are available on the internet.
 import multiprocessing
 import copy
 import queue
+import sys
+import os
 
-import garlicsim.general_misc.process_priority
+try: import garlicsim.general_misc.process_priority
+except Exception: pass
+
+import garlicsim
 from garlicsim.asynchronous_crunching import \
      CrunchingProfile, ObsoleteCruncherError
 
@@ -30,27 +35,34 @@ class CruncherProcess(multiprocessing.Process):
     cruncher's work_queue. They are then taken by the main program when
     Project.sync_crunchers is called, and put into the tree.
         
-    Read more about crunchers in the documentation of the crunchers package.
+    Read more about crunchers in the documentation of the crunchers_warehouse
+    package.
     
     The advantage of CruncherProcess over CruncherThread is that
     CruncherProcess is able to run on a different core of the processor
     in the machine, thus using the full power of the processor.
     '''
-    def __init__(self, initial_state, step_generator,
-                 crunching_profile):
+    def __init__(self, initial_state, step_function, crunching_profile):
         
         multiprocessing.Process.__init__(self)
         
-        self.step_generator = step_generator
+        self.step_function = step_function
         self.initial_state = initial_state
         self.last_clock = self.initial_state.clock
-        self.crunching_profile = copy.deepcopy(crunching_profile)
+        self.crunching_profile = crunching_profile
+        copy.deepcopy(crunching_profile)
         
         self.daemon = True
 
         self.work_queue = multiprocessing.Queue()
         '''
         Queue for putting completed work to be picked up by the main thread.
+        
+        In this queue the cruncher will put the states that it produces, in
+        chronological order. If the cruncher is being given a new crunching
+        profile which has a new and different step profile, the cruncher
+        will put the new step profile in this queue in order to signal that
+        from that point on, all states were crunched with that step profile.
         '''
         
         self.order_queue = multiprocessing.Queue()
@@ -58,18 +70,28 @@ class CruncherProcess(multiprocessing.Process):
         Queue for receiving instructions from the main thread.
         '''
 
-    def set_priority(self, priority):
+    def set_low_priority(self):
         '''
-        Set the priority of this process: Currently Windows only.
+        Set a low priority for this process.
         '''
-        assert priority in [0, 1, 2, 3, 4, 5]
+        
         try:
-            garlicsim.general_misc.process_priority.set_process_priority(
-                self.pid,
-                priority
-            )
-        except: # Not sure what to "except" here; wary of non-windows systems.
-            pass
+            sys.getwindowsversion()
+        except Exception:
+            is_windows = False
+        else:
+            is_windows = True
+
+        if is_windows:
+            try:
+                garlicsim.general_misc.process_priority.set_process_priority(0)
+            except Exception:
+                pass
+        else:
+            try:
+                os.nice(1)
+            except Exception:
+                pass
 
     def run(self):
         '''
@@ -91,18 +113,18 @@ class CruncherProcess(multiprocessing.Process):
         Crunches the simulations repeatedly until the crunching profile is
         satisfied or a 'retire' order is received.
         '''
-        self.set_priority(0)
+        self.set_low_priority()
         
-        step_options_profile = self.crunching_profile.step_options_profile or \
-                          garlicsim.misc.StepOptionsProfile()
+        state = self.initial_state
         
-        self.step_iterator = \
-            self.step_generator(self.initial_state,
-                                *step_options_profile.args,
-                                **step_options_profile.kwargs)
+        self.step_profile = self.crunching_profile.step_profile
+        
         order = None
         
-        for state in self.step_iterator:
+        while True:
+            state = self.step_function(state,
+                                       *self.step_profile.args,
+                                       **self.step_profile.kwargs)
             self.auto_clock(state)
             self.work_queue.put(state)
             self.check_crunching_profile(state)
@@ -122,6 +144,7 @@ class CruncherProcess(multiprocessing.Process):
             state.clock = self.last_clock + 1
         self.last_clock = state.clock           
         
+        
     def check_crunching_profile(self, state):
         '''
         Check if the cruncher crunched enough states. If so retire.
@@ -133,6 +156,7 @@ class CruncherProcess(multiprocessing.Process):
         if self.crunching_profile.state_satisfies(state):
             raise ObsoleteCruncherError
     
+        
     def get_order(self):
         '''
         Attempt to read an order from the order_queue, if one has been sent.
@@ -144,22 +168,34 @@ class CruncherProcess(multiprocessing.Process):
         except queue.Empty:
             return None
     
+        
     def process_order(self, order):
         '''
         Process an order receieved from order_queue.
         '''
-        if order=="retire":
+        
+        if order == "retire":
             raise ObsoleteCruncherError
+        
         elif isinstance(order, CrunchingProfile):
+            
+            if self.crunching_profile.step_profile != \
+               order.step_profile:
+                
+                self.work_queue.put(order.step_profile)
+                
             self.crunching_profile = order
+            self.step_profile = order.step_profile
 
+            
     def retire(self):
         '''
         Retire the cruncher. Process-safe.
         
-        Cause it to shut down as soon as it receives the order.
+        Causes it to shut down as soon as it receives the order.
         '''
         self.order_queue.put("retire")
+        
         
     def update_crunching_profile(self, profile):
         '''
@@ -170,4 +206,4 @@ class CruncherProcess(multiprocessing.Process):
         
         
         
-        
+    

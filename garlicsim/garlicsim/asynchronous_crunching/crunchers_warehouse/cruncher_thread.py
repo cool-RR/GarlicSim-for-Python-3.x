@@ -26,16 +26,26 @@ class CruncherThread(threading.Thread):
     cruncher's work_queue. They are then taken by the main program when
     Project.sync_crunchers is called, and put into the tree.
         
-    Read more about crunchers in the documentation of the crunchers package.
+    Read more about crunchers in the documentation of the crunchers_warehouse
+    package.
     
-    The advantage of CruncherThread over CruncherProcess is that
-    CruncherThread is able to handle simulations that are history-dependent.
+    The advantages of CruncherThread over CruncherProcess are:
+    1. CruncherThread is able to handle simulations that are history-dependent,
+       which would have been very hard to implement in a Process, since
+       processes don't share memory, and threads do share memory trivially.
+    2. CruncherThread is based on the threading module, which is stabler and
+       more mature than the multiprocessing module.
+    3. CruncherThread is much easier to debug than CruncherProcess, since there
+       are currently many more tools for debugging Python threads than Python
+       processes.
+    4. On a single-core computer, CruncherThread may be faster than
+       CruncherProcess because of shared memory.
     '''
     def __init__(self, initial_state, project, crunching_profile):
         threading.Thread.__init__(self)
         
         self.project = project
-        self.step_generator = project.simpack_grokker.step_generator
+        self.step_function = project.simpack_grokker.step
         self.crunching_profile = copy.deepcopy(crunching_profile)
         self.history_dependent = self.project.simpack_grokker.history_dependent
         
@@ -47,6 +57,12 @@ class CruncherThread(threading.Thread):
         self.work_queue = queue.Queue()
         '''
         Queue for putting completed work to be picked up by the main thread.
+        
+        In this queue the cruncher will put the states that it produces, in
+        chronological order. If the cruncher is being given a new crunching
+        profile which has a new and different step profile, the cruncher
+        will put the new step profile in this queue in order to signal that
+        from that point on, all states were crunched with that step profile.
         '''
 
         self.order_queue = queue.Queue()
@@ -76,8 +92,7 @@ class CruncherThread(threading.Thread):
         satisfied or a 'retire' order is received.
         '''
         
-        step_options_profile = self.crunching_profile.step_options_profile or \
-                             garlicsim.misc.StepOptionsProfile()
+        self.step_profile = self.crunching_profile.step_profile
         
         if self.history_dependent:
             self.history_browser = HistoryBrowser(cruncher=self)
@@ -85,13 +100,15 @@ class CruncherThread(threading.Thread):
         else:
             thing = self.initial_state
             
-        self.step_iterator = self.step_generator(thing,
-                                                 *step_options_profile.args,
-                                                 **step_options_profile.kwargs)
-        
         order = None
         
-        for state in self.step_iterator:
+        while True:
+            state = self.step_function(thing,
+                                       *self.step_profile.args,
+                                       **self.step_profile.kwargs)
+            if not self.history_dependent:
+                thing = state
+                
             self.auto_clock(state)
             self.work_queue.put(state)
             self.check_crunching_profile(state)
@@ -110,6 +127,7 @@ class CruncherThread(threading.Thread):
         if not hasattr(state, "clock"):
             state.clock = self.last_clock + 1
         self.last_clock = state.clock
+
         
     def check_crunching_profile(self, state):
         '''
@@ -121,6 +139,7 @@ class CruncherThread(threading.Thread):
         '''
         if self.crunching_profile.state_satisfies(state):
             raise ObsoleteCruncherError
+
         
     def get_order(self):
         '''
@@ -132,23 +151,34 @@ class CruncherThread(threading.Thread):
             return self.order_queue.get(block=False)
         except queue.Empty:
             return None
-    
+
+        
     def process_order(self, order):
         '''
         Process an order receieved from order_queue.
         '''
         if order == "retire":
             raise ObsoleteCruncherError
+        
         elif isinstance(order, CrunchingProfile):
-            self.crunching_profile = copy.deepcopy(order)
-    
+            
+            if self.crunching_profile.step_profile != \
+               order.step_profile:
+                
+                self.work_queue.put(order.step_profile)
+                
+            self.crunching_profile = order
+            self.step_profile = order.step_profile
+            
+            
     def retire(self):
         '''
         Retire the cruncher. Thread-safe.
         
-        Cause it to shut down as soon as it receives the order.
+        Causes it to shut down as soon as it receives the order.
         '''
         self.order_queue.put("retire")        
+        
         
     def update_crunching_profile(self, profile):
         '''

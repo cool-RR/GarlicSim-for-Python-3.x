@@ -14,7 +14,7 @@ import garlicsim.general_misc.third_party.decorator
 
 import garlicsim.data_structures
 import garlicsim.misc.simpack_grokker
-import garlicsim.misc.step_options_profile
+import garlicsim.misc.step_profile
 
 from .crunching_manager import CrunchingManager
 from .job import Job
@@ -46,12 +46,11 @@ class Project(object):
     work from the crunchers and coordinate them, call the sync_crunchers method
     of the project.
     
-    What the crunching manager's sync_crunchers method will do is check the
-    attribute .nodes_to_crunch of the project. This attribute is a dict 
-    which maps nodes that should be crunched to a TODO. The crunching manager will
-    then coordinate the crunchers in order to do this work. It will update the
-    .nodes_to_crunch attribute when the crunchers have completed some of the
-    work.
+    The crunching manager contains a list of jobs as an attribute `.jobs`. See
+    documentation for garlicsim.asynchronous_crunching.Job for more info about
+    jobs. The crunching manager will employ crunchers in order to complete the
+    jobs. It will then take work from these crunchers, put it into the tree,
+    and delete the jobs when they are completed.
     '''
 
     def __init__(self, simpack):
@@ -128,8 +127,9 @@ class Project(object):
             jobs_of_leaf = self.crunching_manager.get_jobs_by_node(leaf)
             
             if not jobs_of_leaf:
+                step_profile = leaf.step_profile or garlicsim.misc.StepProfile()
                 crunching_profile = CrunchingProfile(new_clock_target,
-                                                     leaf.step_options_profile)
+                                                     step_profile)
                 job = Job(leaf, crunching_profile)
                 self.crunching_manager.jobs.append(job)
                 continue
@@ -158,12 +158,12 @@ class Project(object):
             # We only want to take one job. We're guessing the last, and 
             # therefore the most recent one, will be the most wanted by the
             # user.
-            job.crunching_profile.clock_target = new_clock_target
+            job.crunching_profile.raise_clock_target(new_clock_target)
             return job
         else:
-            step_options_profile = leaf.step_options_profile
+            step_profile = leaf.step_profile or garlicsim.misc.StepProfile()
             crunching_profile = CrunchingProfile(new_clock_target,
-                                                 step_options_profile)
+                                                 step_profile)
             job = Job(leaf, crunching_profile)
             self.crunching_manager.jobs.append(job)
             return job
@@ -177,20 +177,18 @@ class Project(object):
         the new job.
         If there are already jobs on that node, they will all be crunched
         independently of each other to create different forks.        
-        Any args or kwargs will be packed in a StepOptionsProfile object and
-        passed to the step function. You may pass a StepOptionsProfile
+        Any args or kwargs will be packed in a StepProfile object and
+        passed to the step function. You may pass a StepProfile
         yourself, as the only argument, and it will be noticed and used.
         
         Returns the job.
         '''
         
-        step_options_profile = \
-            garlicsim.misc.step_options_profile.StepOptionsProfile(*args,
-                                                                   **kwargs)
+        step_profile = garlicsim.misc.StepProfile(*args, **kwargs)
         
         clock_target = node.state.clock + clock_buffer
         
-        crunching_profile = CrunchingProfile(clock_target, step_options_profile)
+        crunching_profile = CrunchingProfile(clock_target, step_profile)
         
         job = Job(node, crunching_profile)
         
@@ -204,11 +202,6 @@ class Project(object):
         Talks with all the crunchers, takes work from them for implementing
         into the tree, retiring crunchers or recruiting new crunchers as
         necessary.
-        You can specify a node to be a `temp_infinity_node`. That will cause
-        sync_crunchers to temporarily treat this node as if it should be crunched
-        indefinitely. This is useful when the simulation is playing back on
-        a path that leads to this node, and we want to have as big a buffer
-        as possible on that path.
 
         Returns the total amount of nodes that were added to the tree in the
         process.
@@ -218,7 +211,7 @@ class Project(object):
     @with_tree_lock
     def simulate(self, node, iterations=1, *args, **kwargs):
         '''
-        Simulates from the given node for the given number of iterations.
+        Simulate from the given node for the given number of iterations.
         
         The results are implemented the results into the tree. Note that the
         crunching for this is done synchronously, i.e. in the currrent thread.
@@ -229,27 +222,32 @@ class Project(object):
         '''
         # todo: is simulate a good name? Need to say it's synchronously
         
+        step_profile = garlicsim.misc.StepProfile(*args, **kwargs)
+        
         if self.simpack_grokker.history_dependent:
             return self.__history_dependent_simulate(node, iterations,
-                                                     *args, **kwargs)
+                                                     step_profile)
         else:
             return self.__non_history_dependent_simulate(node, iterations,
-                                                         *args, **kwargs)
+                                                         step_profile)
+        
     @with_tree_lock        
-    def __history_dependent_simulate(self, node, iterations=1,
-                                     *args, **kwargs):
+    def __history_dependent_simulate(self, node, iterations,
+                                     step_profile=None):
         '''
         For history-dependent simulations only:
         
-        Simulates from the given node for the given number of iterations.
+        Simulate from the given node for the given number of iterations.
         
         The results are implemented the results into the tree. Note that the
         crunching for this is done synchronously, i.e. in the currrent thread.
         
-        Any extraneous parameters will be passed to the step function.
+        A step profile may be passed to be used with the step function.
         
         Returns the final node.
         '''
+        
+        if step_profile is None: step_profile = garlicsim.misc.StepProfile()
         
         path = node.make_containing_path()
         history_browser = \
@@ -259,46 +257,80 @@ class Project(object):
         for i in range(iterations):
             history_browser.end_node = node
             state = self.simpack_grokker.step(history_browser,
-                                              *args, **kwargs)
-            current_node = self.tree.add_state(state, parent=current_node)
+                                              *step_profile.args,
+                                              **step_profile.kwargs)
+            current_node = \
+                self.tree.add_state(state, parent=current_node,
+                                    step_profile=step_profile)
             
         return current_node
     
     @with_tree_lock
-    def __non_history_dependent_simulate(self, node, iterations=1,
-                                         *args, **kwargs):
+    def __non_history_dependent_simulate(self, node, iterations,
+                                         step_profile=None):
         '''
         For non-history-dependent simulations only:
         
-        Simulates from the given node for the given number of iterations.
+        Simulate from the given node for the given number of iterations.
         
         The results are implemented the results into the tree. Note that the
         crunching for this is done synchronously, i.e. in the currrent thread.
         
-        Any extraneous parameters will be passed to the step function.
+        A step profile may be passed to be used with the step function.
         
         Returns the final node.
         '''
         
+        if step_profile is None: step_profile = garlicsim.misc.StepProfile()
+        
         current_node = node
         state = node.state
         for i in range(iterations):
-            state = self.simpack_grokker.step(state, *args, **kwargs)
-            current_node = self.tree.add_state(state, parent=current_node)
+            state = self.simpack_grokker.step(state,
+                                              *step_profile.args,
+                                              **step_profile.kwargs)
+            current_node = \
+                self.tree.add_state(state, parent=current_node,
+                                    step_profile=step_profile)
             
         return current_node
     
     def __getstate__(self):
         my_dict = dict(self.__dict__)
         
-        del my_dict["tree_lock"]
-        del my_dict["crunching_manager"]
+        del my_dict['tree_lock']
+        del my_dict['crunching_manager']
+        del my_dict['simpack_grokker']
         
         return my_dict
     
     def __setstate__(self, pickled_project):
         self.__init__(pickled_project["simpack"])
         self.__dict__.update(pickled_project)
+        
+    def __repr__(self):
+        '''
+        Get a string representation of the project.
+        
+        Example output:
+        <garlicsim.asynchronous_crunching.project.Project containing 101 nodes
+        and employing 4 crunchers at 0x1f668d0>
+        '''
+        # Todo: better have the simpack mentioned here, not doing it cause it's
+        # currently in a module wrapper.
+        
+        nodes_count = len(self.tree.nodes)
+        crunchers_count = len(self.crunching_manager.crunchers)
+                                   
+        return '''<%s.%s containing %s nodes and employing %s crunchers at \
+%s>''' % \
+               (
+                   self.__class__.__module__,
+                   self.__class__.__name__,
+                   nodes_count,
+                   crunchers_count,
+                   hex(id(self))
+               )
         
         
         

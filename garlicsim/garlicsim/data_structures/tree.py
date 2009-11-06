@@ -58,27 +58,33 @@ class Tree(object):
         x = copy.deepcopy(template_node.state)
 
         parent = template_node.parent
-        step_options_profile = template_node.step_options_profile
+        step_profile = copy.copy(template_node.step_profile)
         return self.add_state(x, parent,
-                              step_options_profile=step_options_profile,
+                              step_profile=step_profile,
                               template_node=template_node)
 
 
-    def add_state(self, state, parent=None, step_options_profile=None,
+    def add_state(self, state, parent=None, step_profile=None,
                   template_node=None):
         '''
         Wrap state in node and adds to tree.
         
         Returns the node.
         '''
-        touched = (parent is None) or (template_node is not None)    
-        my_node = Node(self, state, step_options_profile=step_options_profile,
-                       touched=touched)
-        self.add_node(my_node, parent, template_node)
+        touched = (parent is None) or (template_node is not None)
+        
+        my_node = Node(
+            self,
+            state,
+            step_profile=copy.copy(step_profile),
+            touched=touched
+        )
+        
+        self.__add_node(my_node, parent, template_node)
         return my_node
 
 
-    def add_node(self, node, parent=None, template_node=None): #todo: private?
+    def __add_node(self, node, parent=None, template_node=None):
         '''
         Add a node to the tree.
         
@@ -108,8 +114,8 @@ tree while specifying a template_node.''')
             
             if parent.block:
                 if len(parent.children)==1:
-                    if (not node.touched) and (parent.step_options_profile == \
-                                               node.step_options_profile):
+                    if (not node.touched) and (parent.step_profile == \
+                                               node.step_profile):
                         parent.block.append_node(node)
                 else: # parent.children > 1
                     if not (parent is parent.block[-1]):
@@ -117,7 +123,7 @@ tree while specifying a template_node.''')
             else: # parent.block is None
                 if (not node.touched) and (not parent.touched) and \
                    (len(parent.children)==1) and \
-                   (parent.step_options_profile == node.step_options_profile):
+                   (parent.step_profile == node.step_profile):
                     Block([parent, node])
                 
                         
@@ -128,10 +134,32 @@ tree while specifying a template_node.''')
             return node
 
 
-    def node_count(self):
+    def all_possible_paths(self):
         '''
-        Return the number of nodes in the tree.
+        Return all the possible paths this tree may entertain.
         '''
-        return len(self.nodes)
+        result = []
+        for root in self.roots:
+            result += root.all_possible_paths()
+        return result
+    
+    
+    def __repr__(self):
+        '''
+        Get a string representation of the tree.
+        
+        Example output:
+        <garlicsim.data_structures.tree.Tree with 1 roots, 233 nodes and 3
+        possible paths at 0x1f6ae70>
+        '''
+        return '<%s.%s with %s roots, %s nodes and %s possible paths at %s>' % \
+               (
+                   self.__class__.__module__,
+                   self.__class__.__name__,
+                   len(self.roots),
+                   len(self.nodes),
+                   len(self.all_possible_paths()),
+                   hex(id(self))
+               )
     
 from .node import Node

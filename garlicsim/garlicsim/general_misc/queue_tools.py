@@ -2,7 +2,7 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines several functions that might be useful when working with
+This module defines several functions that may be useful when working with
 queues.
 '''
 
@@ -52,7 +52,19 @@ def dump(queue):
     return result
 
 
-def queue_get_item(queue, i):
+def iterate(queue, block=False):
+    '''
+    Iterate over the items in the queue.
+    '''
+    
+    while True:
+        try:
+            yield queue.get(block=block)
+        except Queue.Empty:
+            raise StopIteration
+
+
+def get_item(queue, i):
     '''
     Get an item from the queue by index number without removing any items.
     

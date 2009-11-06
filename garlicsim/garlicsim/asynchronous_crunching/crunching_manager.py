@@ -12,11 +12,15 @@ import garlicsim.general_misc.change_tracker
 from garlicsim.general_misc.infinity import Infinity
 
 import garlicsim
+import garlicsim.data_structures
+import garlicsim.misc
+
 from garlicsim.misc.nodes_added import NodesAdded
-from . import crunchers
+from .crunchers_warehouse import crunchers
 from .crunching_profile import CrunchingProfile
 
-PreferredCruncher = [crunchers.CruncherThread, crunchers.CruncherProcess][0]
+
+PreferredCruncher = crunchers['CruncherThread']
 # Should make a nicer way of setting that.
 
 __all__ = ["CrunchingManager"]
@@ -42,12 +46,18 @@ class CrunchingManager(object):
     which goes over all the crunchers and all the nodes of the tree that need
     to be crunched, making sure the crunchers are working on these nodes, and
     collecting work from them to implement into the tree.
+    
+    The crunching manager contains a list of jobs as an attribute `.jobs`. See
+    documentation for garlicsim.asynchronous_crunching.Job for more info about
+    jobs. The crunching manager will employ crunchers in order to complete the
+    jobs. It will then take work from these crunchers, put it into the tree,
+    and delete the jobs when they are completed.
     '''
     def __init__(self, project):        
         self.project = project
         
         if project.simpack_grokker.history_dependent:
-            self.Cruncher = crunchers.CruncherThread
+            self.Cruncher = crunchers['CruncherThread']
         else:
             self.Cruncher = PreferredCruncher
         
@@ -61,6 +71,16 @@ class CrunchingManager(object):
         self.crunchers = {}
         '''
         Dict that maps each job to the cruncher reponsible for doing it.
+        '''
+        
+        self.step_profiles = {}
+        '''
+        Dict that maps each cruncher to its step options profile.
+        
+        This exists because a cruncher might change its step options profile
+        in the course of its work. When it does, it announces this by putting
+        the profile in the work queue. In this dict we keep track of the last
+        step options profile each cruncher was known to use.
         '''
         
         self.crunching_profiles_change_tracker = \
@@ -87,7 +107,7 @@ class CrunchingManager(object):
         '''
         tree = self.project.tree
         
-        total_added_nodes = NodesAdded(0)
+        total_added_nodes = garlicsim.misc.NodesAdded(0)
 
         
         for (job, cruncher) in self.crunchers.copy().items():
@@ -150,18 +170,20 @@ class CrunchingManager(object):
         
         if node.still_in_editing is False:
             step_function = self.project.simpack_grokker.step
-            if self.Cruncher == crunchers.CruncherProcess:
+            if self.Cruncher == crunchers['CruncherProcess']:
                 cruncher = self.Cruncher \
                          (node.state,
-                          self.project.simpack_grokker.step_generator,
+                          self.project.simpack_grokker.step,
                           crunching_profile=crunching_profile)
-            else: # self.Cruncher == crunchers.CruncherThread
+            else: # self.Cruncher == crunchers['CruncherThread']
                 cruncher = self.Cruncher(node.state, self.project,
                                          crunching_profile=crunching_profile)
             cruncher.start()
             self.crunchers[job] = cruncher
             
             self.crunching_profiles_change_tracker.check_in(crunching_profile)
+            self.step_profiles[cruncher] = \
+                crunching_profile.step_profile
             
     
     def get_jobs_by_node(self, node):
@@ -172,7 +194,7 @@ class CrunchingManager(object):
         '''
         return [job for job in self.jobs if job.node == node]
     
-    def __add_work_to_tree(self, cruncher, node, retire=False): #todo: modify this to take job?
+    def __add_work_to_tree(self, cruncher, node, retire=False):
         '''
         Take work from the cruncher and add to the tree at the specified node.
         
@@ -181,17 +203,54 @@ class CrunchingManager(object):
         Returns (number, leaf), where `number` is the number of nodes that were
         added, and `leaf` is the last node that was added.
         '''
+        #todo: modify this to take job?
+        
         tree = self.project.tree
-        states = queue_tools.dump(cruncher.work_queue)
+        
+        current = node
+        counter = 0
+        self.step_profiles[cruncher]
+        
+        for thing in queue_tools.iterate(cruncher.work_queue):
+            if isinstance(thing, garlicsim.data_structures.State):
+                counter += 1
+                current = tree.add_state(
+                    thing,
+                    parent=current,
+                    step_profile=self.step_profiles[cruncher]
+                )
+            elif isinstance(thing, StepProfile):
+                self.step_profiles[cruncher] = thing
+            else:
+                raise Exception('Unexpected object in work queue')
+                        
         if retire:
             cruncher.retire()
-        current = node
-        for state in states:
-            current = tree.add_state(state, parent=current)
-        nodes_added = NodesAdded(len(states))
+        
+        nodes_added = garlicsim.misc.NodesAdded(counter)
+
         return (nodes_added, current)
     
-    
+    def __repr__(self):
+        '''
+        Get a string representation of the crunching manager.
+        
+        Example output:
+        <garlicsim.asynchronous_crunching.crunching_manager.CrunchingManager
+        currently employing 2 crunchers to handle 2 jobs at 0x1f699b0>
+        '''
+        
+        crunchers_count = len(self.crunchers)
+        job_count = len(self.jobs)
+                                   
+        return '<%s.%s currently employing %s crunchers to handle %s jobs at %s>' % \
+               (
+                   self.__class__.__module__,
+                   self.__class__.__name__,
+                   crunchers_count,
+                   job_count,
+                   hex(id(self))
+               )
     
     
     
