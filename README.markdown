@@ -22,7 +22,7 @@ GarlicSim itself is written in pure Python. When writing simpacks it is possible
 
 The `garlicsim` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
 
-# Looking for gui? #
+# Looking for a gui? #
 
 This is the fork of GarlicSim for Python version 3.1. If you are interested in a gui for GarlicSim, check out the forks for the 2.x versions below. (There is no gui on 3.1 because the underlying wxPython does not support it yet.)
 
