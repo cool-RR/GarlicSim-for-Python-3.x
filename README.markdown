@@ -1,6 +1,6 @@
 Requires:
 
-* [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.
+* [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.)
 
 # What is GarlicSim? #
 
