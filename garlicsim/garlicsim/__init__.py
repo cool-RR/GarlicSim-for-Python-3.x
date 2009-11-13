@@ -16,9 +16,15 @@ This licensing does not apply to `garlicsim_wx`, which is the associated GUI
 package.
 '''
 
+from .general_misc import requirement_checker
+requirement_checker.require('Distribute')
+
 import garlicsim.general_misc
 import garlicsim.misc
 from garlicsim.synchronous_crunching import simulate, list_simulate
 from garlicsim.asynchronous_crunching import Project
 
 __all__ = ["Project", "simulate", "list_simulate"]
+
+__version__ = '0.1'
+

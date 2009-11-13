@@ -2,8 +2,9 @@ import time
 import garlicsim
 from garlicsim.bundled.simulation_packages import life
 from garlicsim.bundled.simulation_packages import prisoner
+from garlicsim.bundled.simulation_packages import _history_test
 
-simpack = life
+simpack = _history_test
 
 if __name__ == '__main__':
     

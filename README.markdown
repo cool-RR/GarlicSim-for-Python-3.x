@@ -2,6 +2,10 @@ Requires:
 
 * [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.)
 
+Optional:
+
+* on Windows only: [Python for Windows Extensions](http://sourceforge.net/projects/pywin32/)
+
 # What is GarlicSim? #
 
 GarlicSim is an ambitious open-source project in the field of scientific computing, specifically computer simulations. It attempts to redefine the way that people think about computer simulations, making a new standard for how simulations are created and used.
