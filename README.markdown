@@ -9,7 +9,7 @@ Requirements:
 * [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.)
 * [Distribute](http://pypi.python.org/pypi/distribute), version 0.6.8 or later
 
-Optional:
+Recommended, but not mandatory:
 
 * on Windows only: [Python for Windows Extensions](http://sourceforge.net/projects/pywin32/)
 
