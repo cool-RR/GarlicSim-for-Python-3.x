@@ -10,14 +10,13 @@ Visit http://garlicsim.org for more info.
 
 This package, called `garlicsim`, is the business logic. It is copyrighted to
 Ram Rachum, 2009, and is distributed under the LGPL v2.1 License. The license
-is included with this package as the file `lgpl2.1_license.txt.py`.
+is included with this package as the file `lgpl2.1_license.txt`.
 
 This licensing does not apply to `garlicsim_wx`, which is the associated GUI
 package.
 '''
 
-from .general_misc import requirement_checker
-requirement_checker.require('Distribute')
+from . import bootstrap
 
 import garlicsim.general_misc
 import garlicsim.misc
