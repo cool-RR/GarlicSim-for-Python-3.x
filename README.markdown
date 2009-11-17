@@ -1,6 +1,6 @@
 # Installation #
 
-[**Binary installers** are available here.](http://github.com/cool-RR/GarlicSim-for-Python-3.1/downloads)
+**Windows binary installer** is available [here](http://pypi.python.org/pypi/garlicsim%20for%20Python%203.1/) for `garlicsim`.
 
 For a source installation: Download the repo, then run `setup.py install` in the `garlicsim` folder.
 
@@ -55,7 +55,7 @@ GarlicSim has official support for 4 different versions of Python. For each of t
 
 # Current state #
 
-Garlicsim is at version 0.1, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, [drop me a mail](mailto:cool-rr@cool-rr.com).
+Garlicsim is at version 0.1.x, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, [drop me a mail](mailto:cool-rr@cool-rr.com).
 
 At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.
 
