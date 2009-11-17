@@ -7,6 +7,7 @@ For a source installation: Download the repo, then run `setup.py install` in the
 Requirements:
 
 * [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.)
+* [Distribute](http://pypi.python.org/pypi/distribute), version 0.6.8 or later
 
 Optional:
 
