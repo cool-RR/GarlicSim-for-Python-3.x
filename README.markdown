@@ -1,3 +1,7 @@
+# Brief Video Introduction #
+
+[![](http://garlicsim.org/images/video_thumbnail.jpg)](http://garlicsim.org/brief_introduction.html)
+
 # Installation #
 
 **Windows binary installer** is available [here](http://pypi.python.org/pypi/garlicsim%20for%20Python%203.1/) for `garlicsim`.
