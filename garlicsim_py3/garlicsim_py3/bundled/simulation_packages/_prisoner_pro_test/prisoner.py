@@ -2,7 +2,7 @@
 # This program is distributed under the LGPL2.1 license.
 
 import garlicsim_py3.data_structures
-from garlicsim_py3.misc.persistent_read_only_object import Persistent
+from garlicsim_py3.misc import Persistent
 import copy
 
 import random
@@ -92,7 +92,8 @@ def pair_pool(player_pool):
         pool.remove(pair[1])
     return result
 
-def play_game((x,y),round):
+def play_game(xy, round):
+    (x, y) = xy
     x_move=x.play(round)
     y_move=y.play(round)
 

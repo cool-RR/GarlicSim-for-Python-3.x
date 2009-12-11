@@ -4,9 +4,9 @@
 
 # Installation #
 
-**Windows binary installer** is available [here](http://pypi.python.org/pypi/garlicsim_py3/) for `garlicsim`.
+**Windows binary installer** is available [here](http://pypi.python.org/pypi/garlicsim_py3/) for `garlicsim_py3`.
 
-For a source installation: Download the repo, then run `setup.py install` in the `garlicsim` folder.
+For a source installation: Download the repo, then run `setup.py install` in the `garlicsim_py3` folder.
 
 Core requirements:
 
@@ -16,11 +16,7 @@ Core requirements:
 Recommended, but not mandatory:
 
 * [Psyco](http://psyco.sourceforge.net/).
-* on Windows only: [Python for Windows Extensions](http://sourceforge.net/projects/pywin32/).=======
-
-Some bundled simpacks require:
-
-* [NumPy and SciPy](http://www.scipy.org/Download).
+* on Windows only: [Python for Windows Extensions](http://sourceforge.net/projects/pywin32/).
 
 # What is GarlicSim? #
 
@@ -40,7 +36,7 @@ For a more thorough introduction to how GarlicSim works, check out the ** [Intro
 
 GarlicSim itself is written in pure Python. The speed of simulations is mostly dependent on the simpack's performance - So it is possible to use C code in a simpack to make things faster.
 
-The `garlicsim` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
+The `garlicsim_py3` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
 
 # Community and Support #
 
@@ -58,7 +54,7 @@ The [main GarlicSim fork](http://github.com/cool-RR/GarlicSim) supports Python v
 
 # Current state #
 
-Garlicsim is at version 0.2.1, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, [drop me a mail](mailto:cool-rr@cool-rr.com).
+Garlicsim is at version 0.2.x, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, [drop me a mail](mailto:cool-rr@cool-rr.com).
 
 At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.
 
