@@ -177,7 +177,7 @@ class CrunchingManager(object):
         
         if node.still_in_editing is False:
             step_function = self.project.simpack_grokker.step
-            if self.Cruncher == crunchers['CruncherProcess']:
+            if self.Cruncher == crunchers.get('CruncherProcess', None):
                 cruncher = self.Cruncher \
                          (node.state,
                           self.project.simpack_grokker.step_generator,
@@ -224,7 +224,8 @@ class CrunchingManager(object):
                 current = tree.add_state(
                     thing,
                     parent=current,
-                    step_profile=self.step_profiles[cruncher]
+                    step_profile=self.step_profiles[cruncher],
+                    
                 )
                 # todo optimization: save step profile in variable, it's
                 # wasteful to do a dict lookup every state.

@@ -168,5 +168,6 @@ class CruncherThread(threading.Thread):
         Update the cruncher's crunching profile. Thread-safe.
         '''
         self.order_queue.put(profile)
+        
     
 

@@ -2,18 +2,18 @@
 # This program is distributed under the LGPL2.1 license.
 
 import garlicsim.data_structures
-from garlicsim.misc.persistent_read_only_object import PersistentReadOnlyObject
+from garlicsim.misc.persistent_read_only_object import Persistent
 import copy
 
 import random
 random.seed()
 
 
-ROUNDS=7
-NUMBER_OF_PLAYERS=70
+ROUNDS = 7
+NUMBER_OF_PLAYERS = 70
 
 
-BaseForHandicap = [object, PersistentReadOnlyObject][1]
+BaseForHandicap = [object, Persistent][1]
 
 
 class Handicap(BaseForHandicap):

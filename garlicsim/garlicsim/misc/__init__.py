@@ -11,11 +11,10 @@ from .exceptions import InvalidSimpack, SimpackError, GarlicSimWarning
 from .auto_clock_generator import AutoClockGenerator
 from .history_browser import HistoryBrowser
 from .step_iterator import StepIterator
-from .persistent_read_only_object import PersistentReadOnlyObject
+from . import persistent
+from .persistent import Persistent
 from .step_profile import StepProfile
 from .nodes_added import NodesAdded
 from .simpack_grokker import SimpackGrokker
-
-
 
 

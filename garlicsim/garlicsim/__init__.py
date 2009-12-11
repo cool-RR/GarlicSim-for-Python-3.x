@@ -12,9 +12,6 @@ This package, called `garlicsim`, is the business logic. It is copyrighted to
 Ram Rachum, 2009, and is distributed under the LGPL v2.1 License. The license
 is included with this package as the file `lgpl2.1_license.txt`.
 
-This licensing does not apply to `garlicsim_wx`, which is the associated GUI
-package.
-
 This fork of garlicsim is intended for Python 3.1.
 '''
 
@@ -27,5 +24,5 @@ from garlicsim.asynchronous_crunching import Project
 
 __all__ = ["Project", "simulate", "list_simulate"]
 
-__version__ = '0.1.5'
+__version__ = '0.2'
 
