@@ -13,4 +13,4 @@ proj.directory-list = [{'dirloc': loc('.'),
 proj.file-list = [loc('src/garlicsim/simulate.py'),
                   loc('src/garlicsim/synchronous_crunching/path_simulate.py')]
 proj.file-type = 'shared'
-proj.main-file = loc('garlicsim/import_cruft.py')
+proj.main-file = loc('garlicsim_py3/import_cruft.py')
