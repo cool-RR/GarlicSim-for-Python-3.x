@@ -7,8 +7,8 @@ Package that defines an event system.
 See documentation for EventSet.
 '''
 
-from event import Event
-from event_set import EventSet
+from .event import Event
+from .event_set import EventSet
 
 
 ###############################################################################

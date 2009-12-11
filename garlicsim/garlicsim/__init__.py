@@ -15,8 +15,8 @@ is included with this package as the file `lgpl2.1_license.txt`.
 This fork of garlicsim is intended for Python 3.1.
 '''
 
-from . import bootstrap
 
+import garlicsim.bootstrap
 import garlicsim.general_misc
 import garlicsim.misc
 from garlicsim.synchronous_crunching import simulate, list_simulate

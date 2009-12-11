@@ -124,4 +124,4 @@ class Persistent(object):
         
 
 
-from personality import Personality
+from .personality import Personality

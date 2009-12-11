@@ -7,5 +7,5 @@ This module defines the Persistent and Personality classes.
 See their documentation for more information.
 '''
 
-from persistent import Persistent
-from personality import Personality
+from .persistent import Persistent
+from .personality import Personality

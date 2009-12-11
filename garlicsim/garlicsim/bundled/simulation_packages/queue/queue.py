@@ -5,7 +5,6 @@
 Core module for `queue` simpack for simulations in Queueing Theory.
 '''
 
-import Queue
 import random
 import copy
 
@@ -15,7 +14,7 @@ import numpy.random
 from garlicsim.general_misc.infinity import Infinity
 import garlicsim
 
-import events as events_module
+from . import events as events_module
 
 
 def time_for_next_occurence(mean_time_for_next_occurence):

@@ -5,7 +5,7 @@
 A simpack for simulations in Queueing Theory.
 '''
 
-from queue import *
+from .queue import *
 
 wx_installed = False
 try:
@@ -15,4 +15,4 @@ except ImportError:
     pass
 
 if wx_installed:
-    from queue_wx import *
+    from .queue_wx import *
