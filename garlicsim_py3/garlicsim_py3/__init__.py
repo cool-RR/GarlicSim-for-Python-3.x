@@ -24,5 +24,5 @@ from garlicsim_py3.asynchronous_crunching import Project
 
 __all__ = ["Project", "simulate", "list_simulate"]
 
-__version__ = '0.2'
+__version__ = '0.2.2'
 
