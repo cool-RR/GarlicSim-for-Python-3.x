@@ -41,7 +41,7 @@ setuptools.setup(
     description='Pythonic framework for working with simulations',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',
-    url='http://garlicsim_py3.org',
+    url='http://garlicsim.org',
     packages=setuptools.find_packages(),
     license="LGPL v2.1",
     long_description = my_long_description,
