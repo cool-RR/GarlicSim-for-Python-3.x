@@ -30,6 +30,7 @@ my_classifiers = [
     'Intended Audience :: Science/Research',
     'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
     'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.1',
     'Topic :: Scientific/Engineering',
 ]
