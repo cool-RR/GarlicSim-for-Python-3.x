@@ -145,3 +145,8 @@ class NodeRange(object):
     
     def __req__(self, other):
         return self.__eq__(other)
+    
+    def __hash__(self):
+        # Defining __hash__ because there's __eq__ which makes the default
+        # __hash__ disappear on Python 3.
+        return id(self)

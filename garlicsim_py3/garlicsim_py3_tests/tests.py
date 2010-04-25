@@ -177,4 +177,30 @@ def simpack_check(simpack, cruncher):
     assert len(project.tree.all_possible_paths()) == 4
     
     
+import functools
+
+life_test = functools.partial(
+    simpack_check,
+    life,
+    garlicsim_py3.asynchronous_crunching.crunchers.CruncherThread
+)
     
+prisoner_test = functools.partial(
+    simpack_check,
+    life,
+    garlicsim_py3.asynchronous_crunching.crunchers.CruncherThread
+)
+    
+_history_test_test = functools.partial(
+    simpack_check,
+    _history_test,
+    garlicsim_py3.asynchronous_crunching.crunchers.CruncherThread
+)
+    
+    
+0 # cruft, for breakpoint
+life_test()
+prisoner_test()
+_history_test_test()
+assert False
+

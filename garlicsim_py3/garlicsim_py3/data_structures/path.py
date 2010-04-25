@@ -10,6 +10,7 @@ See its documentation for more information.
 import copy as copy_module # Avoiding name clash.
 
 from garlicsim_py3.general_misc import binary_search
+from garlicsim_py3.general_misc.math_tools import cmp
 
 from garlicsim_py3.misc import GarlicSimException
 
@@ -631,6 +632,11 @@ path, but it's completely empty.''')
         # Currently horribly inefficient
         assert isinstance(other, Path)
         return list(self) == list(other)
+    
+    def __hash__(self):
+        # Defining __hash__ because there's __eq__ which makes the default
+        # __hash__ disappear on Python 3.
+        return id(self)
         
     def __req__(self, other):
         return self.__eq__(other)

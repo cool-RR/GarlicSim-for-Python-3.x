@@ -114,7 +114,11 @@ class NodeSelection(object):
         klass = type(self)
         return klass((node_range.copy() for node_range in self.ranges))
     
-    
     __copy__ = copy
+    
+    def __hash__(self):
+        # Defining __hash__ because there's __eq__ which makes the default
+        # __hash__ disappear on Python 3.
+        return id(self)
     
     

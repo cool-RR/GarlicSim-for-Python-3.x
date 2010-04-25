@@ -5,7 +5,7 @@
 
 
 
-import queue
+import queue as queue_module
 
 def dump(queue):
     '''
@@ -22,7 +22,7 @@ def iterate(queue, block=False):
     while True:
         try:
             yield queue.get(block=block)
-        except queue.Empty:
+        except queue_module.Empty:
             raise StopIteration
 
 

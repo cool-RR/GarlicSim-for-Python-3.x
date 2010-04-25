@@ -13,6 +13,10 @@ class State(garlicsim_py3.data_structures.State):
         return isinstance(other, State) and self.board == other.board
     def __ne__(self, other):
         return not self.__eq__(other)
+    def __hash__(self):
+        # Defining __hash__ because there's __eq__ which makes the default
+        # __hash__ disappear on Python 3.
+        return id(self)
     
 def step(old_state, useless=None, krazy=None):
     old_board = old_state.board
@@ -119,6 +123,11 @@ class Board(object):
     
     def __eq__(self, other):
         return isinstance(other, Board) and self.__list == other.__list
+    
+    def __hash__(self):
+        # Defining __hash__ because there's __eq__ which makes the default
+        # __hash__ disappear on Python 3.
+        return id(self)
     
     def __ne__(self, other):
         return not self.__eq__(other)
