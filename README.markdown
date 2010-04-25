@@ -1,6 +1,6 @@
 # Brief Video Introduction #
 
-[![](http://garlicsim.org/images/video_thumbnail.jpg)](http://garlicsim.org/brief_introduction.html)
+[![](http://garlicsim.org/images/video_thumbnail.jpg)](http://garlicsim_py3.org/brief_introduction.html)
 
 # Installation #
 

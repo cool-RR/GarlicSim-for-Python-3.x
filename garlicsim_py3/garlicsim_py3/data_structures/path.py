@@ -9,9 +9,9 @@ See its documentation for more information.
 
 import copy as copy_module # Avoiding name clash.
 
-from garlicsim.general_misc import binary_search
+from garlicsim_py3.general_misc import binary_search
 
-from garlicsim.misc import GarlicSimException
+from garlicsim_py3.misc import GarlicSimException
 
 from .node import Node
 from .block import Block
@@ -402,7 +402,7 @@ path, but it's completely empty.''')
         '''
         Get a node according to its clock.
         
-        See documentation of garlicsim.general_misc.binary_search.roundings for
+        See documentation of garlicsim_py3.general_misc.binary_search.roundings for
         details about rounding options.
         '''
         
@@ -421,7 +421,7 @@ path, but it's completely empty.''')
         
         The function must be a monotonic rising function on the timeline.
         
-        See documentation of garlicsim.general_misc.binary_search.roundings for
+        See documentation of garlicsim_py3.general_misc.binary_search.roundings for
         details about rounding options.
         '''
         
@@ -601,7 +601,7 @@ path, but it's completely empty.''')
         Get a string representation of the path.
         
         Example output:
-        <garlicsim.data_structures.path.Path of length 43 at 0x1c822d0>
+        <garlicsim_py3.data_structures.path.Path of length 43 at 0x1c822d0>
         '''
         return '<%s.%s of length %s at %s>' % \
                (

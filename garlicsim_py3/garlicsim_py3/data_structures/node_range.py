@@ -7,7 +7,7 @@ This module defines the NodeRange class.
 See its documentation for more info.
 '''
 
-from garlicsim.general_misc import cute_iter_tools
+from garlicsim_py3.general_misc import cute_iter_tools
 
 from .node import Node
 from .block import Block
@@ -108,7 +108,7 @@ class NodeRange(object):
         Get a string representation of the node range.
         
         Example output:        
-        <garlicsim.data_structures.node_range.NodeRange, from node with clock 2
+        <garlicsim_py3.data_structures.node_range.NodeRange, from node with clock 2
         to block that ends at clock 102, containing 101 nodes total, at
         0x291c550>
         '''

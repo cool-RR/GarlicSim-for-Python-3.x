@@ -5,16 +5,15 @@
 Core module for `queue` simpack for simulations in Queueing Theory.
 '''
 
-from . import queue
 import random
 import copy
 
 import numpy
 import numpy.random
 
-from garlicsim.general_misc.infinity import Infinity
-from garlicsim.misc import StepCopy
-import garlicsim
+from garlicsim_py3.general_misc.infinity import Infinity
+from garlicsim_py3.misc import StepCopy
+import garlicsim_py3
 
 import events as events_module
 
@@ -30,7 +29,7 @@ def time_for_next_occurence(mean_time_for_next_occurence):
     return numpy.random.exponential(scale=mean)
 
 
-class State(garlicsim.data_structures.State):
+class State(garlicsim_py3.data_structures.State):
     '''
     State class used by the `queue` simpack.
     '''
@@ -52,7 +51,7 @@ class Server(object):
         `mean_service` is the mean time it takes to service a client.
         '''
         
-        self.identity = garlicsim.misc.Persistent()
+        self.identity = garlicsim_py3.misc.Persistent()
         
         self.event_set = event_set        
         self.facility = facility
@@ -106,7 +105,7 @@ class Server(object):
 class Client(object):
     '''A client which needs to be served in the facility.'''
     def __init__(self):
-        self.identity = garlicsim.misc.Persistent()
+        self.identity = garlicsim_py3.misc.Persistent()
 
         
 class Facility(object):
@@ -114,7 +113,7 @@ class Facility(object):
     
     def __init__(self, event_set, servers=[], clients=[]):
         
-        self.identity = garlicsim.misc.Persistent()
+        self.identity = garlicsim_py3.misc.Persistent()
         self.event_set = event_set
         self.servers = servers
         self.clients = clients
@@ -184,7 +183,7 @@ class Population(object):
         `mean_arrival` is the mean time between arrivals.
         '''
         assert size == Infinity
-        self.identity = garlicsim.misc.Persistent()
+        self.identity = garlicsim_py3.misc.Persistent()
         self.size = size
         self.mean_arrival = mean_arrival
         self.event_set = event_set

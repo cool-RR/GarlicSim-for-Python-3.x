@@ -22,11 +22,11 @@ import queue
 import sys
 import os
 
-try: import garlicsim.general_misc.process_priority
+try: import garlicsim_py3.general_misc.process_priority
 except Exception: pass
 
-import garlicsim
-from garlicsim.asynchronous_crunching import \
+import garlicsim_py3
+from garlicsim_py3.asynchronous_crunching import \
      CrunchingProfile, ObsoleteCruncherError
 
 __all__ = ["CruncherProcess"]
@@ -87,7 +87,7 @@ class CruncherProcess(multiprocessing.Process):
 
         if is_windows:
             try:
-                garlicsim.general_misc.process_priority.set_process_priority(0)
+                garlicsim_py3.general_misc.process_priority.set_process_priority(0)
             except Exception:
                 pass
         else:

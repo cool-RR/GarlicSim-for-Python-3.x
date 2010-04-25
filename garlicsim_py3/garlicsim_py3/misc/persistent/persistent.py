@@ -24,7 +24,7 @@ import weakref
 import colorsys
 
 from .copy_modes import DontCopyPersistent
-from garlicsim.general_misc import copy_tools
+from garlicsim_py3.general_misc import copy_tools
 
 # Doing `from personality import Personality` at bottom of file
 
@@ -133,7 +133,7 @@ class Persistent(object):
         '''
         Get the personality of this persistent object.
         
-        See documentation of class garlicsim.misc.persistent.Personality for
+        See documentation of class garlicsim_py3.misc.persistent.Personality for
         more information.
         '''
         personality_exists = hasattr(self, '_Persistent__personality')

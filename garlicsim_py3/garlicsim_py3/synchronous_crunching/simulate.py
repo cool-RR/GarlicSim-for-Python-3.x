@@ -10,10 +10,10 @@ See its documentation for more info.
 import copy
 import warnings
 
-from garlicsim.general_misc import cute_iter_tools
+from garlicsim_py3.general_misc import cute_iter_tools
 
-import garlicsim
-import garlicsim.misc
+import garlicsim_py3
+import garlicsim_py3.misc
 from . import history_browser as history_browser_module # Avoiding name clash
 
 __all__ = ["simulate"]
@@ -27,8 +27,8 @@ def simulate(simpack, state, iterations=1, *args, **kwargs):
     
     Returns the final state of the simulation.
     '''
-    simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
-    step_profile = garlicsim.misc.StepProfile(*args, **kwargs)
+    simpack_grokker = garlicsim_py3.misc.SimpackGrokker(simpack)
+    step_profile = garlicsim_py3.misc.StepProfile(*args, **kwargs)
 
     if not hasattr(state, 'clock'):
         state = copy.deepcopy(state)        
@@ -53,8 +53,8 @@ def __history_simulate(simpack_grokker, state, iterations=1, step_profile=None):
     
     Returns the final state of the simulation.
     '''
-    if step_profile is None: step_profile = garlicsim.misc.StepProfile()
-    tree = garlicsim.data_structures.Tree()
+    if step_profile is None: step_profile = garlicsim_py3.misc.StepProfile()
+    tree = garlicsim_py3.data_structures.Tree()
     root = tree.add_state(state, parent=None)
     path = root.make_containing_path()
     history_browser = history_browser_module.HistoryBrowser(path)
@@ -84,7 +84,7 @@ def __non_history_simulate(simpack_grokker, state, iterations=1,
     
     Returns the final state of the simulation.
     '''
-    if step_profile is None: step_profile = garlicsim.misc.StepProfile()
+    if step_profile is None: step_profile = garlicsim_py3.misc.StepProfile()
     iterator = simpack_grokker.step_generator(state, step_profile)
     finite_iterator = cute_iter_tools.shorten(iterator, iterations)
     for current_state in finite_iterator:

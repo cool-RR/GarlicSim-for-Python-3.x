@@ -2,23 +2,21 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-Test module for garlicsim.
+Test module for garlicsim_py3.
 
 I'm just starting to learn unit-testing, so go easy on me.
 '''
 
 
 
-import nose
 import time
 import itertools
 
-import garlicsim
-from garlicsim.general_misc import cute_iter_tools
-from garlicsim.bundled.simulation_packages import life
-from garlicsim.bundled.simulation_packages import prisoner
-from garlicsim.bundled.simulation_packages import _history_test
-from garlicsim.bundled.simulation_packages import queue
+import garlicsim_py3
+from garlicsim_py3.general_misc import cute_iter_tools
+from garlicsim_py3.bundled.simulation_packages import life
+from garlicsim_py3.bundled.simulation_packages import prisoner
+from garlicsim_py3.bundled.simulation_packages import _history_test
 
 
 def _is_deterministic(simpack):
@@ -35,10 +33,10 @@ def simpack_test():
     simpacks = [life, prisoner, _history_test, queue]
     
     crunchers = \
-        [garlicsim.asynchronous_crunching.crunchers.CruncherThread,
-         garlicsim.asynchronous_crunching.crunchers.CruncherProcess]
+        [garlicsim_py3.asynchronous_crunching.crunchers.CruncherThread,
+         garlicsim_py3.asynchronous_crunching.crunchers.CruncherProcess]
     
-    crunchers = [garlicsim.asynchronous_crunching.crunchers.CruncherThread]
+    crunchers = [garlicsim_py3.asynchronous_crunching.crunchers.CruncherThread]
     # Until multiprocessing shit is solved
     
     for simpack, cruncher in itertools.product(simpacks, crunchers):
@@ -49,18 +47,18 @@ def simpack_check(simpack, cruncher):
     
     state = simpack.make_random_state() 
     
-    new_state = garlicsim.simulate(simpack, state, 5)
+    new_state = garlicsim_py3.simulate(simpack, state, 5)
     
-    result = garlicsim.list_simulate(simpack, state, 5)
+    result = garlicsim_py3.list_simulate(simpack, state, 5)
     
-    my_simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
+    my_simpack_grokker = garlicsim_py3.misc.SimpackGrokker(simpack)
     
-    empty_step_profile = garlicsim.misc.StepProfile()
+    empty_step_profile = garlicsim_py3.misc.StepProfile()
     
     assert len(result) == 6
     
     for item in result:
-        assert isinstance(item, garlicsim.data_structures.State)
+        assert isinstance(item, garlicsim_py3.data_structures.State)
         if hasattr(simpack, 'State'): # Later make mandatory
             assert isinstance(item, simpack.State)
     
@@ -71,7 +69,7 @@ def simpack_check(simpack, cruncher):
         for old, new in cute_iter_tools.consecutive_pairs(result):
             assert new == my_simpack_grokker.step(old, empty_step_profile)
     
-    project = garlicsim.Project(simpack)
+    project = garlicsim_py3.Project(simpack)
     
     project.crunching_manager.Cruncher = cruncher
     

@@ -1,7 +1,7 @@
 # Copyright 2009-2010 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
-from garlicsim.data_structures import Tree, Node, Block
+from garlicsim_py3.data_structures import Tree, Node, Block
 
 #todo
 

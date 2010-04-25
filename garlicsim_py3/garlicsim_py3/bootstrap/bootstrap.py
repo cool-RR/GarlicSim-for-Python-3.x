@@ -2,14 +2,14 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-A bootstrap module for garlicsim.
+A bootstrap module for garlicsim_py3.
 
 It checks all prerequisites are installed.
 '''
 
 def __check_prerequisites():
     '''
-    Check that all modules required for garlicsim are installed.
+    Check that all modules required for garlicsim_py3 are installed.
     
     Returns a list of some imported modules: A reference to this list should be
     kept alive so to prevent the imported modules from being garbage-collected,

@@ -28,7 +28,7 @@ class State(object):
         Get a string representation of the state.
         
         Example output:
-        <garlicsim.data_structures.state.State with clock 32.3 at 0x1c822d0>
+        <garlicsim_py3.data_structures.state.State with clock 32.3 at 0x1c822d0>
         '''
         return '<%s.%s %sat %s>' % \
                (

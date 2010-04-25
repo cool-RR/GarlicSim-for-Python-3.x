@@ -10,8 +10,8 @@ See their documentation for more details.
 import functools
 import types
 
-from garlicsim.misc import AutoClockGenerator, StepIterator, InvalidSimpack
-import garlicsim
+from garlicsim_py3.misc import AutoClockGenerator, StepIterator, InvalidSimpack
+import garlicsim_py3
 from . import misc
 
 from .settings import Settings
@@ -105,7 +105,7 @@ kind of step function.''')
         '''
         auto_clock_generator = AutoClockGenerator()
         if isinstance(state_or_history_browser,
-                      garlicsim.data_structures.State):
+                      garlicsim_py3.data_structures.State):
             state = state_or_history_browser
         else:
             state = state_or_history_browser.get_last_state()

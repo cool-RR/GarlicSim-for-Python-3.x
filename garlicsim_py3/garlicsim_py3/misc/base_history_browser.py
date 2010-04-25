@@ -7,8 +7,8 @@ This module defines the BaseHistoryBrowser class.
 See its documentation for more info.
 '''
 
-import garlicsim.general_misc.third_party.abc as abc
-from garlicsim.general_misc import binary_search
+import garlicsim_py3.general_misc.third_party.abc as abc
+from garlicsim_py3.general_misc import binary_search
 
 __all__ = ["HistoryBrowser"]
 
@@ -43,7 +43,7 @@ class BaseHistoryBrowser(object, metaclass=abc.ABCMeta):
         
         The function must be a monotonic rising function on the timeline.
         
-        See documentation of garlicsim.general_misc.binary_search.roundings for
+        See documentation of garlicsim_py3.general_misc.binary_search.roundings for
         details about rounding options.
         '''
         pass
@@ -58,7 +58,7 @@ class BaseHistoryBrowser(object, metaclass=abc.ABCMeta):
         '''
         Get a state by specifying desired clock time.
         
-        See documentation of garlicsim.general_misc.binary_search.roundings for
+        See documentation of garlicsim_py3.general_misc.binary_search.roundings for
         details about rounding options.
         '''
         assert issubclass(rounding, binary_search.Rounding)

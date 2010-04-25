@@ -7,9 +7,9 @@ This module defines the HistoryBrowser class.
 See its documentation for more info.
 '''
 
-import garlicsim.general_misc.binary_search as binary_search
-import garlicsim.general_misc.queue_tools as queue_tools
-import garlicsim.misc
+import garlicsim_py3.general_misc.binary_search as binary_search
+import garlicsim_py3.general_misc.queue_tools as queue_tools
+import garlicsim_py3.misc
 
 __all__ = ["HistoryBrowser"]
 
@@ -17,7 +17,7 @@ __all__ = ["HistoryBrowser"]
 get_state_clock = lambda state: state.clock
 
 
-class HistoryBrowser(garlicsim.misc.BaseHistoryBrowser):
+class HistoryBrowser(garlicsim_py3.misc.BaseHistoryBrowser):
     '''
     A device for requesting information about the history of the simulation.
     
@@ -67,7 +67,7 @@ class HistoryBrowser(garlicsim.misc.BaseHistoryBrowser):
         
         The function must be a monotonic rising function on the timeline.
         
-        See documentation of garlicsim.general_misc.binary_search.roundings for
+        See documentation of garlicsim_py3.general_misc.binary_search.roundings for
         details about rounding options.
         '''
         assert issubclass(rounding, binary_search.Rounding)

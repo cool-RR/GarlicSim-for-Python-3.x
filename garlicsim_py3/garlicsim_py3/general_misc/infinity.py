@@ -7,8 +7,8 @@ This module defines the Infinity class and related exceptions.
 See their documentation for more info.
 '''
 
-from garlicsim.misc import GarlicSimException
-from garlicsim.general_misc import math_tools
+from garlicsim_py3.misc import GarlicSimException
+from garlicsim_py3.general_misc import math_tools
 
 
 __all__ = ['Infinity', 'InfinityError', 'InfinityRaceError']
@@ -72,8 +72,8 @@ class InfinityClass(object):
     
     def __cmp__(self, other):
         if isinstance(other, InfinityClass):
-            d_cmp = cmp(self.direction, other.direction)
-            if d_cmp == 0:
+            d_cmp = math_tools.cmp(self.direction, other.direction)
+            if d_cmp != 0:
                 return d_cmp
             else:
                 raise InfinityRaceError
@@ -81,6 +81,19 @@ class InfinityClass(object):
             return self.direction
         else:
             raise NotImplementedError
+        
+    def __lt__(self, other):
+        return self.__cmp__(other) == -1
+    
+    def __le__(self, other):
+        return self.__cmp__(other) != 1
+
+    def __gt__(self, other):
+        return self.__cmp__(other) == 1
+
+    def __ge__(self, other):
+        return self.__cmp__(other) != -1
+            
     def __div__(self, other):
         if isinstance(other, InfinityClass):
             raise InfinityRaceError

@@ -3,10 +3,10 @@
 
 '''A module for simulating Conway's Game of Life.'''
 
-import garlicsim.data_structures
+import garlicsim_py3.data_structures
 import random
 
-class State(garlicsim.data_structures.State):
+class State(garlicsim_py3.data_structures.State):
     def __repr__(self):
         return self.board.__repr__()
     def __eq__(self, other):
@@ -123,7 +123,7 @@ class Board(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-@garlicsim.misc.caching.state_cache
+@garlicsim_py3.misc.caching.state_cache
 def live_cells(state):
     '''Return how many live cells there are in the state.'''
     print(('calculating for state %s' % id(state)))
@@ -131,7 +131,7 @@ def live_cells(state):
 
    
 
-@garlicsim.misc.caching.history_cache
+@garlicsim_py3.misc.caching.history_cache
 def changes(history_browser):
     '''
     Return how many cells changed between the most recent state and its parent.
@@ -152,8 +152,8 @@ def changes(history_browser):
 def determinism_function(step_profile):
     try:
         if step_profile.args[1] is True or step_profile.kwargs['krazy'] is True:
-            return garlicsim.misc.settings.UNDETERMINISTIC
+            return garlicsim_py3.misc.settings.UNDETERMINISTIC
     except LookupError:
         pass
     
-    return garlicsim.misc.settings.DETERMINISTIC
+    return garlicsim_py3.misc.settings.DETERMINISTIC

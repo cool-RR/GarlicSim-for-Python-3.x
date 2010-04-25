@@ -11,8 +11,8 @@ import threading
 import queue
 import copy
 
-import garlicsim
-from garlicsim.asynchronous_crunching import \
+import garlicsim_py3
+from garlicsim_py3.asynchronous_crunching import \
      HistoryBrowser, ObsoleteCruncherError, CrunchingProfile
 
 __all__ = ["CruncherThread"]

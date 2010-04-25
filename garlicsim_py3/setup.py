@@ -22,7 +22,7 @@ GarlicSim is a platform for writing, running and analyzing simulations. It can
 handle any kind of simulation: Physics, game theory, epidemic spread,
 electronics, etc.
 
-Visit http://garlicsim.org for more info.
+Visit http://garlicsim_py3.org for more info.
 '''
 
 my_classifiers = [
@@ -42,7 +42,7 @@ setuptools.setup(
     description='Pythonic framework for working with simulations',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',
-    url='http://garlicsim.org',
+    url='http://garlicsim_py3.org',
     packages=setuptools.find_packages(),
     license="LGPL v2.1",
     long_description = my_long_description,

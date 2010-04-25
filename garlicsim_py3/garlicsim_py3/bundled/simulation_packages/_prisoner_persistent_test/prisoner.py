@@ -1,10 +1,10 @@
 # Copyright 2009-2010 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
-import garlicsim.data_structures
-from garlicsim.misc import Persistent
+import garlicsim_py3.data_structures
+from garlicsim_py3.misc import Persistent
 import copy
-from garlicsim.misc import StepCopy
+from garlicsim_py3.misc import StepCopy
 
 
 import random
@@ -25,7 +25,7 @@ class Handicap(BaseForHandicap):
 def make_plain_state(*args, **kwargs):
     
     global player_types
-    state = garlicsim.data_structures.State()
+    state = garlicsim_py3.data_structures.State()
     state.handicap = Handicap("The thing", meow="The meow")
 
     state.round = -1
@@ -40,7 +40,7 @@ def make_plain_state(*args, **kwargs):
 
 def make_random_state(*args, **kwargs):
 
-    state = garlicsim.data_structures.State()
+    state = garlicsim_py3.data_structures.State()
     state.handicap = Handicap("The thing", meow="The meow")
 
     

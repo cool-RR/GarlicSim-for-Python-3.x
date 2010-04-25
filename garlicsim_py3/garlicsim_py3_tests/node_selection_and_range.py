@@ -2,16 +2,15 @@
 # This program is distributed under the LGPL2.1 license.
 
 import copy
-import nose
-from garlicsim.general_misc import logic_tools
+from garlicsim_py3.general_misc import logic_tools
 
-import garlicsim
-from garlicsim import data_structures as ds
-from garlicsim.bundled.simulation_packages import life
+import garlicsim_py3
+from garlicsim_py3 import data_structures as ds
+from garlicsim_py3.bundled.simulation_packages import life
 
 def node_selection_and_range_test():
     root_state = life.make_plain_state(2, 2)
-    project = garlicsim.Project(life)
+    project = garlicsim_py3.Project(life)
     tree = project.tree
     root = project.root_this_state(root_state)
     leaf1 = project.simulate(root, 10)

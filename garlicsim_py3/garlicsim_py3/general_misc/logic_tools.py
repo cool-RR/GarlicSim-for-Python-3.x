@@ -3,7 +3,7 @@
 
 '''This module defines logic-related tools.'''
 
-import garlicsim.general_misc.cute_iter_tools as cute_iter_tools
+import garlicsim_py3.general_misc.cute_iter_tools as cute_iter_tools
 
 
 def all_equal(iterable, exhaustive=False):

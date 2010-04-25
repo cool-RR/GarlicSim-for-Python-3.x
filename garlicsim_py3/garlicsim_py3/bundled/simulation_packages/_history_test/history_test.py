@@ -7,18 +7,18 @@ from math import pi
 import random
 random.seed()
 
-from garlicsim.misc import StepCopy
-import garlicsim.data_structures
+from garlicsim_py3.misc import StepCopy
+import garlicsim_py3.data_structures
 
 def make_plain_state(*args, **kwargs):
-    state=garlicsim.data_structures.State()
+    state=garlicsim_py3.data_structures.State()
     state.left = 0
     state.left_vel = 0
     state.right = 0
     return state
 
 def make_random_state(*args, **kwargs):
-    state=garlicsim.data_structures.State()
+    state=garlicsim_py3.data_structures.State()
     state.left = random.random() * 2 * pi
     state.left_vel = 0
     state.right = random.random() * 2 * pi

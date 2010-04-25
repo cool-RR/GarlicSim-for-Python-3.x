@@ -11,3 +11,11 @@ def sign(x):
         return 0
     assert x < 0
     return -1
+
+def cmp(a, b):
+    '''
+    Compare two objects.
+    
+    Returns 1 if a > b, returns -1 if b > a, returns 0 if they're equal.
+    '''
+    return (a > b) - (a < b)
