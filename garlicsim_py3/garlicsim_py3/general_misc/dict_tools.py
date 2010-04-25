@@ -7,7 +7,7 @@ import copy
 
 def get_list(d, container):
     '''Get a list of the values in the dict whose keys are in `container`.'''
-    return [value for (key, value) in d.iteritems() if (key in container)]
+    return [value for (key, value) in d.items() if (key in container)]
 
 def fancy_string(d, indent=0):
     '''Show a dict as a string, slightly nicer than dict.__repr__.'''
@@ -25,7 +25,7 @@ def fancy_string(d, indent=0):
     
     temp1 = (
         (big_space + repr(key) + ':\n' + huge_space + show(value, indent + 8))
-        for(key, value) in d.items())
+        for(key, value) in list(d.items()))
     
     temp2 = small_space + '{\n' + ',\n'.join(temp1) + '\n' + small_space +'}'
     

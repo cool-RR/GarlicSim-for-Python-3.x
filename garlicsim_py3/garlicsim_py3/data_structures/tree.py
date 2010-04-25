@@ -265,6 +265,6 @@ tree while specifying a template_node.''')
         
         
     
-from node import Node
-from block import Block
+from .node import Node
+from .block import Block
 

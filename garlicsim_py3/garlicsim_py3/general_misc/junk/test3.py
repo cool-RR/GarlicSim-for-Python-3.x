@@ -14,7 +14,7 @@ def dump(queue):
     
     for thing in iter(queue.get, STOPPED):
         if not isinstance(thing, list):
-            print 'we got something we should not have: %s' % thing
+            print('we got something we should not have: %s' % thing)
         result.append(thing)
     return result
 
@@ -27,7 +27,7 @@ class Process(multiprocessing.Process):
         self.event = x
     def run(self):
         for i in range(100):
-            self.q.put([range(20) for j in range(10)])
+            self.q.put([list(range(20)) for j in range(10)])
         self.q.put(STOPPED)
         self.event.set()
 
@@ -38,5 +38,5 @@ if __name__ == '__main__':
     p.start()
     x.wait()
     l = dump(p.q)
-    print len(l)
+    print(len(l))
     p.join()

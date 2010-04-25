@@ -62,7 +62,7 @@ class StepProfile(object):
         '''
         args_string = ', '.join([repr(thing) for thing in self.args])
         kwargs_string = ', '.join([str(key)+'='+repr(value) for \
-                                   (key, value) in self.kwargs.items()])
+                                   (key, value) in list(self.kwargs.items())])
         strings = [thing for thing in [args_string, kwargs_string] if \
                    thing]        
         big_string = ', '.join(strings)

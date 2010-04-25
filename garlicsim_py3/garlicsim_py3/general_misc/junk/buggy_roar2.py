@@ -5,7 +5,7 @@ try:
     import enthought
     import enthought.mayavi.tools.mlab_scene_model
 finally:
-    print(enthought.__file__)
+    print((enthought.__file__))
     sys.stdout.flush()
 
 import multiprocessing

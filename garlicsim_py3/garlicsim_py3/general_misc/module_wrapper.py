@@ -22,7 +22,7 @@ class ModuleWrapper(object):
     def __init__(self, module):
         wrapped_modules[module] = self
         self.__dict__ = dict(module.__dict__)
-        for name, thing in self.__dict__.items():
+        for name, thing in list(self.__dict__.items()):
             '''
             Note this is a weak form of recursive scanning
             '''
@@ -36,14 +36,14 @@ class ModuleWrapper(object):
                 
                 
 if __name__ == "__main__":
-    import cPickle
+    import pickle
     def test(module):
         try:
-            cPickle.dumps(ModuleWrapper(module))
+            pickle.dumps(ModuleWrapper(module))
             return True
         except Exception:
             return False
         
     import garlicsim_wx.simulation_packages.life as life
-    print(test(life))
-    cPickle.dumps(ModuleWrapper(life))
+    print((test(life)))
+    pickle.dumps(ModuleWrapper(life))

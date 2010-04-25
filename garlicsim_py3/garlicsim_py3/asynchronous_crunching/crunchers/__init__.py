@@ -21,9 +21,9 @@ cruncher you should use for your project depends on the situation.
 See the documentation for the different crunchers for more info.
 '''
 
-from cruncher_thread import CruncherThread
+from .cruncher_thread import CruncherThread
 try:
-    from cruncher_process import CruncherProcess
+    from .cruncher_process import CruncherProcess
 except ImportError:
     try:
         import multiprocessing

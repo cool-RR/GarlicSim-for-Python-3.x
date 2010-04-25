@@ -128,7 +128,7 @@ that has a different step_profile.''')
         
         # We now make sure the node_list is successive, untouched, and has no
         # unwanted children.
-        for i in xrange(len(node_list)):
+        for i in range(len(node_list)):
             if (i >= 1) and (node_list[i].parent != node_list[i-1]):
                 raise BlockError('Tried to add non-consecutive nodes to block.')
             if (len(node_list) - i >= 2) and (len(node_list[i].children) != 1):
@@ -321,4 +321,4 @@ while the index was bigger than the block's length.''')
                    hex(id(self))
                )
         
-from node import Node
+from .node import Node

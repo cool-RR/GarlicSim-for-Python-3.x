@@ -9,8 +9,8 @@ See its documentation for more info.
 
 from garlicsim.general_misc import cute_iter_tools
 
-from node import Node
-from block import Block
+from .node import Node
+from .block import Block
 
 class NodeRange(object):
     '''A consecutive range of nodes.'''

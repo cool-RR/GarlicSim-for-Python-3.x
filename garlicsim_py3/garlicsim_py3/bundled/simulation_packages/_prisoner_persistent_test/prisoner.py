@@ -32,7 +32,7 @@ def make_plain_state(*args, **kwargs):
     state.match = 0
 
     state.player_pool = [
-        player_types[i % len(player_types)]() for i in xrange(NUMBER_OF_PLAYERS)
+        player_types[i % len(player_types)]() for i in range(NUMBER_OF_PLAYERS)
     ]
 
     return new_match_step(state)
@@ -48,7 +48,7 @@ def make_random_state(*args, **kwargs):
     state.match = 0
 
     state.player_pool = [
-        random_strategy_player() for i in xrange(NUMBER_OF_PLAYERS)
+        random_strategy_player() for i in range(NUMBER_OF_PLAYERS)
     ]
 
     return new_match_step(state)
@@ -100,7 +100,8 @@ def pair_pool(player_pool):
         pool.remove(pair[1])
     return result
 
-def play_game((x, y), round):
+def play_game(xxx_todo_changeme, round):
+    (x, y) = xxx_todo_changeme
     x_move = x.play(round)
     y_move = y.play(round)
 

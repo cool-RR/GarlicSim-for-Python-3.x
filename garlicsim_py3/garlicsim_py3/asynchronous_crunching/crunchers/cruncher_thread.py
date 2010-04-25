@@ -8,7 +8,7 @@ See its documentation for more information.
 '''
 
 import threading
-import Queue
+import queue
 import copy
 
 import garlicsim
@@ -54,7 +54,7 @@ class CruncherThread(threading.Thread):
         
         self.daemon = True
 
-        self.work_queue = Queue.Queue()
+        self.work_queue = queue.Queue()
         '''
         Queue for putting completed work to be picked up by the main thread.
         
@@ -65,7 +65,7 @@ class CruncherThread(threading.Thread):
         from that point on, all states were crunched with that step profile.
         '''
 
-        self.order_queue = Queue.Queue()
+        self.order_queue = queue.Queue()
         '''Queue for receiving instructions from the main thread.'''
 
         
@@ -132,7 +132,7 @@ class CruncherThread(threading.Thread):
         '''
         try:
             return self.order_queue.get(block=False)
-        except Queue.Empty:
+        except queue.Empty:
             return None
 
         

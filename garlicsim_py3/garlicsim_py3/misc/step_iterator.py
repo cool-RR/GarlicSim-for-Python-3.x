@@ -64,7 +64,7 @@ class StepIterator(object):
             
     def __iter__(self): return self
     
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         self.current_state = self.__get_new_state()
         self.auto_clock(self.current_state)
@@ -81,11 +81,11 @@ class StepIterator(object):
         else: # self.step_generator is not None
             self.rebuild_raw_iterator_if_necessary()
             try:
-                return self.raw_iterator.next()
+                return next(self.raw_iterator)
             except StopIteration:
                 try:
                     self.rebuild_raw_iterator()
-                    return self.raw_iterator.next()
+                    return next(self.raw_iterator)
                 except StopIteration:
                     raise SimpackError('''Step generator's iterator raised
 StopIteration before producing a single state.''')

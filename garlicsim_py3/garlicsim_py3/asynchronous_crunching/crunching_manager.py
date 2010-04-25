@@ -6,7 +6,7 @@ This module defines the CrunchingManager class. See its documentation for more
 information.
 '''
 
-from __future__ import with_statement
+
 
 import garlicsim.general_misc.queue_tools as queue_tools
 import garlicsim.general_misc.third_party.decorator
@@ -17,7 +17,7 @@ import garlicsim
 import garlicsim.data_structures
 import garlicsim.misc
 import crunchers
-from crunching_profile import CrunchingProfile
+from .crunching_profile import CrunchingProfile
 from garlicsim.misc.step_profile import StepProfile
 
 __all__ = ['CrunchingManager', 'DefaultCruncher', 'DefaultHistoryCruncher']
@@ -119,7 +119,7 @@ class CrunchingManager(object):
         total_added_nodes = garlicsim.misc.NodesAdded(0)
 
         
-        for (job, cruncher) in self.crunchers.copy().items():
+        for (job, cruncher) in list(self.crunchers.copy().items()):
             if not (job in self.jobs):
                 (added_nodes, new_leaf) = \
                     self.__add_work_to_tree(cruncher, job.node, retire=True)

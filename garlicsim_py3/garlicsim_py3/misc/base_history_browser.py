@@ -14,7 +14,7 @@ __all__ = ["HistoryBrowser"]
 
 get_state_clock = lambda state: state.clock
 
-class BaseHistoryBrowser(object):
+class BaseHistoryBrowser(object, metaclass=abc.ABCMeta):
     '''
     A device for requesting information about the history of the simulation.
 
@@ -25,7 +25,6 @@ class BaseHistoryBrowser(object):
     This is an abstract base class from which all history browsers should
     subclass.
     '''
-    __metaclass__ = abc.ABCMeta
     
     @abc.abstractmethod
     def get_last_state(self):

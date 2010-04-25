@@ -8,7 +8,7 @@ See its documentation for more information.
 '''
 
 import colorsys
-from persistent import Persistent
+from .persistent import Persistent
 
 class Personality(object):
     '''

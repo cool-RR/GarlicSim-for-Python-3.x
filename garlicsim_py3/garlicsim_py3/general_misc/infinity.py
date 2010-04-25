@@ -107,7 +107,7 @@ class InfinityClass(object):
     def __neg__(self):
         return InfinityClass(-self.direction)
     
-    def __nonzero__(self):
+    def __bool__(self):
         return True
     
     def __pos__(self):

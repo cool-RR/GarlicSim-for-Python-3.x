@@ -1,13 +1,13 @@
 import os.path
 import sys
 
-print(sys.path)
+print((sys.path))
 sys.stdout.flush()
 
 try:
     import enthought.mayavi.tools.mlab_scene_model
 finally:
-    print(sys.path)
+    print((sys.path))
     sys.stdout.flush()
 
 import multiprocessing

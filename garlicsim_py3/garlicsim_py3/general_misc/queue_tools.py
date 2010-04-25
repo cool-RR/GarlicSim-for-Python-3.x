@@ -3,9 +3,9 @@
 
 '''Defines several functions that may be useful when working with queues.'''
 
-from __future__ import with_statement
 
-import Queue
+
+import queue
 
 def dump(queue):
     '''
@@ -22,7 +22,7 @@ def iterate(queue, block=False):
     while True:
         try:
             yield queue.get(block=block)
-        except Queue.Empty:
+        except queue.Empty:
             raise StopIteration
 
 

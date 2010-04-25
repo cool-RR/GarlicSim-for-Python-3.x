@@ -7,7 +7,7 @@ This module defines the HistoryBrowser class.
 See its documentation for more info.
 '''
 
-from __future__ import with_statement
+
 
 import threading
 
@@ -16,7 +16,7 @@ import garlicsim.general_misc.queue_tools as queue_tools
 import garlicsim.general_misc.third_party.decorator
 
 import garlicsim.misc
-from obsolete_cruncher_error import ObsoleteCruncherError
+from .obsolete_cruncher_error import ObsoleteCruncherError
 
 __all__ = ["HistoryBrowser"]
 
@@ -238,7 +238,7 @@ class HistoryBrowser(garlicsim.misc.BaseHistoryBrowser):
     @with_self
     def __get_our_node(self):
         '''Get the node that the current cruncher is assigned to work on.'''
-        jobs_to_crunchers = self.project.crunching_manager.crunchers.items()
+        jobs_to_crunchers = list(self.project.crunching_manager.crunchers.items())
         
         nodes_that_are_us = \
             [job.node for (job, cruncher) in jobs_to_crunchers \

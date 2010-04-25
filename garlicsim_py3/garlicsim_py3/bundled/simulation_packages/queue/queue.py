@@ -5,7 +5,7 @@
 Core module for `queue` simpack for simulations in Queueing Theory.
 '''
 
-import Queue
+from . import queue
 import random
 import copy
 
@@ -133,7 +133,7 @@ class Facility(object):
         if len(self.waiting_clients) == 1:
             idle_servers_iterator = self.idle_servers_generator()
             try:
-                idle_server = idle_servers_iterator.next()
+                idle_server = next(idle_servers_iterator)
                 self.waiting_clients.remove(client)
                 idle_server.service_client(client)
             except StopIteration:

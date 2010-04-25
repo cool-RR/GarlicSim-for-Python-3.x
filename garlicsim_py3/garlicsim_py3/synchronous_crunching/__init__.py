@@ -8,8 +8,8 @@ This means that the crunching is done in the main thread, without recruiting any
 worker threads or worker processes.
 '''
 
-from simulate import simulate
-from list_simulate import list_simulate
-from history_browser import HistoryBrowser
+from .simulate import simulate
+from .list_simulate import list_simulate
+from .history_browser import HistoryBrowser
 
 __all__ = ["simulate", "list_simulate", "HistoryBrowser"]

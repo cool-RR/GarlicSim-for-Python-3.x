@@ -3,4 +3,4 @@
 
 '''Defines settings.'''
 
-from settings import *
+from .settings import *

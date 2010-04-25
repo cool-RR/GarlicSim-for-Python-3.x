@@ -11,7 +11,7 @@ from garlicsim.general_misc.infinity import Infinity
 
 from garlicsim.misc import GarlicSimException
 
-from state import State
+from .state import State
 # We are doing `from block import Block` in the bottom of the file.
 # We are doing `from path import Path` in the bottom of the file.
 
@@ -314,7 +314,7 @@ class Node(object):
                 hex(id(self))
             )
 
-from path import Path
-from block import Block
+from .path import Path
+from .block import Block
 
 

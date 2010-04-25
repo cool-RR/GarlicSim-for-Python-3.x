@@ -10,7 +10,7 @@ functions that take a history browser.
 #todo: make sure the cache gets lost on pickling
 #todo: append to function's docstring?
 
-from __future__ import with_statement
+
 
 import weakref
 import functools
@@ -111,7 +111,7 @@ if __name__ == '__main__': # make this into test
         '''
         Meooww
         '''
-        print('calculating for state %s' % id(state))
+        print(('calculating for state %s' % id(state)))
         return state.board._Board__list.count(True)
     
        
@@ -124,7 +124,7 @@ if __name__ == '__main__': # make this into test
         '''
         frrrr
         '''
-        print('calculating for hb %s' % id(history_browser))
+        print(('calculating for hb %s' % id(history_browser)))
         try:
             state = history_browser[-1]
             last_state = history_browser[-2]
@@ -134,7 +134,7 @@ if __name__ == '__main__': # make this into test
         board, last_board = state.board, last_state.board
         board_size = len(board._Board__list)
         counter = 0
-        for i in xrange(board_size):
+        for i in range(board_size):
             if board._Board__list[i] != last_board._Board__list[i]:
                 counter += 1
         return counter

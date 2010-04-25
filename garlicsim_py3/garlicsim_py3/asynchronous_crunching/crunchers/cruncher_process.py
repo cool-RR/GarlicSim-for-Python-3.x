@@ -18,7 +18,7 @@ except ImportError:
 Search for it online and install it.''')
 
 import copy
-import Queue
+import queue
 import sys
 import os
 
@@ -157,7 +157,7 @@ class CruncherProcess(multiprocessing.Process):
         '''
         try:
             return self.order_queue.get(block=False)
-        except Queue.Empty:
+        except queue.Empty:
             return None
     
         

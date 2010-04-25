@@ -12,7 +12,7 @@ import types
 
 from garlicsim.misc import AutoClockGenerator, StepIterator, InvalidSimpack
 import garlicsim
-import misc
+from . import misc
 
 from .settings import Settings
 
@@ -88,7 +88,7 @@ kind of step function.''')
             
             original_settings = getattr(self.simpack, 'settings')
         
-            for (key, value) in vars(self.settings).iteritems():
+            for (key, value) in vars(self.settings).items():
                 if hasattr(original_settings, key):
                     actual_value = getattr(original_settings, key)
                     setattr(self.settings, key, actual_value)
@@ -124,7 +124,7 @@ kind of step function.''')
             iterator = step_generator(state_or_history_browser,
                                       *step_profile.args,
                                       **step_profile.kwargs)
-            result = iterator.next()
+            result = next(iterator)
             
         result.clock = auto_clock_generator.make_clock(result)
         return result

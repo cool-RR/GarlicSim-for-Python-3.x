@@ -13,8 +13,8 @@ from garlicsim.general_misc import binary_search
 
 from garlicsim.misc import GarlicSimException
 
-from node import Node
-from block import Block
+from .node import Node
+from .block import Block
 # We are doing `from tree import Tree` in the bottom of the file.
 
 
@@ -636,4 +636,4 @@ path, but it's completely empty.''')
         return self.__eq__(other)
     
     
-from tree import Tree
+from .tree import Tree

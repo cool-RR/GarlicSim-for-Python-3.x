@@ -23,7 +23,7 @@ import uuid
 import weakref
 import colorsys
 
-from copy_modes import DontCopyPersistent
+from .copy_modes import DontCopyPersistent
 from garlicsim.general_misc import copy_tools
 
 # Doing `from personality import Personality` at bottom of file
@@ -145,4 +145,4 @@ class Persistent(object):
         
 
 
-from personality import Personality
+from .personality import Personality

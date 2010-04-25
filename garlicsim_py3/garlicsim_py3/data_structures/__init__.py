@@ -12,14 +12,14 @@ nodes.
 '''
 
 
-from state import State
-from tree import Tree, TreeError
-from path import Path, PathError, PathOutOfRangeError
-from node import Node, NodeError
-from block import Block, BlockError
+from .state import State
+from .tree import Tree, TreeError
+from .path import Path, PathError, PathOutOfRangeError
+from .node import Node, NodeError
+from .block import Block, BlockError
 
-from node_range import NodeRange
-from node_selection import NodeSelection
+from .node_range import NodeRange
+from .node_selection import NodeSelection
 
 
 __all__ = ['State', 'Tree', 'Path', 'Node', 'Block', 'NodeRange',

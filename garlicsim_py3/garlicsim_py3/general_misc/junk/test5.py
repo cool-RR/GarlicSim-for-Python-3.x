@@ -34,10 +34,10 @@ if __name__ == '__main__':
 
     project.begin_crunching(root, 500)
     
-    print(project.sync_crunchers())
+    print((project.sync_crunchers()))
     
     time.sleep(2.0)
-    print(project.sync_crunchers())
+    print((project.sync_crunchers()))
     path = project.tree.all_possible_paths()[0]
     node = path[len(path)//2]
     new_node = project.simulate(node, 20)
@@ -51,5 +51,5 @@ if __name__ == '__main__':
             break
     
     
-    print(root.get_all_leaves().popitem()[0].state)
-    print(garlicsim.data_structures.State.__repr__(root.get_all_leaves().popitem()[0].state))
+    print((root.get_all_leaves().popitem()[0].state))
+    print((garlicsim.data_structures.State.__repr__(root.get_all_leaves().popitem()[0].state)))

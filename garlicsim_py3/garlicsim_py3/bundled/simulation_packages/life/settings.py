@@ -1,4 +1,4 @@
-from life import *
+from .life import *
 from garlicsim.misc import settings
 
 DETERMINISM_FUNCTION = determinism_function

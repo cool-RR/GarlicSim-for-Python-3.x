@@ -7,7 +7,7 @@ This module defines the Settings class.
 See its documentation for more info.
 '''
 
-import misc
+from . import misc
 
 class Settings(object):
     '''A set of settings for a simpack.'''

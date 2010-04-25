@@ -7,7 +7,7 @@ This module defines the Project class.
 See its documentation for more information.
 '''
 
-from __future__ import with_statement
+
 
 from garlicsim.general_misc import cute_iter_tools
 import garlicsim.general_misc.read_write_lock
@@ -19,9 +19,9 @@ import garlicsim.data_structures
 import garlicsim.misc.simpack_grokker
 import garlicsim.misc.step_profile
 
-from crunching_manager import CrunchingManager
-from job import Job
-from crunching_profile import CrunchingProfile
+from .crunching_manager import CrunchingManager
+from .job import Job
+from .crunching_profile import CrunchingProfile
 
 __all__ = ["Project"]
 
@@ -116,7 +116,7 @@ class Project(object):
         leaves_dict = node.get_all_leaves(max_clock_distance=clock_buffer)
         new_clock_target = node.state.clock + clock_buffer
         
-        for item in leaves_dict.items():
+        for item in list(leaves_dict.items()):
 
             leaf = item[0]
             
