@@ -4,42 +4,19 @@
 
 # Installation #
 
-**Windows binary installers** are available [here](http://pypi.python.org/pypi/garlicsim/) for `garlicsim` and [here](http://pypi.python.org/pypi/garlicsim_wx/) for `garlicsim_wx`.
+**Windows binary installer** is available [here](http://pypi.python.org/pypi/garlicsim_py3/) for `garlicsim_py3`.
 
-For a source installation: Download the repo, then run `setup.py install` twice, once in the `garlicsim` folder and once in the `garlicsim_wx` folder.
-
-To start the GUI:
-
-    import garlicsim_wx
-    if __name__ == '__main__': # Needed for multiprocessing
-        garlicsim_wx.start()
-
+For a source installation: Download the repo, then run `setup.py install` in the `garlicsim_py3` folder.
 
 Core requirements:
 
-* Python, version 2.5 or 2.6. If you're new to Python, [download version 2.6](http://python.org/download/releases/2.6.4/). If you use Python 3.1 or above, use [this fork of GarlicSim](http://github.com/cool-RR/GarlicSim-for-Python-3.1) instead.
+* [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.)
 * Either [setuptools](http://pypi.python.org/pypi/setuptools) or [Distribute](http://pypi.python.org/pypi/distribute).
-* For users of Python 2.5 only: [Backport of the multiprocessing module](http://code.google.com/p/python-multiprocessing/).
-
-Some bundled simpacks require:
-
-* [NumPy and SciPy](http://www.scipy.org/Download).
 
 Recommended, but not mandatory:
 
 * [Psyco](http://psyco.sourceforge.net/).
 * on Windows only: [Python for Windows Extensions](http://sourceforge.net/projects/pywin32/).
-
-
-Gui requirements:
-
-* [wxPython](http://www.wxpython.org/) (Not needed for non-gui usage.)
-
-If you wish, it's possible to just run the gui and play with it without installing anything. To do so, download the repo and run the `run_gui.py` file in the root folder.
-
--------------
-
-What to do in the GUI? Select File -> New. Choose one of the simulation packages, press Ok. A dialog will pop up, press Ok. Double click the seek bar to toggle playing.
 
 # What is GarlicSim? #
 
@@ -59,45 +36,25 @@ For a more thorough introduction to how GarlicSim works, check out the ** [Intro
 
 GarlicSim itself is written in pure Python. The speed of simulations is mostly dependent on the simpack's performance - So it is possible to use C code in a simpack to make things faster.
 
--------
+The `garlicsim_py3` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
 
-Current screenshot, showing the [Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) simulation package shipped with the program:
+# Community and Support #
 
-![](http://garlicsim.org/images/screenshot.gif)
+If you need help with anything related to GarlicSim, mail me at [cool-rr@cool-rr.com](mailto:cool-rr@cool-rr.com). Soon there will be an official collaboration medium for GarlicSim.
 
--------
+# Looking for a gui? #
 
-Mockup:
-
-![](http://garlicsim.org/images/mockup_thumb.gif)
-
-# Mailing lists #
-
-The main mailing list is **[garlicsim@librelist.org](mailto:garlicsim@librelist.org)**.
-
-The development mailing list is **[garlicsim.dev@librelist.org](mailto:garlicsim.dev@librelist.org)**.
-
-To subscribe just send an email. These lists are hosted by [librelist](http://librelist.org), which is currently slightly experimental.
-
-# Core and GUI #
-
-This repository contains two packages, `garlicsim`, which is the core logic, and `garlicsim_wx`, which is the wxPython-based GUI. 
-
-The `garlicsim` package is the important one, and its code is well-organized and very readable. It is distributed under the **LGPL2.1 license**.
-
-`garlicsim_wx` is in a far less mature state than `garlicsim`. Also, it is not licensed as open source. (Though the source code is available and not obfuscated.) I have not yet decided if the gui will be developed as an open source project or as commercial software, so in the meantime it is officially closed source.
-
-Both packages are copyright 2009-2010 Ram Rachum. 
+This is the fork of GarlicSim for Python version 3.1. If you are interested in a gui for GarlicSim, check out the [main GarlicSim fork](http://github.com/cool-RR/GarlicSim). (There is no gui on 3.1 because the underlying wxPython does not support it yet.)
 
 # Python versions #
- 
-GarlicSim supports Python versions 2.5 and up, not including Python 3.x.
 
-There is a [separate fork of GarlicSim](http://github.com/cool-RR/GarlicSim-for-Python-3.1) that supports Python 3.1. Take note though that it does not contain a GUI, because wxPython does not support Python 3.1.
+This is a fork of GarlicSim which supports Python 3.1.
+
+The [main GarlicSim fork](http://github.com/cool-RR/GarlicSim) supports Python versions 2.5 and 2.6.
 
 # Current state #
 
-Garlicsim is at version 0.4, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, let us know immediately in the [mailing list](mailto:garlicsim@librelist.org).
+Garlicsim is at version 0.2.x, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, [drop me a mail](mailto:cool-rr@cool-rr.com).
 
 At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.
 
