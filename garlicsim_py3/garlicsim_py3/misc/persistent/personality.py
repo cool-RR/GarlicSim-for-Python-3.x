@@ -30,7 +30,7 @@ class Personality(object):
 
         assert isinstance(persistent, Persistent)
         
-        import human_names
+        from . import human_names
 
         color_resolution = 100
         

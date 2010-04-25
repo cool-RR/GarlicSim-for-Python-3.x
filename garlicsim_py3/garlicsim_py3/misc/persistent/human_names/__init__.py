@@ -13,6 +13,4 @@ __all__ = ['name_list']
         file_name in ['male.txt', 'female.txt']
     ]
 
-del file_name
-
 name_list = male_raw.split(':') + female_raw.split(':')
