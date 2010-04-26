@@ -22,15 +22,5 @@ See the documentation for the different crunchers for more info.
 '''
 
 from .cruncher_thread import CruncherThread
-try:
-    from .cruncher_process import CruncherProcess
-except ImportError:
-    try:
-        import multiprocessing
-    except ImportError:
-        import warnings
-        warnings.warn('''You don't have the multiprocessing package \
-installed. GarlicSim will run, but it won't be able to use CruncherProcess in \
-order to take advantage of multiple processor cores for crunching.''')
-    else:
-        raise
+from .cruncher_process import CruncherProcess
+

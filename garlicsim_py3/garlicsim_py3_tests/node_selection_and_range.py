@@ -106,3 +106,4 @@ def node_selection_and_range_test():
     
 node_selection_and_range_test()
 
+assert False
