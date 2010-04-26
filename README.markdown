@@ -1,6 +1,6 @@
 # Brief Video Introduction #
 
-[![](http://garlicsim.org/images/video_thumbnail.jpg)](http://garlicsim_py3.org/brief_introduction.html)
+[![](http://garlicsim.org/images/video_thumbnail.jpg)](http://garlicsim.org/brief_introduction.html)
 
 # Installation #
 
@@ -38,9 +38,13 @@ GarlicSim itself is written in pure Python. The speed of simulations is mostly d
 
 The `garlicsim_py3` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
 
-# Community and Support #
+# Mailing lists #
 
-If you need help with anything related to GarlicSim, mail me at [cool-rr@cool-rr.com](mailto:cool-rr@cool-rr.com). Soon there will be an official collaboration medium for GarlicSim.
+The main mailing list is **[garlicsim@librelist.org](mailto:garlicsim@librelist.org)**.
+
+The development mailing list is **[garlicsim.dev@librelist.org](mailto:garlicsim.dev@librelist.org)**.
+
+To subscribe just send an email. These lists are hosted by [librelist](http://librelist.org), which is currently slightly experimental.
 
 # Looking for a gui? #
 
@@ -54,7 +58,7 @@ The [main GarlicSim fork](http://github.com/cool-RR/GarlicSim) supports Python v
 
 # Current state #
 
-Garlicsim is at version 0.2.x, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, [drop me a mail](mailto:cool-rr@cool-rr.com).
+Garlicsim is at version 0.4, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, let us know immediately in the [mailing list](mailto:garlicsim@librelist.org).
 
 At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.
 
