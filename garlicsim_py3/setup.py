@@ -8,6 +8,7 @@
 import os
 import setuptools
 
+#tododoc: make get_packages here
 
 my_long_description = \
 '''\
@@ -15,7 +16,7 @@ GarlicSim is a platform for writing, running and analyzing simulations. It can
 handle any kind of simulation: Physics, game theory, epidemic spread,
 electronics, etc.
 
-Visit http://garlicsim_py3.org for more info.
+Visit http://garlicsim.org for more info.
 '''
 
 my_classifiers = [
@@ -37,7 +38,7 @@ setuptools.setup(
     author_email='cool-rr@cool-rr.com',
     url='http://garlicsim.org',
     packages=get_packages(),
-    scripts=['garlicsim_py3/scripts/start_simpack.py'],
+    scripts=['garlicsim/scripts/start_simpack.py'],
     license="LGPL v2.1",
     long_description = my_long_description,
     classifiers = my_classifiers,

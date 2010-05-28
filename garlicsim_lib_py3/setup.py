@@ -10,7 +10,7 @@ import setuptools
 
 
 def get_packages():
-    return ['garlicsim_lib_py3.' + p for p in
+    return ['garlicsim_lib.' + p for p in
             setuptools.find_packages('./garlicsim_lib')] + \
            ['garlicsim_lib']
 
@@ -35,7 +35,7 @@ my_classifiers = [
 
 
 setuptools.setup(
-    name='garlicsim_lib',
+    name='garlicsim_lib_py3',
     version='0.5',
     requires=['garlicsim (== 0.5)'],
     install_requires=['garlicsim == 0.5'],
@@ -45,9 +45,9 @@ setuptools.setup(
     url='http://garlicsim.org',
     packages=get_packages(),
     license='LGPL v2.1',
-    long_description = my_long_description,
-    classifiers = my_classifiers,
-    include_package_data = True,
+    long_description=my_long_description,
+    classifiers=my_classifiers,
+    include_package_data=True,
     zip_safe=False,
 )
 

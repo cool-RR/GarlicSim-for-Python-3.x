@@ -36,7 +36,7 @@ For a more thorough introduction to how GarlicSim works, check out the ** [Intro
 
 GarlicSim itself is written in pure Python. The speed of simulations is mostly dependent on the simpack's performance - So it is possible to use C code in a simpack to make things faster.
 
-The `garlicsim_py3` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
+The `garlicsim_py3` project is distributed under the **LGPL2.1 license**, and is copyright 2009-2010 Ram Rachum. 
 
 # Mailing lists #
 
