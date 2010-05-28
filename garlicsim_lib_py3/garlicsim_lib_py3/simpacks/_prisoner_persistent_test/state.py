@@ -10,9 +10,9 @@ import copy
 import random
 random.seed()
 
-import garlicsim.data_structures
-from garlicsim.misc import StepCopy
-from garlicsim.misc import CrossProcessPersistent
+import garlicsim_py3.data_structures
+from garlicsim_py3.misc import StepCopy
+from garlicsim_py3.misc import CrossProcessPersistent
 
 ROUNDS = 7
 NUMBER_OF_PLAYERS = 70
@@ -26,7 +26,7 @@ class Handicap(BaseForHandicap):
         self.big_list = [random.random() for i in range(100000)]
 
 
-class State(garlicsim.data_structures.State):
+class State(garlicsim_py3.data_structures.State):
     
     def __init__(self, round, match, player_pool):
         self.round = round

@@ -1,11 +1,11 @@
 import random
-import garlicsim.data_structures
+import garlicsim_py3.data_structures
 
-class State(garlicsim.data_structures.State):
+class State(garlicsim_py3.data_structures.State):
     
     def __init__(self, balance, last_bet_result=0):
         
-        garlicsim.data_structures.State.__init__(self)
+        garlicsim_py3.data_structures.State.__init__(self)
         
         self.balance = balance
         '''The current balance of our account, i.e. how much money we have.'''
@@ -17,7 +17,7 @@ class State(garlicsim.data_structures.State):
     def step(self):
         
         if self.balance >= 6000:
-            raise garlicsim.misc.WorldEnd
+            raise garlicsim_py3.misc.WorldEnd
         
         # First we need to calculate how much we're going to bet in this round.
         
@@ -35,7 +35,7 @@ class State(garlicsim.data_structures.State):
             # If we don't have the amount we should bet, we stop the simulation.
             # True, we can try to bet whatever's left, but for simplicity's sake
             # we won't do that now.
-            raise garlicsim.misc.WorldEnd
+            raise garlicsim_py3.misc.WorldEnd
             
         # Let's bet!
         bet_result = random.choice([amount_to_bet, - amount_to_bet])

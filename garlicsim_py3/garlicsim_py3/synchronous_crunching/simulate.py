@@ -27,12 +27,15 @@ def simulate(state, iterations=1, *args, **kwargs):
     
     Returns the final state of the simulation.
     '''
-    simpack_grokker = garlicsim_py3.misc.SimpackGrokker.create_from_state(state)
+    simpack_grokker = \
+        garlicsim_py3.misc.SimpackGrokker.create_from_state(state)
     step_profile = garlicsim_py3.misc.StepProfile(*args, **kwargs)
 
     if not hasattr(state, 'clock'):
-        state = copy.deepcopy(state,
-                              garlicsim.misc.persistent.DontCopyPersistent())
+        state = copy.deepcopy(
+            state,
+            garlicsim_py3.misc.persistent.DontCopyPersistent()
+        )
         state.clock = 0
     
     if simpack_grokker.history_dependent:
@@ -69,7 +72,7 @@ def __history_simulate(simpack_grokker, state, iterations=1, step_profile=None):
     try:
         for current_state in finite_iterator:
             current_node = tree.add_state(current_state, parent=current_node)
-    except garlicsim.misc.WorldEnd:
+    except garlicsim_py3.misc.WorldEnd:
         pass
         
     final_state = current_state
@@ -98,7 +101,7 @@ def __non_history_simulate(simpack_grokker, state, iterations=1,
     try:
         for current_state in finite_iterator:
             pass
-    except garlicsim.misc.WorldEnd:
+    except garlicsim_py3.misc.WorldEnd:
         pass    
     
     final_state = current_state

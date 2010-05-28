@@ -17,7 +17,7 @@ ROUNDS = 7
 NUMBER_OF_PLAYERS = 70
 
 
-class State(garlicsim.data_structures.State):
+class State(garlicsim_py3.data_structures.State):
     
     def __init__(self, round, match, player_pool):
         self.round = round

@@ -1,9 +1,9 @@
 
 
-import garlicsim.data_structures
+import garlicsim_py3.data_structures
 
 
-class State(garlicsim.data_structures.State):
+class State(garlicsim_py3.data_structures.State):
     # This is your State subclass. Your state objects should contain all the
     # information there is about a moment of time in your simulation.
     

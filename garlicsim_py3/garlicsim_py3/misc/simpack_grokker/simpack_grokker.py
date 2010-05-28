@@ -24,7 +24,7 @@ from .settings import Settings
 class SimpackGrokker(object):
     '''Encapsulates a simpack and gives useful information and tools.'''
     
-    __metaclass__ = garlicsim.general_misc.caching.CachedType
+    __metaclass__ = garlicsim_py3.general_misc.caching.CachedType
 
     @staticmethod
     def create_from_state(state):
@@ -49,9 +49,9 @@ class SimpackGrokker(object):
             raise InvalidSimpack('''The %s simpack does not define a `State` \
 class.''' % simpack.__name__)
         
-        if not issubclass(State, garlicsim.data_structures.State):
+        if not issubclass(State, garlicsim_py3.data_structures.State):
             raise InvalidSimpack('''The %s simpack defines a State class, but \
-it's not a subclass of `garlicsim.data_structures.State`.''' % \
+it's not a subclass of `garlicsim_py3.data_structures.State`.''' % \
                                                              simpack.__name__)
 
         self.simple_non_history_step_defined = hasattr(State, "step")

@@ -4,10 +4,10 @@
 '''Defines various tools for working with simpacks.'''
 
 
-from garlicsim.general_misc import misc_tools
-from garlicsim.general_misc import caching
+from garlicsim_py3.general_misc import misc_tools
+from garlicsim_py3.general_misc import caching
 
-import garlicsim.misc.simpack_grokker
+import garlicsim_py3.misc.simpack_grokker
 
 
 def get_from_state(state):
@@ -30,12 +30,12 @@ def _get_from_state_class(state_class):
     simpack_name = '.'.join(short_address.split('.')[:-1])
     simpack = __import__(simpack_name, fromlist=[''])
     try:
-        garlicsim.misc.simpack_grokker.SimpackGrokker(simpack)
+        garlicsim_py3.misc.simpack_grokker.SimpackGrokker(simpack)
         # Not saving the reference: But it'll get cached because SimpackGrokker
         # is a CachedType.
-    except garlicsim.misc.InvalidSimpack:
-        raise garlicsim.misc.GarlicSimException('''Could not guess simpack \
-correctly from state object.''')
+    except garlicsim_py3.misc.InvalidSimpack:
+        raise garlicsim_py3.misc.GarlicSimException('''Could not guess \
+simpack correctly from state object.''')
     return simpack
     
     
