@@ -21,7 +21,7 @@ This program is intended for Python versions 2.5 and 2.6.
 
 from . import bootstrap
 from .import general_misc
-from .general_misc import monkeypatch_copy_reg
+from .general_misc import monkeypatch_copyreg
 from . import misc
 from .asynchronous_crunching import Project
 from .synchronous_crunching import simulate, list_simulate
