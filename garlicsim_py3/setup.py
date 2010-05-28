@@ -8,7 +8,11 @@
 import os
 import setuptools
 
-#tododoc: make get_packages here
+
+def get_packages():
+    return ['garlicsim.' + p for p in
+            setuptools.find_packages('./garlicsim')] + \
+           ['garlicsim']
 
 my_long_description = \
 '''\
