@@ -18,7 +18,7 @@ my_long_description = \
 '''\
 A collection of GarlicSim simulation packages, for various scientific fields.
 
-To be used with `garlicsim` and possibly `garlicsim_wx`.
+To be used with `garlicsim` and possibly `garlicsim_wx`.tododoc
 
 Visit http://garlicsim.org for more info.
 '''
