@@ -6,7 +6,7 @@ from garlicsim.general_misc import logic_tools
 
 import garlicsim
 from garlicsim import data_structures as ds
-from garlicsim_lib_py3.simpacks import life
+from garlicsim_lib.simpacks import life
 
 def node_selection_and_range_test():
     root_state = life.State.create_root(2, 2)

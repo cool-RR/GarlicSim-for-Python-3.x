@@ -11,7 +11,7 @@ namespace.
 
 from .step_copy import StepCopy
 from .exceptions import (InvalidSimpack, SimpackError, GarlicSimWarning,
-                        SmartException, GarlicSimException, WorldEnd)
+                        GarlicSimException, WorldEnd)
 from .auto_clock_generator import AutoClockGenerator
 from .base_history_browser import BaseHistoryBrowser
 from .step_iterator import StepIterator

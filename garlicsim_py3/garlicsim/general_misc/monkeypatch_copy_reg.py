@@ -6,7 +6,7 @@
 # todo: alters global state, yuck! Maybe check before if it's already set to
 # something?
 
-import copyreg
+import copy_reg
 import types
 import builtins
 
@@ -30,6 +30,6 @@ def reduce_module(module):
     '''Reducer for modules.'''
     return (__import__, (module.__name__, {}, {}, [''])) # fromlist cruft
 
-copyreg.pickle(types.ModuleType, reduce_module)
+copy_reg.pickle(types.ModuleType, reduce_module)
 
 ###############################################################################

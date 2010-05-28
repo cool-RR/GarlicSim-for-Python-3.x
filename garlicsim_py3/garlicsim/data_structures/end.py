@@ -9,8 +9,8 @@ See its documentation for more information.
 
 from garlicsim.general_misc import misc_tools
 
-from tree_member import TreeMember
-from node import Node
+from .tree_member import TreeMember
+from .node import Node
 
     
 class End(TreeMember):
@@ -170,5 +170,5 @@ class End(TreeMember):
             )
         
 
-from block import Block
+from .block import Block
 

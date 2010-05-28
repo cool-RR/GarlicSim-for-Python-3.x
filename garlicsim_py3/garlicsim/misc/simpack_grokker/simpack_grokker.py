@@ -15,6 +15,7 @@ from garlicsim.general_misc import import_tools
 import garlicsim.general_misc.caching
 
 from garlicsim.misc import AutoClockGenerator, StepIterator, InvalidSimpack
+from garlicsim.misc import simpack_tools
 import garlicsim
 from . import misc
 

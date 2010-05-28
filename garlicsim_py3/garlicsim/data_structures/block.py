@@ -12,8 +12,8 @@ from garlicsim.general_misc import misc_tools
 
 from garlicsim.misc import GarlicSimException
 
-from tree_member import TreeMember
-# We are doing `from node import Node` in the bottom of the file.
+from .tree_member import TreeMember
+# We are doing `from .node import Node` in the bottom of the file.
 
 __all__ = ["Block", "BlockError"]
 

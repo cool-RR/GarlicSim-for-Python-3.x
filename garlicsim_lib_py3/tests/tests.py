@@ -15,11 +15,9 @@ import itertools
 import garlicsim
 from garlicsim.general_misc import cute_iter_tools
 
-from garlicsim_lib_py3.simpacks import life
-from garlicsim_lib_py3.simpacks import prisoner
-from garlicsim_lib_py3.simpacks import _history_test
-from garlicsim_lib_py3.simpacks import queue
-
+from garlicsim_lib.simpacks import life
+from garlicsim_lib.simpacks import prisoner
+from garlicsim_lib.simpacks import _history_test
 
 def _is_deterministic(simpack):
     return simpack.__name__.split('.')[-1] == 'life'
@@ -32,7 +30,7 @@ def trivial_test():
 
 def simpack_test():
     
-    simpacks = [life, prisoner, _history_test, queue]
+    simpacks = [life, prisoner, _history_test]
     
     crunchers = \
         [garlicsim.asynchronous_crunching.crunchers.CruncherThread,
@@ -203,10 +201,10 @@ _history_test_test = functools.partial(
     
     
 0 # cruft, for breakpoint
-#life_test()
-#prisoner_test()
-#_history_test_test()
-if __name__ == '__main__':
+if __name__ == '__main__':    
+    #life_test()
+    #prisoner_test()
+    #_history_test_test()
     simpack_check(life, garlicsim.asynchronous_crunching.crunchers.CruncherProcess)
     assert False
 

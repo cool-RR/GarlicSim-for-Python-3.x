@@ -4,7 +4,7 @@
 import copy
 
 import garlicsim
-from garlicsim_lib_py3.simpacks import life
+from garlicsim_lib.simpacks import life
 from garlicsim.misc import caching
 
 def cached_state_function_test():

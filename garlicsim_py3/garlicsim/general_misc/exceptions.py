@@ -3,7 +3,7 @@
 
 '''Defines exceptions.'''
 
-from third_party import abc
+from .third_party import abc
 
 
 class CuteException(Exception):

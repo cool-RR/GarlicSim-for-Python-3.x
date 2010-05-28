@@ -8,7 +8,7 @@ See its documentation for more information.
 '''
 
 import copy as copy_module # Avoiding name clash.
-import __builtin__
+import builtins
 
 from garlicsim.general_misc import binary_search
 from garlicsim.general_misc.math_tools import cmp
@@ -644,7 +644,7 @@ path, but it's completely empty.''')
         This method will return the lowest path that is just above this path.
         '''
 
-        my_iter = __builtin__.reversed if reverse else iter
+        my_iter = builtins.reversed if reverse else iter
         
         wanted_clock = node.state.clock
         
