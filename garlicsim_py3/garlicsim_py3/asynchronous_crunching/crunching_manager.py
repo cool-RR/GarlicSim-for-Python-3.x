@@ -7,19 +7,19 @@ information.
 '''
 
 
-import garlicsim_py3.general_misc.queue_tools as queue_tools
-import garlicsim_py3.general_misc.third_party.decorator
-import garlicsim_py3.general_misc.change_tracker
-from garlicsim_py3.general_misc.infinity import Infinity
-from garlicsim_py3.general_misc import misc_tools
-from garlicsim_py3.general_misc import cute_iter_tools
+import garlicsim.general_misc.queue_tools as queue_tools
+import garlicsim.general_misc.third_party.decorator
+import garlicsim.general_misc.change_tracker
+from garlicsim.general_misc.infinity import Infinity
+from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import cute_iter_tools
 
-import garlicsim_py3
-import garlicsim_py3.data_structures
-import garlicsim_py3.misc
+import garlicsim
+import garlicsim.data_structures
+import garlicsim.misc
 from . import crunchers
 from .crunching_profile import CrunchingProfile
-from garlicsim_py3.misc.step_profile import StepProfile
+from garlicsim.misc.step_profile import StepProfile
 from .misc import EndMarker
 
 __all__ = ['CrunchingManager', 'DefaultCruncher', 'DefaultHistoryCruncher']
@@ -33,7 +33,7 @@ DefaultHistoryCruncher = crunchers.CruncherThread
 '''Cruncher class to be used by default in history-dependent simulations.'''
 
 
-@garlicsim_py3.general_misc.third_party.decorator.decorator
+@garlicsim.general_misc.third_party.decorator.decorator
 def with_tree_lock(method, *args, **kwargs):
     '''
     Decorator for using the tree lock (in write mode) as a context manager.
@@ -55,7 +55,7 @@ class CrunchingManager(object):
     collecting work from them to implement into the tree.
     
     The crunching manager contains a list of jobs as an attribute `.jobs`. See
-    documentation for garlicsim_py3.asynchronous_crunching.Job for more info about
+    documentation for garlicsim.asynchronous_crunching.Job for more info about
     jobs. The crunching manager will employ crunchers in order to complete the
     jobs. It will then take work from these crunchers, put it into the tree,
     and delete the jobs when they are completed.
@@ -78,7 +78,7 @@ class CrunchingManager(object):
         '''
         The jobs that the crunching manager will be responsible for doing.
         
-        These are of the class garlicsim_py3.asynchronous_crunching.Job.
+        These are of the class garlicsim.asynchronous_crunching.Job.
         '''
         
         self.crunchers = {}
@@ -95,7 +95,7 @@ class CrunchingManager(object):
         '''
         
         self.crunching_profiles_change_tracker = \
-            garlicsim_py3.general_misc.change_tracker.ChangeTracker()
+            garlicsim.general_misc.change_tracker.ChangeTracker()
         '''
         A change tracker which tracks changes made to crunching profiles.
         
@@ -116,7 +116,7 @@ class CrunchingManager(object):
         Returns the total amount of nodes that were added to the tree in the
         process.
         '''
-        total_added_nodes = garlicsim_py3.misc.NodesAdded(0)
+        total_added_nodes = garlicsim.misc.NodesAdded(0)
 
         
         for (job, cruncher) in list(self.crunchers.copy().items()):
@@ -225,7 +225,7 @@ class CrunchingManager(object):
         
         for thing in queue_tools.iterate(cruncher.work_queue):
             
-            if isinstance(thing, garlicsim_py3.data_structures.State):
+            if isinstance(thing, garlicsim.data_structures.State):
                 counter += 1
                 current = tree.add_state(
                     thing,
@@ -250,7 +250,7 @@ class CrunchingManager(object):
         if retire or job.resulted_in_end:
             cruncher.retire()
         
-        nodes_added = garlicsim_py3.misc.NodesAdded(counter)
+        nodes_added = garlicsim.misc.NodesAdded(counter)
 
         return (nodes_added, current)
     
@@ -259,7 +259,7 @@ class CrunchingManager(object):
         Get a string representation of the crunching manager.
         
         Example output:
-        <garlicsim_py3.asynchronous_crunching.CrunchingManager
+        <garlicsim.asynchronous_crunching.CrunchingManager
         currently employing 2 crunchers to handle 2 jobs at 0x1f699b0>
         '''
         

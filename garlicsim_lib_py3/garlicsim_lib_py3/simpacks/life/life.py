@@ -6,10 +6,10 @@
 import random
 import itertools
 
-import garlicsim_py3.data_structures
+import garlicsim.data_structures
 
 
-class State(garlicsim_py3.data_structures.State):
+class State(garlicsim.data_structures.State):
 
     @staticmethod
     def create_diehard(width=45, height=25):
@@ -181,7 +181,7 @@ class Board(object):
 
    
 
-@garlicsim_py3.misc.caching.history_cache
+@garlicsim.misc.caching.history_cache
 def changes(history_browser):
     '''
     Return how many cells changed between the most recent state and its parent.
@@ -202,8 +202,8 @@ def changes(history_browser):
 def determinism_function(step_profile):
     try:
         if step_profile.args[1] is True or step_profile.kwargs['krazy'] is True:
-            return garlicsim_py3.misc.settings.UNDETERMINISTIC
+            return garlicsim.misc.settings.UNDETERMINISTIC
     except LookupError:
         pass
     
-    return garlicsim_py3.misc.settings.DETERMINISTIC
+    return garlicsim.misc.settings.DETERMINISTIC

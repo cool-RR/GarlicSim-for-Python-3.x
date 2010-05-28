@@ -8,7 +8,7 @@ This module defines various tools related to importing.
 import sys
 import os.path
 import imp
-from garlicsim_py3.general_misc import package_finder
+from garlicsim.general_misc import package_finder
 
 def import_by_path(path, name=None):
     '''

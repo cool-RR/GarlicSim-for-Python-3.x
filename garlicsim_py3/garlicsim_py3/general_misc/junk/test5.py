@@ -1,8 +1,8 @@
 import time
-import garlicsim_py3
-from garlicsim_py3.bundled.simulation_packages import life
-from garlicsim_py3.bundled.simulation_packages import prisoner
-from garlicsim_py3.bundled.simulation_packages import _history_test
+import garlicsim
+from garlicsim.bundled.simulation_packages import life
+from garlicsim.bundled.simulation_packages import prisoner
+from garlicsim.bundled.simulation_packages import _history_test
 
 
 simpack = life
@@ -15,19 +15,19 @@ if __name__ == '__main__':
     print(state)
     
     
-    new_state = garlicsim_py3.simulate(simpack, state, 10)
+    new_state = garlicsim.simulate(simpack, state, 10)
     
     print(new_state)
     
-    result = garlicsim_py3.list_simulate(simpack, state, 10)
+    result = garlicsim.list_simulate(simpack, state, 10)
     
     # assert result[-1] == new_state
     
     
-    project = garlicsim_py3.Project(simpack)
+    project = garlicsim.Project(simpack)
     
     #project.crunching_manager.Cruncher = \
-    #    garlicsim_py3.asynchronous_crunching.crunchers.CruncherProcess
+    #    garlicsim.asynchronous_crunching.crunchers.CruncherProcess
     
     root = project.root_this_state(state)
     
@@ -52,4 +52,4 @@ if __name__ == '__main__':
     
     
     print((root.get_all_leaves().popitem()[0].state))
-    print((garlicsim_py3.data_structures.State.__repr__(root.get_all_leaves().popitem()[0].state)))
+    print((garlicsim.data_structures.State.__repr__(root.get_all_leaves().popitem()[0].state)))

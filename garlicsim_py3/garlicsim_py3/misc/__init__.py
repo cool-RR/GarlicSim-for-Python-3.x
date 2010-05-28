@@ -5,7 +5,7 @@
 Defines several miscellaneous objects.
 
 These objects are important enough to be defined near the root of the
-`garlicsim_py3` package but not important enough to be put in the main
+`garlicsim` package but not important enough to be put in the main
 namespace.
 '''
 

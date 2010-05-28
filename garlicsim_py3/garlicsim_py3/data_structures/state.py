@@ -7,9 +7,9 @@ A module that defines the State class.
 See its documentation for more info.
 '''
 
-from garlicsim_py3.general_misc import misc_tools
+from garlicsim.general_misc import misc_tools
 
-import garlicsim_py3
+import garlicsim
 
 
 class State(object):
@@ -30,8 +30,8 @@ class State(object):
     
     def __new__(cls, *args, **kwargs):
         if cls is State:
-            raise garlicsim_py3.misc.GarlicSimException('''You tried to \
-create a State object whose class is `garlicsim_py3.data_structures.State`. \
+            raise garlicsim.misc.GarlicSimException('''You tried to \
+create a State object whose class is `garlicsim.data_structures.State`. \
 This is unallowed; This class should be used as a base class for State \
 classes in simpacks.''')
         return super(type, cls).__new__(cls)
@@ -42,7 +42,7 @@ classes in simpacks.''')
         Get a string representation of the state.
         
         Example output:
-        <garlicsim_py3.data_structures.State with clock 32.3 at 0x1c822d0>
+        <garlicsim.data_structures.State with clock 32.3 at 0x1c822d0>
         ''' 
         return '<%s %sat %s>' % \
                (

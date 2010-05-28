@@ -9,7 +9,7 @@ electronics, etc.
 
 Visit http://garlicsim.org for more info.
 
-This package, called `garlicsim_py3`, is the business logic. It is copyrighted to
+This package, called `garlicsim`, is the business logic. It is copyrighted to
 Ram Rachum, 2009, and is distributed under the LGPL v2.1 License. The license
 is included with this package as the file `lgpl2.1_license.txt`.
 

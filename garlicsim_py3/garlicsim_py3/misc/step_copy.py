@@ -7,8 +7,8 @@ This module defines the StepCopy class.
 See its documentation for more information.
 '''
 
-from garlicsim_py3.general_misc.copy_mode import CopyMode
-from garlicsim_py3.misc.persistent import DontCopyPersistent
+from garlicsim.general_misc.copy_mode import CopyMode
+from garlicsim.misc.persistent import DontCopyPersistent
 
 class StepCopy(DontCopyPersistent, CopyMode):
     '''

@@ -7,7 +7,7 @@ This module defines the DontCopyPersistent class.
 See its documentation for more information.
 '''
 
-from garlicsim_py3.general_misc.copy_mode import CopyMode
+from garlicsim.general_misc.copy_mode import CopyMode
 
 class DontCopyPersistent(CopyMode):
     '''

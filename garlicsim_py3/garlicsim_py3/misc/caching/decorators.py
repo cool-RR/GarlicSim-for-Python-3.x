@@ -15,7 +15,7 @@ functions that take a history browser.
 import weakref
 import functools
 
-import garlicsim_py3
+import garlicsim
 
         
 
@@ -35,7 +35,7 @@ def state_cache(function):
     if hasattr(function, 'state_cache'): return function
     
     def cached(state):
-        assert isinstance(state, garlicsim_py3.data_structures.State)
+        assert isinstance(state, garlicsim.data_structures.State)
         if state in cached.state_cache:
             return cached.state_cache[state]
         else:
@@ -71,14 +71,14 @@ def history_cache(function, *args, **kwargs):
         return function
     
     def cached(node):
-        assert isinstance(node, garlicsim_py3.data_structures.Node)
+        assert isinstance(node, garlicsim.data_structures.Node)
         if node in cached.node_cache:
             return cached.node_cache[node]
         else:
             path = node.make_containing_path()
             with node.tree.lock.read:
                 history_browser = \
-                    garlicsim_py3.synchronous_crunching.HistoryBrowser(
+                    garlicsim.synchronous_crunching.HistoryBrowser(
                         path=path,
                         end_node=node
                     )
@@ -93,12 +93,12 @@ def history_cache(function, *args, **kwargs):
     return cached
 
 if __name__ == '__main__': # make this into test
-    import garlicsim_py3
+    import garlicsim
     from garlicsim_lib_py3.simpacks import life
 
     s = life.make_random_state(10, 10)
     
-    p = garlicsim_py3.Project(life)
+    p = garlicsim.Project(life)
     
     r = p.root_this_state(s)
     

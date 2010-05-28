@@ -10,14 +10,14 @@ import copy
 import random
 random.seed()
 
-import garlicsim_py3.data_structures
-from garlicsim_py3.misc import StepCopy
+import garlicsim.data_structures
+from garlicsim.misc import StepCopy
 
 ROUNDS = 7
 NUMBER_OF_PLAYERS = 70
 
 
-class State(garlicsim_py3.data_structures.State):
+class State(garlicsim.data_structures.State):
     
     def __init__(self, round, match, player_pool):
         self.round = round

@@ -7,8 +7,8 @@ This module defines the NodeSelection class.
 See its documentation for more info.
 '''
 
-from garlicsim_py3.misc import GarlicSimException
-from garlicsim_py3.general_misc import cute_iter_tools
+from garlicsim.misc import GarlicSimException
+from garlicsim.general_misc import cute_iter_tools
 
 from .node import Node
 from .node_range import NodeRange

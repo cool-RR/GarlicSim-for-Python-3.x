@@ -9,10 +9,10 @@ See their documentation for more information.
 
 import copy
 
-from garlicsim_py3.general_misc import misc_tools
+from garlicsim.general_misc import misc_tools
 
-import garlicsim_py3.misc
-from garlicsim_py3.misc import GarlicSimException
+import garlicsim.misc
+from garlicsim.misc import GarlicSimException
 
 # `from block import Block` in the bottom of the file.
 # `from node import Node` in the bottom of the file.
@@ -51,7 +51,7 @@ class Tree(object):
         self.roots = []
         '''List of roots (parentless nodes) of the tree.'''
         
-        self.lock = garlicsim_py3.general_misc.read_write_lock.ReadWriteLock()
+        self.lock = garlicsim.general_misc.read_write_lock.ReadWriteLock()
         '''
         A read-write lock that guards access to the tree.
         
@@ -269,7 +269,7 @@ tree while specifying a template_node.''')
         Get a string representation of the tree.
         
         Example output:        
-        <garlicsim_py3.data_structures.Tree with 1 roots, 233 nodes and 3 possible
+        <garlicsim.data_structures.Tree with 1 roots, 233 nodes and 3 possible
         paths at 0x1f6ae70>
         '''
         return '<%s with %s roots, %s nodes and %s possible paths at %s>' % \

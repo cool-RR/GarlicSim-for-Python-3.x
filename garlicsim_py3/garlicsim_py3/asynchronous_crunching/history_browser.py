@@ -11,23 +11,23 @@ See its documentation for more info.
 
 import threading
 
-import garlicsim_py3.general_misc.binary_search as binary_search
-import garlicsim_py3.general_misc.queue_tools as queue_tools
-import garlicsim_py3.general_misc.third_party.decorator
+import garlicsim.general_misc.binary_search as binary_search
+import garlicsim.general_misc.queue_tools as queue_tools
+import garlicsim.general_misc.third_party.decorator
 
-import garlicsim_py3.misc
+import garlicsim.misc
 from .obsolete_cruncher_error import ObsoleteCruncherError
 
 __all__ = ["HistoryBrowser"]
 
-@garlicsim_py3.general_misc.third_party.decorator.decorator
+@garlicsim.general_misc.third_party.decorator.decorator
 def with_self(method, *args, **kwargs):
     '''Decorator for using the history browser as a context manager.'''
     self = args[0]
     with self:
         return method(*args, **kwargs)
 
-class HistoryBrowser(garlicsim_py3.misc.BaseHistoryBrowser):
+class HistoryBrowser(garlicsim.misc.BaseHistoryBrowser):
     '''
     A device for requesting information about the history of the simulation.
     
@@ -206,7 +206,7 @@ class HistoryBrowser(garlicsim_py3.misc.BaseHistoryBrowser):
         
         The function must by a monotonic rising function on the timeline.
         
-        See documentation of garlicsim_py3.general_misc.binary_search.roundings for
+        See documentation of garlicsim.general_misc.binary_search.roundings for
         details about rounding options.
         '''
         assert issubclass(rounding, binary_search.Rounding)

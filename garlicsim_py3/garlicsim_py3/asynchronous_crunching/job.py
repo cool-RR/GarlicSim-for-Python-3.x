@@ -44,7 +44,7 @@ class Job(object):
         
         Example output: 
 
-        Job(node=<garlicsim_py3.data_structures.node.Node with clock 17, untouched,
+        Job(node=<garlicsim.data_structures.node.Node with clock 17, untouched,
         belongs to a block, crunched with StepProfile(), at 0x20664b0>,
         crunching_profile=CrunchingProfile(clock_target=100,
         step_profile=StepProfile()))

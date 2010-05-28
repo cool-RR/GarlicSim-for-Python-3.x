@@ -17,7 +17,7 @@ todo: make it polite to other similar classes
 '''
 
 from .copy_modes import DontCopyPersistent
-from garlicsim_py3.general_misc import copy_tools
+from garlicsim.general_misc import copy_tools
 
 
 __all__ = ['Persistent']

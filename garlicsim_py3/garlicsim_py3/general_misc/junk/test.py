@@ -1,13 +1,13 @@
 import time
 
-import garlicsim_py3
+import garlicsim
 from garlicsim_wx.simulation_packages import life
 
 if __name__ == "__main__":
         
     state = life.make_random_state()
     
-    project = garlicsim_py3.Project(life)
+    project = garlicsim.Project(life)
     
     node = project.root_this_state(state)
     

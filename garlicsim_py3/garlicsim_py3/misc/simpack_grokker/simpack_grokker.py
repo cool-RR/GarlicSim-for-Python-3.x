@@ -11,11 +11,11 @@ import functools
 import types
 import imp
 
-from garlicsim_py3.general_misc import import_tools
-import garlicsim_py3.general_misc.caching
+from garlicsim.general_misc import import_tools
+import garlicsim.general_misc.caching
 
-from garlicsim_py3.misc import AutoClockGenerator, StepIterator, InvalidSimpack
-import garlicsim_py3
+from garlicsim.misc import AutoClockGenerator, StepIterator, InvalidSimpack
+import garlicsim
 from . import misc
 
 from .settings import Settings
@@ -24,7 +24,7 @@ from .settings import Settings
 class SimpackGrokker(object):
     '''Encapsulates a simpack and gives useful information and tools.'''
     
-    __metaclass__ = garlicsim_py3.general_misc.caching.CachedType
+    __metaclass__ = garlicsim.general_misc.caching.CachedType
 
     @staticmethod
     def create_from_state(state):
@@ -49,9 +49,9 @@ class SimpackGrokker(object):
             raise InvalidSimpack('''The %s simpack does not define a `State` \
 class.''' % simpack.__name__)
         
-        if not issubclass(State, garlicsim_py3.data_structures.State):
+        if not issubclass(State, garlicsim.data_structures.State):
             raise InvalidSimpack('''The %s simpack defines a State class, but \
-it's not a subclass of `garlicsim_py3.data_structures.State`.''' % \
+it's not a subclass of `garlicsim.data_structures.State`.''' % \
                                                              simpack.__name__)
 
         self.simple_non_history_step_defined = hasattr(State, "step")
@@ -137,7 +137,7 @@ of step function.''' % simpack.__name__)
         ''' 
         auto_clock_generator = AutoClockGenerator()
         if isinstance(state_or_history_browser,
-                      garlicsim_py3.data_structures.State):
+                      garlicsim.data_structures.State):
             state = state_or_history_browser
         else:
             state = state_or_history_browser.get_last_state()

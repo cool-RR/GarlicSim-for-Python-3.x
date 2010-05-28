@@ -3,9 +3,9 @@
 
 import copy
 
-import garlicsim_py3
+import garlicsim
 from garlicsim_lib_py3.simpacks import life
-from garlicsim_py3.misc import caching
+from garlicsim.misc import caching
 
 def cached_state_function_test():
     
@@ -26,7 +26,7 @@ def cached_state_function_test():
     assert live_cells.called_flag is False
     
     
-    l = garlicsim_py3.list_simulate(s, 10)
+    l = garlicsim.list_simulate(s, 10)
     
     result_1 = [cached_live_cells(s) for s in l[0:5]]
         
@@ -77,7 +77,7 @@ def cached_history_function_test():
     
     s = life.State.create_messy_root(5, 5)
     
-    p = garlicsim_py3.Project(life)
+    p = garlicsim.Project(life)
     
     r = p.root_this_state(s)
     

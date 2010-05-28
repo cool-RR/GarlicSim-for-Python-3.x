@@ -7,9 +7,9 @@ This module defines the HistoryBrowser class.
 See its documentation for more info.
 '''
 
-import garlicsim_py3.general_misc.binary_search as binary_search
-import garlicsim_py3.general_misc.queue_tools as queue_tools
-import garlicsim_py3.misc
+import garlicsim.general_misc.binary_search as binary_search
+import garlicsim.general_misc.queue_tools as queue_tools
+import garlicsim.misc
 
 __all__ = ["HistoryBrowser"]
 
@@ -17,7 +17,7 @@ __all__ = ["HistoryBrowser"]
 get_state_clock = lambda state: state.clock
 
 
-class HistoryBrowser(garlicsim_py3.misc.BaseHistoryBrowser):
+class HistoryBrowser(garlicsim.misc.BaseHistoryBrowser):
     '''
     A device for requesting information about the history of the simulation.
     

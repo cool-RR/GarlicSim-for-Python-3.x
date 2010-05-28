@@ -11,9 +11,9 @@ import copy
 import numpy
 import numpy.random
 
-from garlicsim_py3.general_misc.infinity import Infinity
-from garlicsim_py3.misc import StepCopy
-import garlicsim_py3
+from garlicsim.general_misc.infinity import Infinity
+from garlicsim.misc import StepCopy
+import garlicsim
 
 import events as events_module
 
@@ -29,7 +29,7 @@ def time_for_next_occurence(mean_time_for_next_occurence):
     return numpy.random.exponential(scale=mean)
 
 
-class State(garlicsim_py3.data_structures.State):
+class State(garlicsim.data_structures.State):
     def __init__(self, event_set, facility, servers, population):
         garlicsim.data_structures.State.__init__(self)
         self.event_set = event_set
@@ -92,7 +92,7 @@ class Server(object):
         `mean_service` is the mean time it takes to service a client.
         '''
         
-        self.identity = garlicsim_py3.misc.CrossProcessPersistent()
+        self.identity = garlicsim.misc.CrossProcessPersistent()
         
         self.event_set = event_set        
         self.facility = facility
@@ -146,7 +146,7 @@ class Server(object):
 class Client(object):
     '''A client which needs to be served in the facility.'''
     def __init__(self):
-        self.identity = garlicsim_py3.misc.CrossProcessPersistent()
+        self.identity = garlicsim.misc.CrossProcessPersistent()
 
         
 class Facility(object):
@@ -154,7 +154,7 @@ class Facility(object):
     
     def __init__(self, event_set, servers=[], clients=[]):
         
-        self.identity = garlicsim_py3.misc.CrossProcessPersistent()
+        self.identity = garlicsim.misc.CrossProcessPersistent()
         self.event_set = event_set
         self.servers = servers
         self.clients = clients
@@ -224,7 +224,7 @@ class Population(object):
         `mean_arrival` is the mean time between arrivals.
         '''
         assert size == Infinity
-        self.identity = garlicsim_py3.misc.CrossProcessPersistent()
+        self.identity = garlicsim.misc.CrossProcessPersistent()
         self.size = size
         self.mean_arrival = mean_arrival
         self.event_set = event_set

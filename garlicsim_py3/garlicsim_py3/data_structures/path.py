@@ -10,12 +10,12 @@ See its documentation for more information.
 import copy as copy_module # Avoiding name clash.
 import __builtin__
 
-from garlicsim_py3.general_misc import binary_search
-from garlicsim_py3.general_misc.math_tools import cmp
-from garlicsim_py3.general_misc import misc_tools
-from garlicsim_py3.general_misc import cute_iter_tools
+from garlicsim.general_misc import binary_search
+from garlicsim.general_misc.math_tools import cmp
+from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import cute_iter_tools
 
-from garlicsim_py3.misc import GarlicSimException
+from garlicsim.misc import GarlicSimException
 
 from .node import Node
 from .block import Block
@@ -683,7 +683,7 @@ in the future to the clock of the specified node.''' % \
         Get a string representation of the path.
         
         Example output:
-        <garlicsim_py3.data_structures.Path of length 43 at 0x1c822d0>
+        <garlicsim.data_structures.Path of length 43 at 0x1c822d0>
         '''
         return '<%s of length %s at %s>' % \
                (

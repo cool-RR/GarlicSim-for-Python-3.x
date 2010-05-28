@@ -1,7 +1,7 @@
 import time
-import garlicsim_py3
-from garlicsim_py3.bundled.simulation_packages import life
-from garlicsim_py3.bundled.simulation_packages import prisoner
+import garlicsim
+from garlicsim.bundled.simulation_packages import life
+from garlicsim.bundled.simulation_packages import prisoner
 
 simpack = life
 
@@ -13,11 +13,11 @@ if __name__ == '__main__':
     print(state)
     
     
-    new_state = garlicsim_py3.simulate(simpack, state, 10)
+    new_state = garlicsim.simulate(simpack, state, 10)
     
     print(new_state)
     
-    result = garlicsim_py3.list_simulate(simpack, state, 10)
+    result = garlicsim.list_simulate(simpack, state, 10)
     
     assert result[-1] == new_state
     

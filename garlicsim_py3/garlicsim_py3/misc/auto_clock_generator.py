@@ -7,7 +7,7 @@ This module defines the AutoClockGenerator class.
 See its documentation for more info.
 '''
 
-from garlicsim_py3.general_misc.third_party.decorator import decorator
+from garlicsim.general_misc.third_party.decorator import decorator
 
 __all__ = ['AutoClockGenerator']
 

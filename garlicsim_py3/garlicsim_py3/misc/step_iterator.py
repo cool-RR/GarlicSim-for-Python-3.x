@@ -10,8 +10,8 @@ See its documentation for more information.
 
 import copy
 
-import garlicsim_py3
-from garlicsim_py3.misc import SimpackError, AutoClockGenerator
+import garlicsim
+from garlicsim.misc import SimpackError, AutoClockGenerator
 
 
 class StepIterator(object):
@@ -50,7 +50,7 @@ class StepIterator(object):
         
         self.step_profile = copy.deepcopy(step_profile)
         self.history_dependent = isinstance(state_or_history_browser,
-                                            garlicsim_py3.misc.BaseHistoryBrowser)
+                                            garlicsim.misc.BaseHistoryBrowser)
         if self.history_dependent:
             self.current_state = None
             self.history_browser = state_or_history_browser

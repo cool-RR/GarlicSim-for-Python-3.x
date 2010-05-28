@@ -8,15 +8,15 @@ See its documentation for more information.
 '''
 
 
-from garlicsim_py3.general_misc import cute_iter_tools
-import garlicsim_py3.general_misc.read_write_lock
-from garlicsim_py3.general_misc.infinity import Infinity
-import garlicsim_py3.general_misc.module_wrapper
-import garlicsim_py3.general_misc.third_party.decorator
+from garlicsim.general_misc import cute_iter_tools
+import garlicsim.general_misc.read_write_lock
+from garlicsim.general_misc.infinity import Infinity
+import garlicsim.general_misc.module_wrapper
+import garlicsim.general_misc.third_party.decorator
 
-import garlicsim_py3.data_structures
-import garlicsim_py3.misc.simpack_grokker
-import garlicsim_py3.misc.step_profile
+import garlicsim.data_structures
+import garlicsim.misc.simpack_grokker
+import garlicsim.misc.step_profile
 
 from .crunching_manager import CrunchingManager
 from .job import Job
@@ -24,7 +24,7 @@ from .crunching_profile import CrunchingProfile
 
 __all__ = ["Project"]
 
-@garlicsim_py3.general_misc.third_party.decorator.decorator
+@garlicsim.general_misc.third_party.decorator.decorator
 def with_tree_lock(method, *args, **kwargs):
     '''
     A decorator used in Project's methods to use the tree lock (in write mode)
@@ -37,7 +37,7 @@ def with_tree_lock(method, *args, **kwargs):
 
 class Project(object):
     '''
-    A simulation project. This is the flagship class of `garlicsim_py3`.
+    A simulation project. This is the flagship class of `garlicsim`.
     
     You create a project when you want to do a simulation which will crunch
     in the background with worker threads or worker processes.
@@ -51,7 +51,7 @@ class Project(object):
     of the project.
     
     The crunching manager contains a list of jobs as an attribute `.jobs`. See
-    documentation for garlicsim_py3.asynchronous_crunching.Job for more info about
+    documentation for garlicsim.asynchronous_crunching.Job for more info about
     jobs. The crunching manager will employ crunchers in order to complete the
     jobs. It will then take work from these crunchers, put it into the tree,
     and delete the jobs when they are completed.
@@ -59,14 +59,14 @@ class Project(object):
 
     def __init__(self, simpack):
         
-        if isinstance(simpack, garlicsim_py3.misc.SimpackGrokker):
+        if isinstance(simpack, garlicsim.misc.SimpackGrokker):
             self.simpack_grokker = simpack            
             self.simpack = self.simpack_grokker.simpack
         else: # The simpack we got is an actual simpack
             self.simpack = simpack
-            self.simpack_grokker = garlicsim_py3.misc.SimpackGrokker(simpack)
+            self.simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
 
-        self.tree = garlicsim_py3.data_structures.Tree()
+        self.tree = garlicsim.data_structures.Tree()
         
         self.crunching_manager = CrunchingManager(self)
     
@@ -129,7 +129,7 @@ class Project(object):
             jobs_of_leaf = self.crunching_manager.get_jobs_by_node(leaf)
             
             if not jobs_of_leaf:
-                step_profile = leaf.step_profile or garlicsim_py3.misc.StepProfile()
+                step_profile = leaf.step_profile or garlicsim.misc.StepProfile()
                 crunching_profile = CrunchingProfile(new_clock_target,
                                                      step_profile)
                 job = Job(leaf, crunching_profile)
@@ -166,7 +166,7 @@ class Project(object):
             job.crunching_profile.raise_clock_target(new_clock_target)
             return job
         else:
-            step_profile = leaf.step_profile or garlicsim_py3.misc.StepProfile()
+            step_profile = leaf.step_profile or garlicsim.misc.StepProfile()
             crunching_profile = CrunchingProfile(new_clock_target,
                                                  step_profile)
             job = Job(leaf, crunching_profile)
@@ -207,7 +207,7 @@ class Project(object):
         Returns the job.
         '''
         
-        step_profile = garlicsim_py3.misc.StepProfile(*args, **kwargs)
+        step_profile = garlicsim.misc.StepProfile(*args, **kwargs)
         
         clock_target = node.state.clock + clock_buffer
         
@@ -246,7 +246,7 @@ class Project(object):
         '''
         # todo: is simulate a good name? Need to say it's synchronously
         
-        step_profile = garlicsim_py3.misc.StepProfile(*args, **kwargs)
+        step_profile = garlicsim.misc.StepProfile(*args, **kwargs)
         
         if self.simpack_grokker.history_dependent:
             return self.__history_dependent_simulate(node, iterations,
@@ -272,11 +272,11 @@ class Project(object):
         Returns the final node.
         '''
         
-        if step_profile is None: step_profile = garlicsim_py3.misc.StepProfile()
+        if step_profile is None: step_profile = garlicsim.misc.StepProfile()
         
         path = node.make_containing_path()
         history_browser = \
-            garlicsim_py3.synchronous_crunching.HistoryBrowser(path, end_node=node)
+            garlicsim.synchronous_crunching.HistoryBrowser(path, end_node=node)
         
         iterator = self.simpack_grokker.step_generator(history_browser,
                                                        step_profile)
@@ -323,7 +323,7 @@ class Project(object):
         Returns the final node.
         '''
         
-        if step_profile is None: step_profile = garlicsim_py3.misc.StepProfile()
+        if step_profile is None: step_profile = garlicsim.misc.StepProfile()
 
         state = node.state
                 
@@ -359,7 +359,7 @@ class Project(object):
         Get a string representation of the project.
         
         Example output:
-        <garlicsim_py3.Project containing 101 nodes and employing 4 crunchers at
+        <garlicsim.Project containing 101 nodes and employing 4 crunchers at
         0x1f668d0>
         '''
         # Todo: better have the simpack mentioned here, not doing it cause it's

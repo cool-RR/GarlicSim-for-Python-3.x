@@ -7,10 +7,10 @@ A module that defines the Block class and the related BlockError exception.
 See the documentation of Block for more information.
 '''
 
-from garlicsim_py3.general_misc import logic_tools
-from garlicsim_py3.general_misc import misc_tools
+from garlicsim.general_misc import logic_tools
+from garlicsim.general_misc import misc_tools
 
-from garlicsim_py3.misc import GarlicSimException
+from garlicsim.misc import GarlicSimException
 
 from tree_member import TreeMember
 # We are doing `from node import Node` in the bottom of the file.
@@ -400,7 +400,7 @@ while the index was bigger than the block's length.''')
         Get a string representation of the block.
         
         Example output:
-        <garlicsim_py3.data_structures.Block of length 40 crunched with
+        <garlicsim.data_structures.Block of length 40 crunched with
         StepProfile(t=0.1) at 0x1c84d70>
         '''
         assert self.alive # todo: say "Dead block"

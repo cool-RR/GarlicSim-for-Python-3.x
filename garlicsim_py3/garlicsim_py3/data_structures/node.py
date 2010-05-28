@@ -7,10 +7,10 @@ A module that defines the Node class and the related NodeError exception.
 See documentation of Node for more information.
 '''
 
-from garlicsim_py3.general_misc.infinity import Infinity
-from garlicsim_py3.general_misc import misc_tools
+from garlicsim.general_misc.infinity import Infinity
+from garlicsim.general_misc import misc_tools
 
-from garlicsim_py3.misc import GarlicSimException
+from garlicsim.misc import GarlicSimException
 
 from .state import State
 from .tree_member import TreeMember
@@ -388,7 +388,7 @@ back. This node's ancestry line doesn't go back that far.''')
         Get a string representation of the node.
         
         Example output:
-        <garlicsim_py3.data_structures.Node with clock 6.5, untouched, belongs
+        <garlicsim.data_structures.Node with clock 6.5, untouched, belongs
         to a block, crunched with StepProfile(t=0.1), at 0x1ffde70>
         '''
         return '<%s%s, %s%s%s, %s, %sat %s>' % \

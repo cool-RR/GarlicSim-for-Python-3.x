@@ -38,7 +38,7 @@ class Settings(object):
 
         Note that this function does not return True or False: It returns a
         `DeterminismSetting` class. For details about those, see documentation
-        in garlicsim_py3.misc.settings_constants.settings.
+        in garlicsim.misc.settings_constants.settings.
         
         The function will return None if it's unknown whether the step profile
         is deterministic.
@@ -49,7 +49,7 @@ class Settings(object):
         List of scalar state functions given by the simpack.
         
         A scalar state function is a function from a state to a real number.
-        These should be decorated by garlicsim_py3.misc.cached.state_cache.
+        These should be decorated by garlicsim.misc.cached.state_cache.
         '''
         
         self.SCALAR_HISTORY_FUNCTIONS = []
@@ -58,5 +58,5 @@ class Settings(object):
         
         A scalar history function is a function from a history browser to a real
         number. These should be decorated by
-        garlicsim_py3.misc.cached.history_cache.
+        garlicsim.misc.cached.history_cache.
         '''

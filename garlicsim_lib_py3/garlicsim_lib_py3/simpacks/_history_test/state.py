@@ -7,11 +7,11 @@ from math import pi
 import random
 random.seed()
 
-from garlicsim_py3.misc import StepCopy
-import garlicsim_py3.data_structures
+from garlicsim.misc import StepCopy
+import garlicsim.data_structures
 
 
-class State(garlicsim_py3.data_structures.State):
+class State(garlicsim.data_structures.State):
     
     def __init__(self, left, left_vel, right):
         self.left = left
