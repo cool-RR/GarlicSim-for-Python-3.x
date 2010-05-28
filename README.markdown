@@ -10,7 +10,7 @@ For a source installation: Download the repo, then run `setup.py install` in the
 
 Core requirements:
 
-* [Python 3.1](http://www.python.org/download/releases/3.1.1/) (Scroll down to the "Python versions" section for other versions.)
+* [Python 3.x](http://www.python.org/download/releases/3.1.2/) (Scroll down to the "Python versions" section for other versions.)
 * Either [setuptools](http://pypi.python.org/pypi/setuptools) or [Distribute](http://pypi.python.org/pypi/distribute).
 
 Recommended, but not mandatory:
@@ -48,11 +48,11 @@ To subscribe just send an email. These lists are hosted by [librelist](http://li
 
 # Looking for a gui? #
 
-This is the fork of GarlicSim for Python version 3.1. If you are interested in a gui for GarlicSim, check out the [main GarlicSim fork](http://github.com/cool-RR/GarlicSim). (There is no gui on 3.1 because the underlying wxPython does not support it yet.)
+This is the fork of GarlicSim for Python version 3.x. If you are interested in a gui for GarlicSim, check out the [main GarlicSim fork](http://github.com/cool-RR/GarlicSim). (There is no gui on 3.x because the underlying wxPython does not support it yet.)
 
 # Python versions #
 
-This is a fork of GarlicSim which supports Python 3.1.
+This is a fork of GarlicSim which supports Python 3.x.
 
 The [main GarlicSim fork](http://github.com/cool-RR/GarlicSim) supports Python versions 2.5 and 2.6.
 
