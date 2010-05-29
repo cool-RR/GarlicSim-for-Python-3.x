@@ -202,9 +202,9 @@ _history_test_test = functools.partial(
     
 0 # cruft, for breakpoint
 if __name__ == '__main__':    
-    life_test()
-    prisoner_test()
-    _history_test_test()
-    #simpack_check(life, garlicsim.asynchronous_crunching.crunchers.CruncherProcess)
+    #life_test()
+    #prisoner_test()
+    #_history_test_test()
+    simpack_check(life, garlicsim.asynchronous_crunching.crunchers.CruncherProcess)
     assert False
 
