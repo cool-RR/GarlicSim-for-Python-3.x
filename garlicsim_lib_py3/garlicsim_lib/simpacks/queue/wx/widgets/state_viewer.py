@@ -18,7 +18,8 @@ from garlicsim.general_misc.infinity import Infinity
 from garlicsim_wx.general_misc import wx_tools
 
 
-def make_wx_color((r, g, b)):
+def make_wx_color(rgb):
+    (r, g, b) = rgb
     return wx.Color(255*r, 255*g, 255*b)
 
 

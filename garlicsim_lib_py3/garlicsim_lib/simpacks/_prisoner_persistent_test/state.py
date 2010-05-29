@@ -111,7 +111,8 @@ def pair_pool(player_pool):
         pool.remove(pair[1])
     return result
 
-def play_game((x, y), round):
+def play_game(players, round):
+    (x, y) = players
     x_move = x.play(round)
     y_move = y.play(round)
 
