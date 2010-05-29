@@ -1,8 +1,8 @@
-# import widgets.state_viewer
-# import widgets.state_creation_dialog
+# from .widgets import state_viewer
+# from .widgets import state_creation_dialog
 
 
-# BIG_WORKSPACE_WIDGETS = widgets.state_viewer.StateViewer
+# BIG_WORKSPACE_WIDGETS = state_viewer.StateViewer
 
 # Widgets to show in the middle of the frame. These must be instances of
 # garlicsim_wx.widgets.workspace_widget.
