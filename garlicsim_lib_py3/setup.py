@@ -33,8 +33,8 @@ my_classifiers = [
     'Intended Audience :: Science/Research',
     'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 2.5',
-    'Programming Language :: Python :: 2.6',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.1',
     'Topic :: Scientific/Engineering',
 ]
 
@@ -42,8 +42,8 @@ my_classifiers = [
 setuptools.setup(
     name='garlicsim_lib_py3',
     version='0.5',
-    requires=['garlicsim (== 0.5)'],
-    install_requires=['garlicsim == 0.5'],
+    requires=['garlicsim_py3 (== 0.5)'],
+    install_requires=['garlicsim_py3 == 0.5'],
     description='Collection of GarlicSim simulation packages',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',
