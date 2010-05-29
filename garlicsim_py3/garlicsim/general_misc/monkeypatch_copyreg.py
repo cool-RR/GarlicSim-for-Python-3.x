@@ -16,7 +16,16 @@ import pickle
 
 def reduce_method(method):
     '''Reducer for methods.'''
+    # todo: On Python 2.x this also works for unbound methods for some
+    # mysterious reason. Unbound methods are still of the type `MethodType`, and
+    # their `.im_self`/`.__self__` is None, so how does it work? Possibly
+    # `pickle` in Python 2.x actually knows how to pickle unbound methods, and
+    # doesn't really use this?
+    #
+    # In any case, in Python 3.x this works only for bound methods, and unbound
+    # methods can't be pickled, which is an issue.
     return (getattr, (method.__self__, method.__func__.__name__))
+    
 
 copyreg.pickle(types.MethodType, reduce_method)
 
