@@ -127,7 +127,7 @@ def _make_writeable(filename):
         
 def show_help():
     '''Print some help text that describes how to use this script'''
-    print '''\
+    print('''\
 This is a script for creating a skeleton for a garlicsim simpack. Use this when
 you want to make a new simpack to have the basic folders and files created for
 you.
@@ -135,7 +135,7 @@ you.
     Usage: start_simpack.py my_simpack_name
 
 The simpack will be created in the current path, in a directory with the name of
-the simpack.'''
+the simpack.''')
     return
 
     
