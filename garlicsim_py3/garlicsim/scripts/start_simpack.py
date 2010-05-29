@@ -97,9 +97,10 @@ def start_simpack(containing_folder, name):
         with pkg_resources.resource_stream(simpack_template_package_name, file) as source:
             with open(dest_file, 'wb') as destination:
                 
-                string_to_write = source.read().replace('simpack_name', name)
+                string_to_write = source.read().decode('utf-8')\
+                                .replace('simpack_name', name)
                 
-                destination.write(string_to_write)
+                destination.write(bytes(string_to_write, 'utf-8'))
             
         try:
             shutil.copymode('/'.join(('simpack_template', file)), dest_file)
