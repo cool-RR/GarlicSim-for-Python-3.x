@@ -3,17 +3,12 @@
 
 *.wpu
 
-garlicsim/*dist
-garlicsim/*.egg-info
-garlicsim/build
+garlicsim_py3/*dist
+garlicsim_py3/*.egg-info
+garlicsim_py3/build
 
-garlicsim_lib/*dist
-garlicsim_lib/*.egg-info
-garlicsim_lib/build
-
-garlicsim_wx/*dist
-garlicsim_wx/*.egg-info
-garlicsim_wx/build
-garlicsim_wx/*.exe
+garlicsim_lib_py3/*dist
+garlicsim_lib_py3/*.egg-info
+garlicsim_lib_py3/build
 
 */docs/_build/*
