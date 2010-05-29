@@ -36,7 +36,7 @@ For a more thorough introduction to how GarlicSim works, check out the ** [Intro
 
 GarlicSim itself is written in pure Python. The speed of simulations is mostly dependent on the simpack's performance - So it is possible to use C code in a simpack to make things faster.
 
-The `garlicsim_py3` package is distributed under the **LGPL2.1 license**, and is copyright 2009 Ram Rachum. 
+The `garlicsim_py3` project is distributed under the **LGPL2.1 license**, and is copyright 2009-2010 Ram Rachum. 
 
 # Mailing lists #
 
@@ -58,7 +58,7 @@ The [main GarlicSim fork](http://github.com/cool-RR/GarlicSim) supports Python v
 
 # Current state #
 
-Garlicsim is at version 0.4, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, let us know immediately in the [mailing list](mailto:garlicsim@librelist.org).
+Garlicsim is at version 0.5, which is an alpha release. It is still very experimental, and there are probably many bugs. If you run into any trouble, let us know immediately in the [mailing list](mailto:garlicsim@librelist.org).
 
 At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.
 

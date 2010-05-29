@@ -1,2 +1,14 @@
 *.pyc
+*.pyo
+
 *.wpu
+
+garlicsim_py3/*dist
+garlicsim_py3/*.egg-info
+garlicsim_py3/build
+
+garlicsim_lib_py3/*dist
+garlicsim_lib_py3/*.egg-info
+garlicsim_lib_py3/build
+
+*/docs/_build/*
