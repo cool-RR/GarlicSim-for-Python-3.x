@@ -7,6 +7,14 @@ A bootstrap module for garlicsim.
 It checks all prerequisites are installed.
 '''
 
+import sys
+
+
+if sys.version_info[0] <= 2:
+    raise Exception('''This package requires Python 3.x. For Python 2.5+, use \
+`garlicsim`, which you can find on PyPI.''')
+
+
 def __check_prerequisites():
     '''
     Check that all modules required for garlicsim are installed.

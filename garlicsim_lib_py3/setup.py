@@ -6,8 +6,12 @@
 '''Setuptools setup file for garlicsim_lib.'''
 
 import os
+import sys
 import setuptools
 
+if sys.version_info[0] <= 2:
+    raise Exception('''This package requires Python 3.x. For Python 2.5+, use \
+`garlicsim_lib`, which you can find on PyPI.''')
 
 def get_packages():
     return ['garlicsim_lib.' + p for p in
