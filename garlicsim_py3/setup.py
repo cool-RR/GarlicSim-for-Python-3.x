@@ -3,18 +3,22 @@
 # Copyright 2009 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
-'''
-Setuptools setup file for garlicsim_py3.
-'''
+'''Setuptools setup file for garlicsim_py3.'''
 
 import os
+import sys
 import setuptools
-import distutils # Just for deleting the "build" directory.
 
-try:
-    distutils.dir_util.remove_tree('build', verbose=True)
-except Exception:
-    pass
+
+if sys.version_info[0] <= 2:
+    raise Exception('''This package requires Python 3.x. For Python 2.5+, use \
+`garlicsim`, which you can find on PyPI.''')
+
+
+def get_packages():
+    return ['garlicsim.' + p for p in
+            setuptools.find_packages('./garlicsim')] + \
+           ['garlicsim']
 
 my_long_description = \
 '''\
@@ -22,7 +26,7 @@ GarlicSim is a platform for writing, running and analyzing simulations. It can
 handle any kind of simulation: Physics, game theory, epidemic spread,
 electronics, etc.
 
-Visit http://garlicsim_py3.org for more info.
+Visit http://garlicsim.org for more info.
 '''
 
 my_classifiers = [
@@ -38,15 +42,17 @@ my_classifiers = [
 
 setuptools.setup(
     name='garlicsim_py3',
-    version='0.4',
+    version='0.5',
     description='Pythonic framework for working with simulations',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',
-    url='http://garlicsim_py3.org',
-    packages=setuptools.find_packages(),
+    url='http://garlicsim.org',
+    packages=get_packages(),
+    scripts=['garlicsim/scripts/start_simpack.py'],
     license="LGPL v2.1",
     long_description = my_long_description,
     classifiers = my_classifiers,
     include_package_data = True,
+    zip_safe=False,
 )
     
