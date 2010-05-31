@@ -6,8 +6,11 @@
 # Documentation #
 
 [Main documentation site](http://docs.garlicsim.org)
+
 [Installation](http://docs.garlicsim.org/intro/installation/python-3.x.html)
+
 [FAQ](http://docs.garlicsim.org/misc/faq.html)
+
 [Mailing lists](http://docs.garlicsim.org/misc/mailing-lists.html)
 
 
