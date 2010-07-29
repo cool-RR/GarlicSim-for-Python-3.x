@@ -45,8 +45,7 @@ class Persistent(object):
     so the user must remember not to change it.
     
     Note: This class is still experimental.
-    '''
-    
+    '''    
     
     def __deepcopy__(self, memo):
         '''

@@ -12,3 +12,4 @@ garlicsim_lib_py3/*.egg-info
 garlicsim_lib_py3/build
 
 */docs/_build/*
+*/docs/_deployed_build/*
