@@ -5,7 +5,9 @@
 ##################################################################
 [project attributes]
 proj.directory-list = [{'dirloc': loc('.'),
-                        'excludes': [u'src'],
+                        'excludes': [u'garlicsim_py3/build',
+                                     u'src',
+                                     u'garlicsim_py3/dist'],
                         'filter': '*',
                         'include_hidden': False,
                         'recursive': True,

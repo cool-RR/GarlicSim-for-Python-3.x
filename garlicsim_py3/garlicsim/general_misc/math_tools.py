@@ -3,8 +3,6 @@
 
 '''This module defines math-related tools.'''
 
-from __future__ import division
-
 
 def sign(x):
     '''Get the sign of a number.'''

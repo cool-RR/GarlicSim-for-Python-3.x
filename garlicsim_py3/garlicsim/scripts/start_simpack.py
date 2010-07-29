@@ -9,9 +9,6 @@ Usage:
 start_simpack.py quantum_mechanics
 '''
 
-
-from __future__ import with_statement
-
 import os.path
 import sys
 import re
