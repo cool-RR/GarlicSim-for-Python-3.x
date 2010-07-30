@@ -5,9 +5,12 @@
 ##################################################################
 [project attributes]
 proj.directory-list = [{'dirloc': loc('.'),
-                        'excludes': [u'garlicsim_py3/build',
-                                     u'src',
+                        'excludes': [u'src',
+                                     u'garlicsim_lib_py3/build',
+                                     u'garlicsim_lib_py3/dist',
+                                     u'garlicsim_py3/build',
                                      u'garlicsim_py3/dist',
+                                     u'garlicsim_py3/garlicsim_py3.egg-info',
                                      u'garlicsim_lib_py3/garlicsim_lib_py3.egg-info'],
                         'filter': '*',
                         'include_hidden': False,
