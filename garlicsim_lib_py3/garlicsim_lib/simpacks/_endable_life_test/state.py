@@ -85,7 +85,7 @@ class State(garlicsim.data_structures.State):
     def __sub__(self, other): # todo: experimental, test
         if isinstance(other, State):
             return sum(
-                (x-y) for (x, y) in itertools.izip(
+                (x-y) for (x, y) in zip(
                     self.board._Board__list,
                     other.board._Board__list
                 )
