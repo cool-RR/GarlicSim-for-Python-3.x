@@ -283,3 +283,8 @@ class StepProfile(ArgumentsProfile, metaclass=caching.CachedType):
         return not self.__eq__(other)
     
     
+    
+    def __hash__(self):
+        return self._hash
+    
+    
