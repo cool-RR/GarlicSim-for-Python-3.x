@@ -2,15 +2,15 @@
 # This program is distributed under the LGPL2.1 license.
 
 
-from __future__ import division
-from __future__ import with_statement
+
+
 
 import re
 import os
 import types
 import time
 import itertools
-import cPickle, pickle
+import pickle, pickle
 
 import nose
 
@@ -33,7 +33,7 @@ def test():
     from . import sample_simpacks
     
     # Collecting all the test simpacks:
-    simpacks = import_tools.import_all(sample_simpacks).values()
+    simpacks = list(import_tools.import_all(sample_simpacks).values())
     
     # Making sure that we didn't miss any simpack by counting the number of
     # sub-folders in the `sample_simpacks` folders:
@@ -95,7 +95,7 @@ def check(simpack, cruncher_type):
     
     job = project.begin_crunching(root, huge_number)    
     run_sync_crunchers_until_we_get_at_least_one_node()
-    (cruncher,) = project.crunching_manager.crunchers.values()
+    (cruncher,) = list(project.crunching_manager.crunchers.values())
     
     ## An interlude to test `__repr__` methods: ###############################
     
@@ -143,7 +143,7 @@ def check(simpack, cruncher_type):
     # Letting our crunching manager update our cruncher about the new clock
     # target:
     project.sync_crunchers()
-    (same_cruncher,) = project.crunching_manager.crunchers.values()
+    (same_cruncher,) = list(project.crunching_manager.crunchers.values())
     # todo: On slow machines cruncher doesn't get created fast enough for the
     # above assert to work. Probably make some function that waits for it.
     assert same_cruncher is cruncher
@@ -171,14 +171,14 @@ def check(simpack, cruncher_type):
         assert job.crunching_profile.step_profile.step_function == \
                default_step_function
         run_sync_crunchers_until_we_get_at_least_one_node()
-        (cruncher,) = project.crunching_manager.crunchers.values()
+        (cruncher,) = list(project.crunching_manager.crunchers.values())
         alternate_step_profile = \
             garlicsim.misc.StepProfile(alternate_step_function)
         job.crunching_profile.step_profile = alternate_step_profile
         # Letting our crunching manager get a new cruncher for our new step
         # profile:
         project.sync_crunchers()
-        (new_cruncher,) = project.crunching_manager.crunchers.values()
+        (new_cruncher,) = list(project.crunching_manager.crunchers.values())
         assert new_cruncher is not cruncher
         last_node_with_default_step_profile = job.node
         assert not last_node_with_default_step_profile.children # It's a leaf
@@ -215,7 +215,7 @@ def check(simpack, cruncher_type):
     assert len(project.crunching_manager.crunchers) == 0
     assert project.sync_crunchers() == 0
     assert len(project.crunching_manager.crunchers) == 2
-    (cruncher_1, cruncher_2) = project.crunching_manager.crunchers.values()
+    (cruncher_1, cruncher_2) = list(project.crunching_manager.crunchers.values())
     assert type(cruncher_1) is cruncher_type
     assert type(cruncher_2) is cruncher_type
     
@@ -224,14 +224,14 @@ def check(simpack, cruncher_type):
     project.crunching_manager.cruncher_type = MustachedThreadCruncher
     project.sync_crunchers()
     assert len(project.crunching_manager.crunchers) == 2
-    (cruncher_1, cruncher_2) = project.crunching_manager.crunchers.values()
+    (cruncher_1, cruncher_2) = list(project.crunching_manager.crunchers.values())
     assert type(cruncher_1) is MustachedThreadCruncher
     assert type(cruncher_2) is MustachedThreadCruncher
     
     project.crunching_manager.cruncher_type = cruncher_type
     project.sync_crunchers()
     assert len(project.crunching_manager.crunchers) == 2
-    (cruncher_1, cruncher_2) = project.crunching_manager.crunchers.values()
+    (cruncher_1, cruncher_2) = list(project.crunching_manager.crunchers.values())
     assert type(cruncher_1) is cruncher_type
     assert type(cruncher_2) is cruncher_type
     

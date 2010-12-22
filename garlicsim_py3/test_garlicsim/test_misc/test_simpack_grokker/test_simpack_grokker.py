@@ -14,13 +14,14 @@ from garlicsim.misc.simpack_grokker import SimpackGrokker, Settings
 from garlicsim.misc.simpack_grokker.step_type import StepType, BaseStep
 
 import test_garlicsim
+import collections
 
 
 def test_simpacks():
     from . import sample_simpacks
     
     # Collecting all the test simpacks:
-    simpacks = import_tools.import_all(sample_simpacks).values()
+    simpacks = list(import_tools.import_all(sample_simpacks).values())
     
     # Making sure that we didn't miss any simpack by counting the number of
     # sub-folders in the `sample_simpacks` folders:
@@ -62,11 +63,11 @@ def check_simpack(simpack):
            simpack._settings_for_testing.CRUNCHERS_LIST
     assert simpack_grokker.available_cruncher_types == \
            [cruncher for cruncher, availability in 
-            simpack_grokker.cruncher_types_availability.items()
+            list(list(simpack_grokker.cruncher_types_availability.items()))
             if availability]    
     assert all(        
         issubclass(cruncher, garlicsim.asynchronous_crunching.BaseCruncher)
-        for cruncher in simpack_grokker.cruncher_types_availability.keys()
+        for cruncher in list(list(simpack_grokker.cruncher_types_availability.keys()))
     )
 
     
@@ -87,7 +88,7 @@ def check_simpack(simpack):
     
     settings = simpack_grokker.settings
     assert isinstance(settings, Settings)
-    assert callable(settings.DETERMINISM_FUNCTION)
+    assert isinstance(settings.DETERMINISM_FUNCTION, collections.Callable)
 
     
     if not simpack_grokker.history_dependent:
@@ -97,12 +98,12 @@ def check_simpack(simpack):
         assert iterator.__iter__() is iterator
 
     
-    step_types = simpack_grokker.step_functions_by_type.keys()
+    step_types = list(list(simpack_grokker.step_functions_by_type.keys()))
     assert all(issubclass(step_type, BaseStep) for step_type in step_types)
     
     # Fetched in a different way than `simpack_grokker.all_step_functions`:
     all_step_functions = sequence_tools.flatten(
-        simpack_grokker.step_functions_by_type.values()
+        list(list(simpack_grokker.step_functions_by_type.values()))
     )
     assert all(
         issubclass(StepType.get_step_type(step_function), BaseStep) for

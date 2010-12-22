@@ -7,7 +7,7 @@ Defines the `TreeMember` class.
 See its documentation for more information.
 '''
 
-from garlicsim.general_misc.third_party import abc
+import abc
     
     
 class TreeMember(object, metaclass=abc.ABCMeta):

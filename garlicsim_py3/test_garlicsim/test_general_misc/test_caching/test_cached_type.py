@@ -20,8 +20,7 @@ def counting_func(a=1, b=2, *args, **kwargs):
         
 def test():
     '''Test basic workings of `CachedType`.'''
-    class A(object):
-        __metaclass__ = CachedType
+    class A(object, metaclass=CachedType):
         def __init__(self, a=1, b=2, *args, **kwargs):
             pass
         

@@ -5,7 +5,7 @@
 Testing `garlicsim.general_misc.temp_value_setters.TempWorkingDirectorySetter`.
 '''
 
-from __future__ import with_statement
+
 
 import os
 import shutil

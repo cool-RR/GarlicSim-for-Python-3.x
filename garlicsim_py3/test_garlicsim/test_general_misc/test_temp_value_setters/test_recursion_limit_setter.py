@@ -5,7 +5,7 @@
 Tests for `garlicsim.general_misc.temp_value_setters.TempRecursionLimitSetter`.
 '''
 
-from __future__ import with_statement
+
 
 import sys
 

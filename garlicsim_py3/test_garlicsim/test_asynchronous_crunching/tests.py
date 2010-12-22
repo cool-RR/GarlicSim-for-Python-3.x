@@ -3,7 +3,7 @@
 
 '''Testing module for `garlicsim.asynchronous_crunching`.'''
 
-from __future__ import division
+
 
 import os
 import types
@@ -32,7 +32,7 @@ def test():
     from . import sample_simpacks
     
     # Collecting all the test simpacks:
-    simpacks = import_tools.import_all(sample_simpacks).values()
+    simpacks = list(import_tools.import_all(sample_simpacks).values())
     
     # Making sure that we didn't miss any simpack by counting the number of
     # sub-folders in the `sample_simpacks` folders:

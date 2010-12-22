@@ -10,7 +10,7 @@ collection of crunchers.
 
 import copy
 
-from garlicsim.general_misc.third_party import abc
+import abc
 
 from garlicsim.general_misc import abc_tools
 

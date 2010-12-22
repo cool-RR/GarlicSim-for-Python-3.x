@@ -83,7 +83,7 @@ def test_method():
     assert call_and_check_if_profiled(a.increment) is False
     assert a.x == 3
 
-    a.increment.im_func.profiling_on = True
+    a.increment.__func__.profiling_on = True
     
     assert call_and_check_if_profiled(a.increment) is True
     assert a.x == 4
@@ -92,7 +92,7 @@ def test_method():
     assert call_and_check_if_profiled(a.increment) is True
     assert a.x == 6
     
-    a.increment.im_func.off_after = True
+    a.increment.__func__.off_after = True
     
     assert call_and_check_if_profiled(a.increment) is True
     assert a.x == 7
@@ -101,7 +101,7 @@ def test_method():
     assert call_and_check_if_profiled(a.increment) is False
     assert a.x == 9
     
-    a.increment.im_func.profiling_on = True
+    a.increment.__func__.profiling_on = True
     
     assert call_and_check_if_profiled(a.increment) is True
     assert a.x == 10

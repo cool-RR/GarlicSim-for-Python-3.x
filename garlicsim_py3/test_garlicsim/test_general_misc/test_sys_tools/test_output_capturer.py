@@ -3,7 +3,7 @@
 
 '''Testing module for `garlicsim.general_misc.sys_tools.OutputCapturer`.'''
 
-from __future__ import with_statement
+
 
 from garlicsim.general_misc.sys_tools import OutputCapturer
 

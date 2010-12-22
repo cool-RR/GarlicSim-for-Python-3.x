@@ -7,6 +7,7 @@
 from garlicsim.general_misc import import_tools
 
 import garlicsim
+import collections
 
 
 def verify_sample_simpack_settings(sample_simpack):
@@ -23,7 +24,7 @@ def verify_sample_simpack_settings(sample_simpack):
     assert isinstance(sft.HISTORY_DEPENDENT, bool)
     assert isinstance(sft.N_STEP_FUNCTIONS, int)
     if sft.DEFAULT_STEP_FUNCTION is not None:
-        assert callable(sft.DEFAULT_STEP_FUNCTION)
+        assert isinstance(sft.DEFAULT_STEP_FUNCTION, collections.Callable)
     if sft.DEFAULT_STEP_FUNCTION_TYPE is not None:
         assert issubclass(
             sft.DEFAULT_STEP_FUNCTION_TYPE,

@@ -3,12 +3,12 @@
 
 '''Test `garlicsim_lib` simpacks.'''
 
-from __future__ import division
+
 
 import types
 import time
 import itertools
-import cPickle, pickle
+import pickle, pickle
 
 import nose
 
@@ -149,18 +149,18 @@ def check(simpack, cruncher_type):
     
     try:
         pickled_project = pickle.dumps(project, protocol=2)
-    except RuntimeError, runtime_error:
+    except RuntimeError as runtime_error:
         assert 'maximum recursion' in runtime_error.message
     else:
-        unpickled_project = cPickle.loads(pickled_project)
-        path_pairs = itertools.izip(project.tree.all_possible_paths(),
+        unpickled_project = pickle.loads(pickled_project)
+        path_pairs = zip(project.tree.all_possible_paths(),
                                     unpickled_project.tree.all_possible_paths())
         
         if simpack.State.__eq__ != garlicsim.data_structures.State.__eq__:
             
             for path_of_original, path_of_duplicate in path_pairs:
                 
-                state_pairs = itertools.izip(path_of_original.states(),
+                state_pairs = zip(path_of_original.states(),
                                              path_of_duplicate.states())
                 for state_of_original, state_of_duplicate in state_pairs:
                     
@@ -266,13 +266,13 @@ def check(simpack, cruncher_type):
     
     assert project.tree.lock._ReadWriteLock__writer is None
     
-    new_node = iterator.next()
+    new_node = next(iterator)
     assert new_node is plain_root
     assert len(project.tree.nodes) == number_of_nodes
     
     assert project.tree.lock._ReadWriteLock__writer is None
     
-    new_node = iterator.next()
+    new_node = next(iterator)
     assert new_node is not plain_root
     assert new_node.parent is plain_root
     assert len(project.tree.nodes) == number_of_nodes + 1
@@ -294,7 +294,7 @@ def check(simpack, cruncher_type):
     assert len(alternate_path) == 6
     all_except_root = list(alternate_path)[1:]
     
-    ((_key, _value),) = plain_root.get_all_leaves().items()
+    ((_key, _value),) = list(plain_root.get_all_leaves().items())
     assert _key is alternate_path[-1]
     assert _value['nodes_distance'] == 5
     assert 'clock_distance' in _value # Can't know the value of that.

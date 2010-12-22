@@ -131,7 +131,7 @@ def test_function_instead_of_max_size():
         
     try:
         confusedly_put_function_as_max_size()
-    except TypeError, exception:
+    except TypeError as exception:
         assert type(exception) is TypeError
         assert exception.args[0] == (
             'You entered the callable `%s` where you should have '

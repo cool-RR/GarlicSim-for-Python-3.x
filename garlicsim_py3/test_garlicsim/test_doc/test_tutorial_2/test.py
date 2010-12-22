@@ -3,8 +3,8 @@
 
 '''Testing module for tutorial-2.'''
 
-from __future__ import with_statement
-from __future__ import division
+
+
 
 import os.path
 import shutil

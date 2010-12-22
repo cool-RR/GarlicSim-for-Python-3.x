@@ -2,13 +2,13 @@
 # This program is distributed under the LGPL2.1 license.
 
 
-from __future__ import division
+
 
 import os
 import types
 import time
 import itertools
-import cPickle, pickle
+import pickle, pickle
 
 import nose
 
@@ -37,7 +37,7 @@ def test_endable():
     from . import sample_endable_simpacks
     
     # Collecting all the test simpacks:
-    simpacks = import_tools.import_all(sample_endable_simpacks).values()
+    simpacks = list(import_tools.import_all(sample_endable_simpacks).values())
     
     # Making sure that we didn't miss any simpack by counting the number of
     # sub-folders in the `sample_endable_simpacks` folders:
@@ -255,13 +255,13 @@ def check(simpack, cruncher_type):
     assert len(project.tree.nodes) == 11
     
     iterator = project.iter_simulate(node_1, 10)
-    new_node = iterator.next()
+    new_node = next(iterator)
     assert new_node is node_1
     assert len(project.tree.nodes) == 11
     
     assert project.tree.lock._ReadWriteLock__writer is None
     
-    new_node = iterator.next()
+    new_node = next(iterator)
     assert new_node is not node_1
     assert new_node.parent is node_1
     assert len(project.tree.nodes) == 12

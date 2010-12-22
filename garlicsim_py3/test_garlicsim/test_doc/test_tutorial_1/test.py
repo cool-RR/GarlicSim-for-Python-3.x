@@ -41,7 +41,7 @@ def test():
     project.begin_crunching(root, 50)
     _result = project.sync_crunchers()
     assert repr(_result) == '<0 nodes were added to the tree>'
-    (cruncher,) = project.crunching_manager.crunchers.values()
+    (cruncher,) = list(project.crunching_manager.crunchers.values())
     while cruncher.is_alive():
         time.sleep(0.1)
     _result = project.sync_crunchers()
@@ -77,7 +77,7 @@ def test():
     project.ensure_buffer(root, 50)
     _result = project.sync_crunchers()
     assert repr(_result) == '<0 nodes were added to the tree>'
-    (cruncher,) = project.crunching_manager.crunchers.values()
+    (cruncher,) = list(project.crunching_manager.crunchers.values())
     while cruncher.is_alive():
         time.sleep(0.1)
     _result = project.sync_crunchers()

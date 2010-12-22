@@ -19,7 +19,7 @@ from ..shared import _is_weakreffable, A, counter
         
 def test():
     '''Test the basic workings of `CuteSleekValueDict`.'''
-    volatile_things = [A(), 1, 4.5, 'meow', u'woof', [1, 2], (1, 2), {1: 2},
+    volatile_things = [A(), 1, 4.5, 'meow', 'woof', [1, 2], (1, 2), {1: 2},
                        set([1, 2, 3])]
     unvolatile_things = [A.s, __builtins__, list, type,  list.append, str.join,
                          sum]
@@ -57,7 +57,7 @@ def test():
         
         
 def test_one_by_one():
-    volatile_things = [A(), 1, 4.5, 'meow', u'woof', [1, 2], (1, 2), {1: 2},
+    volatile_things = [A(), 1, 4.5, 'meow', 'woof', [1, 2], (1, 2), {1: 2},
                        set([1, 2, 3])]
     unvolatile_things = [A.s, __builtins__, list, type,  list.append, str.join,
                          sum]
@@ -110,17 +110,17 @@ def test_none():
     )
     
 
-    assert sequence_tools.are_equal_regardless_of_order(csvd.keys(),
-                                                        d.keys())
+    assert sequence_tools.are_equal_regardless_of_order(list(csvd.keys()),
+                                                        list(d.keys()))
     
-    assert sequence_tools.are_equal_regardless_of_order(csvd.values(),
-                                                        d.values())
+    assert sequence_tools.are_equal_regardless_of_order(list(csvd.values()),
+                                                        list(d.values()))
     
-    assert sequence_tools.are_equal_regardless_of_order(csvd.items(),
-                                                        d.items())
+    assert sequence_tools.are_equal_regardless_of_order(list(csvd.items()),
+                                                        list(d.items()))
     
 
-    for key in csvd.iterkeys():
+    for key in csvd.keys():
         assert key in csvd
         assert csvd[key] is None
     

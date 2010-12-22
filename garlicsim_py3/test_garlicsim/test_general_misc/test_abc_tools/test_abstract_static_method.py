@@ -20,9 +20,7 @@ def test_instanciate_without_subclassing():
         raise nose.SkipTest("Python 2.5 and below can't enforce abstract "
                             "methods.")
     
-    class A(object):
-        __metaclass__ = abc.ABCMeta
-        
+    class A(object, metaclass=abc.ABCMeta):
         @abstract_static_method
         def f():
             pass
@@ -35,9 +33,7 @@ def test_override():
     Can't instanciate subclass that doesn't override `abstract_static_method`.
     '''
     
-    class B(object):
-        __metaclass__ = abc.ABCMeta
-        
+    class B(object, metaclass=abc.ABCMeta):
         @abstract_static_method
         def f():
             pass

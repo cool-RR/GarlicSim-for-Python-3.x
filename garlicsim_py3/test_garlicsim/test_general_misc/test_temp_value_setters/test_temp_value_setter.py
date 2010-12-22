@@ -5,7 +5,7 @@
 Testing module for `garlicsim.general_misc.temp_value_setters.TempValueSetter`.
 '''
 
-from __future__ import with_statement
+
 from garlicsim.general_misc.temp_value_setters import TempValueSetter
 
 

@@ -5,7 +5,7 @@
 Testing module for `garlicsim.general_misc.arguments_profile.ArgumentsProfile`.
 '''
 
-from __future__ import with_statement
+
 
 import sys
 

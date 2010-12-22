@@ -233,9 +233,9 @@ def test_bad_module_name():
     my_locals = locals().copy()
     my_locals['__name__'] = non_sensical_module_name
     
-    exec 'def f(): pass' in my_locals
-    exec ('class A(object):\n'
-          '    def m(self): pass') in my_locals
+    exec('def f(): pass', my_locals)
+    exec(('class A(object):\n'
+          '    def m(self): pass'), my_locals)
     
     f, A = my_locals['f'], my_locals['A']
     

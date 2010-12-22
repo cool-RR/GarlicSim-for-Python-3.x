@@ -20,7 +20,7 @@ def test_simpacks():
     from . import sample_invalid_simpacks
     
     # Collecting all the test simpacks:
-    simpacks = import_tools.import_all(sample_invalid_simpacks).values()
+    simpacks = list(import_tools.import_all(sample_invalid_simpacks).values())
     
     # Making sure that we didn't miss any simpack by counting the number of
     # sub-folders in the `sample_invalid_simpacks` folders:
@@ -45,7 +45,7 @@ def check_simpack(simpack):
     
     try:
         SimpackGrokker(simpack)
-    except Exception, exception:
+    except Exception as exception:
         assert type(exception) == type(exception_we_should_get)
         assert exception.message == exception_we_should_get.message
         

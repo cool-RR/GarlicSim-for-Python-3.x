@@ -8,7 +8,7 @@ import nose.tools
 from garlicsim.misc.simpack_grokker.step_type import BaseStep, StepType
 from garlicsim.misc.simpack_grokker import step_types as step_types_module
 
-step_types = [thing for thing in vars(step_types_module).values() if 
+step_types = [thing for thing in list(vars(step_types_module).values()) if 
               getattr(thing, '__module__', '').endswith('step_types')]
 
 def test():

@@ -3,7 +3,7 @@
 
 '''Defines tools for testing `garlicsim.general_misc.cute_profile`.'''
 
-from __future__ import with_statement
+
 
 import sys
 
