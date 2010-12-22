@@ -241,9 +241,9 @@ def get_address(obj, shorten=False, root=None, namespace={}):
         
     
     # A little fix to avoid describing something like `list` as
-    # `__builtin__.list`:
-    if address.startswith('__builtin__.'):
-        shorter_address = address.replace('__builtin__.', '', 1)
+    # `builtins.list`:
+    if address.startswith('builtins.'):
+        shorter_address = address.replace('builtins.', '', 1)
         if get_object_by_address(shorter_address) == obj:
             address = shorter_address
 
