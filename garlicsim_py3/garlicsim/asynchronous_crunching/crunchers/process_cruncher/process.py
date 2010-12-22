@@ -8,7 +8,7 @@ See its documentation for more info.
 '''
 
 import multiprocessing
-import Queue
+import queue
 import sys
 import os
 
@@ -169,7 +169,7 @@ class Process(multiprocessing.Process):
         '''
         try:
             return self.order_queue.get(block=False)
-        except Queue.Empty:
+        except queue.Empty:
             return None
     
         

@@ -41,7 +41,7 @@ class HistoryStepIterator(BaseStepIterator):
         )
         
     
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         state = self.history_step_function(
             self.history_browser,

@@ -1,6 +1,6 @@
 import pickle
 
-from cStringIO import StringIO
+from io import StringIO
 from garlicsim.general_misc.third_party.unittest2.test.support import LoggingResult, OldTestResult
 
 from garlicsim.general_misc.third_party import unittest2
@@ -90,9 +90,9 @@ class Test_TextTestRunner(unittest2.TestCase):
     def test_pickle_unpickle(self):
         # Issue #7197: a TextTestRunner should be (un)pickleable. This is
         # required by test_multiprocessing under Windows (in verbose mode).
-        import StringIO
+        import io
         # cStringIO objects are not pickleable, but StringIO objects are.
-        stream = StringIO.StringIO("foo")
+        stream = io.StringIO("foo")
         runner = unittest2.TextTestRunner(stream)
         for protocol in range(pickle.HIGHEST_PROTOCOL + 1):
             s = pickle.dumps(runner, protocol=protocol)

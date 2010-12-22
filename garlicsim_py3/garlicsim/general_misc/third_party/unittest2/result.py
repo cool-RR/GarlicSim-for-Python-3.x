@@ -4,7 +4,7 @@ import sys
 import traceback
 import unittest
 
-from StringIO import StringIO
+from io import StringIO
 
 from garlicsim.general_misc.third_party.unittest2 import util
 from garlicsim.general_misc.third_party.unittest2.compatibility import wraps

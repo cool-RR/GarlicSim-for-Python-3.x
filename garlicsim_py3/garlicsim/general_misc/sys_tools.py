@@ -4,11 +4,11 @@
 '''Defines various `sys`-related tools.'''
 
 
-from __future__ import with_statement
+
 
 import os
 import sys
-import cStringIO
+import io
 import subprocess
 
 from garlicsim.general_misc.temp_value_setters import TempValueSetter
@@ -27,7 +27,7 @@ class OutputCapturer(object):
         
     '''
     def __init__(self):
-        self.string_io = cStringIO.StringIO()
+        self.string_io = io.StringIO()
         self._temp_stdout_setter = \
             TempValueSetter((sys, 'stdout'), self.string_io)
         self.output = None
@@ -60,10 +60,10 @@ class TempSysPathAdder(object):
         
         `addition` may be a path or a sequence of paths.
         '''
-        if isinstance(addition, basestring):
+        if isinstance(addition, str):
             addition = [addition]
         for entry in addition:
-            assert isinstance(entry, basestring)
+            assert isinstance(entry, str)
         self.addition = addition
 
         

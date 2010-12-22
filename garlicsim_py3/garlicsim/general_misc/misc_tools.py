@@ -18,7 +18,7 @@ def is_subclass(candidate, base_class):
     The advantage of this over the built-in `issubclass` is that it doesn't
     throw an exception if `candidate` is not a type. (Python issue 10569.)
     '''
-    return isinstance(candidate, (type, types.ClassType)) and \
+    return isinstance(candidate, type) and \
            issubclass(candidate, base_class)
 
 
@@ -53,7 +53,7 @@ def getted_vars(thing, _getattr=getattr):
     # todo: can make "fallback" option, to use value from original `vars` if
     # get is unsuccessful.
     my_vars = vars(thing)
-    return dict((name, _getattr(thing, name)) for name in my_vars.iterkeys())
+    return dict((name, _getattr(thing, name)) for name in my_vars.keys())
 
 
 _ascii_variable_pattern = re.compile('^[a-zA-Z_][0-9a-zA-Z_]*$')

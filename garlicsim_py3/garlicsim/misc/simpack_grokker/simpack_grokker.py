@@ -24,12 +24,11 @@ from . import misc
 from .settings import Settings
 from .step_type import StepType
 from . import step_types
+import collections
 
 
-class SimpackGrokker(object):
+class SimpackGrokker(object, metaclass=caching.CachedType):
     '''Encapsulates a simpack and gives useful information and tools.'''
-    
-    __metaclass__ = caching.CachedType
 
     @staticmethod
     def create_from_state(state):
@@ -67,7 +66,7 @@ class SimpackGrokker(object):
 
         state_methods = dict(
             (name, value) for (name, value) in
-            misc_tools.getted_vars(State).iteritems() if callable(value)
+            list(misc_tools.getted_vars(State).items()) if isinstance(value, collections.Callable)
         )
 
         self.step_functions_by_type = dict((step_type, []) for step_type in
@@ -75,7 +74,7 @@ class SimpackGrokker(object):
         '''dict mapping from each step type to step functions of that type.'''
         
         
-        for method in state_methods.itervalues():
+        for method in list(state_methods.values()):
             step_type = StepType.get_step_type(method)
             if step_type:
                 self.step_functions_by_type[step_type].append(method)
@@ -168,7 +167,7 @@ class SimpackGrokker(object):
             
             original_settings = getattr(self.simpack, 'settings')
             
-            for setting_name in vars(self.settings).keys():
+            for setting_name in list(list(vars(self.settings).keys())):
                 if hasattr(original_settings, setting_name):
                     value = getattr(original_settings, setting_name)
                     setattr(self.settings, setting_name, value)
@@ -192,7 +191,7 @@ class SimpackGrokker(object):
         CRUNCHERS = self.settings.CRUNCHERS
 
         
-        if isinstance(CRUNCHERS, basestring):
+        if isinstance(CRUNCHERS, str):
             (cruncher_type,) = \
                 [cruncher_type_ for cruncher_type_ in
                  crunchers.cruncher_types_list if
@@ -252,7 +251,7 @@ class SimpackGrokker(object):
         elif cute_iter_tools.is_iterable(CRUNCHERS):
             self.available_cruncher_types = []
             for item in CRUNCHERS:
-                if isinstance(item, basestring):
+                if isinstance(item, str):
                     (cruncher_type,) = \
                         [cruncher_type_ for cruncher_type_ in
                          crunchers.cruncher_types_list if
@@ -286,7 +285,7 @@ class SimpackGrokker(object):
             ###################################################################
             
         
-        elif callable(CRUNCHERS):
+        elif isinstance(CRUNCHERS, collections.Callable):
             assert not isinstance(CRUNCHERS, BaseCruncher)
             self.available_cruncher_types = \
                 [cruncher_type_ for cruncher_type_ in
@@ -337,7 +336,7 @@ class SimpackGrokker(object):
         
         step_iterator = self.get_step_iterator(state_or_history_browser,
                                                step_profile)
-        return step_iterator.next()
+        return next(step_iterator)
     
             
     def get_step_iterator(self, state_or_history_browser, step_profile):

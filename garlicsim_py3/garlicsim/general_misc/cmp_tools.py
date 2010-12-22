@@ -9,7 +9,7 @@ __all__ = ['underscore_hating_cmp']
 
 def underscore_hating_cmp(a, b):
     '''Compare two strings, counting the "_" character as highest.'''
-    assert isinstance(a, basestring) and isinstance(b, basestring)
+    assert isinstance(a, str) and isinstance(b, str)
     first_result = _leading_underscore_cmp(a, b)
     if first_result != 0:
         return first_result

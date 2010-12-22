@@ -14,7 +14,7 @@ def dump(queue):
     
     for thing in iter(queue.get, STOPPED):
         if not isinstance(thing, list):
-            print('we got something we should not have: %s' % thing)
+            print(('we got something we should not have: %s' % thing))
         result.append(thing)
     return result
 
@@ -38,5 +38,5 @@ if __name__ == '__main__':
     p.start()
     x.wait()
     l = dump(p.q)
-    print(len(l))
+    print((len(l)))
     p.join()

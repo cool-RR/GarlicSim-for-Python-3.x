@@ -40,7 +40,7 @@ def iterate(queue, block=False, limit_to_original_size=False,
                 "`_prefetch_if_no_qsize=True` to have the entire queue "
                 "prefetched before yielding the items."
             )
-        for i in xrange(queue.qsize()):
+        for i in range(queue.qsize()):
             try:
                 yield queue.get(block=block)
             except queue_module.Empty:

@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 from garlicsim.general_misc.third_party import unittest2
 from garlicsim.general_misc.third_party.unittest2.test.support import OldTestResult, catch_warnings
@@ -35,7 +35,7 @@ class TestWith(unittest2.TestCase):
         self.assertRaises(KeyError, _raise, KeyError("key"))
         try:
             self.assertRaises(KeyError, lambda: None)
-        except self.failureException, e:
+        except self.failureException as e:
             self.assertIn("KeyError not raised", e.args)
         else:
             self.fail("assertRaises() didn't fail")
@@ -48,7 +48,7 @@ class TestWith(unittest2.TestCase):
         with self.assertRaises(KeyError) as cm:
             try:
                 raise KeyError
-            except Exception, e:
+            except Exception as e:
                 raise
         self.assertIs(cm.exception, e)
 
@@ -57,7 +57,7 @@ class TestWith(unittest2.TestCase):
         try:
             with self.assertRaises(KeyError):
                 pass
-        except self.failureException, e:
+        except self.failureException as e:
             self.assertIn("KeyError not raised", e.args)
         else:
             self.fail("assertRaises() didn't fail")
@@ -75,14 +75,14 @@ class TestWith(unittest2.TestCase):
             one = ''.join(chr(i) for i in range(255))
             # this used to cause a UnicodeDecodeError constructing the failure msg
             with self.assertRaises(self.failureException):
-                self.assertDictContainsSubset({'foo': one}, {'foo': u'\uFFFD'})
+                self.assertDictContainsSubset({'foo': one}, {'foo': '\uFFFD'})
 
     def test_formatMessage_unicode_error(self):
         with catch_warnings(record=True):
             # This causes a UnicodeWarning due to its craziness
             one = ''.join(chr(i) for i in range(255))
             # this used to cause a UnicodeDecodeError constructing msg
-            self._formatMessage(one, u'\uFFFD')
+            self._formatMessage(one, '\uFFFD')
                 
     def assertOldResultWarning(self, test, failures):
         with catch_warnings(record=True) as log:
@@ -135,7 +135,7 @@ class TestWith(unittest2.TestCase):
             self.failUnlessAlmostEqual(2.0, 2.0)
             self.failIfAlmostEqual(3.0, 5.0)
             self.failUnless(True)
-            self.failUnlessRaises(TypeError, lambda _: 3.14 + u'spam')
+            self.failUnlessRaises(TypeError, lambda _: 3.14 + 'spam')
             self.failIf(False)
 
 

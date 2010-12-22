@@ -9,6 +9,7 @@ import imp
 
 from garlicsim.general_misc import package_finder
 from garlicsim.general_misc import caching
+from functools import reduce
     
 
 def import_all(package, exclude='__init__', silent_fail=False):

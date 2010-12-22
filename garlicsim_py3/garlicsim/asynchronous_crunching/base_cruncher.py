@@ -17,7 +17,7 @@ from garlicsim.general_misc import abc_tools
 import garlicsim
 
 
-class BaseCruncher(object):
+class BaseCruncher(object, metaclass=abc.ABCMeta):
     '''
     A worker that produces new simulation states using the step function.
     
@@ -38,8 +38,6 @@ class BaseCruncher(object):
     other, and which cruncher you should use for your project depends on the
     situation.
     '''
-    
-    __metaclass__ = abc.ABCMeta
 
     
     gui_explanation = None

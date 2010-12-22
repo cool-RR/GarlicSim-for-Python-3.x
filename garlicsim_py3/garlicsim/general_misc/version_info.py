@@ -49,7 +49,7 @@ class VersionInfo(tuple):
     
     def _asdict(self):
         '''Return a new OrderedDict which maps field names to their values.'''
-        return OrderedDict(zip(self._fields, self)) 
+        return OrderedDict(list(zip(self._fields, self))) 
 
     
     def _replace(_self, **kwargs):
@@ -57,9 +57,9 @@ class VersionInfo(tuple):
         Make a VersionInfo object replacing specified fields with new values.
         '''
         result = \
-            _self._make(map(kwargs.pop, ('major', 'minor', 'micro'),_self))
+            _self._make(list(map(kwargs.pop, ('major', 'minor', 'micro'),_self)))
         if kwargs:
-            raise ValueError('Got unexpected field names: %r' % kwargs.keys())
+            raise ValueError('Got unexpected field names: %r' % list(kwargs.keys()))
         return result 
     
     

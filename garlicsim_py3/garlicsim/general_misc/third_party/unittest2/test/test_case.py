@@ -502,7 +502,7 @@ class Test_TestCase(unittest2.TestCase, EqualityMixin, HashingMixin):
             def runTest(self):
                 pass
 
-        self.assertIsInstance(Foo().id(), basestring)
+        self.assertIsInstance(Foo().id(), str)
 
     # "If result is omitted or None, a temporary result object is created
     # and used, but is not made available to the caller. As TestCase owns the
@@ -823,47 +823,47 @@ class Test_TestCase(unittest2.TestCase, EqualityMixin, HashingMixin):
         self.assertRaises(self.failureException, self.assertLessEqual, 'bug', 'ant')
 
         # Try Unicode
-        self.assertGreater(u'bug', u'ant')
-        self.assertGreaterEqual(u'bug', u'ant')
-        self.assertGreaterEqual(u'ant', u'ant')
-        self.assertLess(u'ant', u'bug')
-        self.assertLessEqual(u'ant', u'bug')
-        self.assertLessEqual(u'ant', u'ant')
-        self.assertRaises(self.failureException, self.assertGreater, u'ant', u'bug')
-        self.assertRaises(self.failureException, self.assertGreater, u'ant', u'ant')
-        self.assertRaises(self.failureException, self.assertGreaterEqual, u'ant',
-                          u'bug')
-        self.assertRaises(self.failureException, self.assertLess, u'bug', u'ant')
-        self.assertRaises(self.failureException, self.assertLess, u'ant', u'ant')
-        self.assertRaises(self.failureException, self.assertLessEqual, u'bug', u'ant')
+        self.assertGreater('bug', 'ant')
+        self.assertGreaterEqual('bug', 'ant')
+        self.assertGreaterEqual('ant', 'ant')
+        self.assertLess('ant', 'bug')
+        self.assertLessEqual('ant', 'bug')
+        self.assertLessEqual('ant', 'ant')
+        self.assertRaises(self.failureException, self.assertGreater, 'ant', 'bug')
+        self.assertRaises(self.failureException, self.assertGreater, 'ant', 'ant')
+        self.assertRaises(self.failureException, self.assertGreaterEqual, 'ant',
+                          'bug')
+        self.assertRaises(self.failureException, self.assertLess, 'bug', 'ant')
+        self.assertRaises(self.failureException, self.assertLess, 'ant', 'ant')
+        self.assertRaises(self.failureException, self.assertLessEqual, 'bug', 'ant')
 
         # Try Mixed String/Unicode
-        self.assertGreater('bug', u'ant')
-        self.assertGreater(u'bug', 'ant')
-        self.assertGreaterEqual('bug', u'ant')
-        self.assertGreaterEqual(u'bug', 'ant')
-        self.assertGreaterEqual('ant', u'ant')
-        self.assertGreaterEqual(u'ant', 'ant')
-        self.assertLess('ant', u'bug')
-        self.assertLess(u'ant', 'bug')
-        self.assertLessEqual('ant', u'bug')
-        self.assertLessEqual(u'ant', 'bug')
-        self.assertLessEqual('ant', u'ant')
-        self.assertLessEqual(u'ant', 'ant')
-        self.assertRaises(self.failureException, self.assertGreater, 'ant', u'bug')
-        self.assertRaises(self.failureException, self.assertGreater, u'ant', 'bug')
-        self.assertRaises(self.failureException, self.assertGreater, 'ant', u'ant')
-        self.assertRaises(self.failureException, self.assertGreater, u'ant', 'ant')
+        self.assertGreater('bug', 'ant')
+        self.assertGreater('bug', 'ant')
+        self.assertGreaterEqual('bug', 'ant')
+        self.assertGreaterEqual('bug', 'ant')
+        self.assertGreaterEqual('ant', 'ant')
+        self.assertGreaterEqual('ant', 'ant')
+        self.assertLess('ant', 'bug')
+        self.assertLess('ant', 'bug')
+        self.assertLessEqual('ant', 'bug')
+        self.assertLessEqual('ant', 'bug')
+        self.assertLessEqual('ant', 'ant')
+        self.assertLessEqual('ant', 'ant')
+        self.assertRaises(self.failureException, self.assertGreater, 'ant', 'bug')
+        self.assertRaises(self.failureException, self.assertGreater, 'ant', 'bug')
+        self.assertRaises(self.failureException, self.assertGreater, 'ant', 'ant')
+        self.assertRaises(self.failureException, self.assertGreater, 'ant', 'ant')
         self.assertRaises(self.failureException, self.assertGreaterEqual, 'ant',
-                          u'bug')
-        self.assertRaises(self.failureException, self.assertGreaterEqual, u'ant',
                           'bug')
-        self.assertRaises(self.failureException, self.assertLess, 'bug', u'ant')
-        self.assertRaises(self.failureException, self.assertLess, u'bug', 'ant')
-        self.assertRaises(self.failureException, self.assertLess, 'ant', u'ant')
-        self.assertRaises(self.failureException, self.assertLess, u'ant', 'ant')
-        self.assertRaises(self.failureException, self.assertLessEqual, 'bug', u'ant')
-        self.assertRaises(self.failureException, self.assertLessEqual, u'bug', 'ant')
+        self.assertRaises(self.failureException, self.assertGreaterEqual, 'ant',
+                          'bug')
+        self.assertRaises(self.failureException, self.assertLess, 'bug', 'ant')
+        self.assertRaises(self.failureException, self.assertLess, 'bug', 'ant')
+        self.assertRaises(self.failureException, self.assertLess, 'ant', 'ant')
+        self.assertRaises(self.failureException, self.assertLess, 'ant', 'ant')
+        self.assertRaises(self.failureException, self.assertLessEqual, 'bug', 'ant')
+        self.assertRaises(self.failureException, self.assertLessEqual, 'bug', 'ant')
 
     def testAssertMultiLineEqual(self):
         sample_text = """\
@@ -893,7 +893,7 @@ test case
             try:
                 self.assertMultiLineEqual(type_changer(sample_text),
                                           type_changer(revised_sample_text))
-            except self.failureException, e:
+            except self.failureException as e:
                 # need to remove the first line of the error message
                 error = str(e).encode('utf8').split('\n', 1)[1]
 
@@ -913,7 +913,7 @@ test case
         self.maxDiff = len(diff)//2
         try:
             self.assertSequenceEqual(seq1, seq2)
-        except self.failureException, e:
+        except self.failureException as e:
             msg = e.args[0]
         else:
             self.fail('assertSequenceEqual did not fail.')
@@ -923,7 +923,7 @@ test case
         self.maxDiff = len(diff) * 2
         try:
             self.assertSequenceEqual(seq1, seq2)
-        except self.failureException, e:
+        except self.failureException as e:
             msg = e.args[0]
         else:
             self.fail('assertSequenceEqual did not fail.')
@@ -933,7 +933,7 @@ test case
         self.maxDiff = None
         try:
             self.assertSequenceEqual(seq1, seq2)
-        except self.failureException, e:
+        except self.failureException as e:
             msg = e.args[0]
         else:
             self.fail('assertSequenceEqual did not fail.')
@@ -961,7 +961,7 @@ test case
         test._truncateMessage = truncate
         try:
             test.assertDictEqual({}, {1: 0})
-        except self.failureException, e:
+        except self.failureException as e:
             self.assertEqual(str(e), 'foo')
         else:
             self.fail('assertDictEqual did not fail')
@@ -973,7 +973,7 @@ test case
         test._truncateMessage = truncate
         try:
             test.assertMultiLineEqual('foo', 'bar')
-        except self.failureException, e:
+        except self.failureException as e:
             self.assertEqual(str(e), 'foo')
         else:
             self.fail('assertMultiLineEqual did not fail')
@@ -998,7 +998,7 @@ test case
 
         self.assertRaisesRegexp(ExceptionMock, re.compile('expect$'), Stub)
         self.assertRaisesRegexp(ExceptionMock, 'expect$', Stub)
-        self.assertRaisesRegexp(ExceptionMock, u'expect$', Stub)
+        self.assertRaisesRegexp(ExceptionMock, 'expect$', Stub)
 
     def testAssertNotRaisesRegexp(self):
         self.assertRaisesRegexp(
@@ -1011,7 +1011,7 @@ test case
                 lambda: None)
         self.assertRaisesRegexp(
                 self.failureException, '^Exception not raised$',
-                self.assertRaisesRegexp, Exception, u'x',
+                self.assertRaisesRegexp, Exception, 'x',
                 lambda: None)
 
     def testAssertRaisesRegexpMismatch(self):
@@ -1026,7 +1026,7 @@ test case
         self.assertRaisesRegexp(
                 self.failureException,
                 r'"\^Expected\$" does not match "Unexpected"',
-                self.assertRaisesRegexp, Exception, u'^Expected$',
+                self.assertRaisesRegexp, Exception, '^Expected$',
                 Stub)
         self.assertRaisesRegexp(
                 self.failureException,

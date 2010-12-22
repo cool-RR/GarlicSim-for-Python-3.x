@@ -40,7 +40,7 @@ class StepIterator(BaseStepIterator):
         self.auto_clock_generator.make_clock(self.current_state)
         
         
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         self.current_state = self.step_function(self.current_state,
                                                 *self.step_profile.args,

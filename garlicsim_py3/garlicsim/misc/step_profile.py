@@ -27,7 +27,7 @@ class Placeholder(object):
     '''A placeholder used instead of a state or a history browser.'''
 
 
-class StepProfile(ArgumentsProfile):
+class StepProfile(ArgumentsProfile, metaclass=caching.CachedType):
     '''
     Profile for doing simulation step, specifying step function and arguments.
     
@@ -45,9 +45,6 @@ class StepProfile(ArgumentsProfile):
     create a step profile with `kwargs` of {'G': 3.0} in order to change the
     graviational constant of the simulation on-the-fly.
     '''
-
-    
-    __metaclass__ = caching.CachedType
     
     
     def __init__(self, step_function, *args, **kwargs):
@@ -215,9 +212,9 @@ class StepProfile(ArgumentsProfile):
         args_string = ', '.join((describe(thing) for thing in self.args))
         kwargs_string = ', '.join(
             ('='.join((str(key), describe(value))) for
-            (key, value) in self.kwargs.iteritems())
+            (key, value) in self.kwargs.items())
         )
-        strings = filter(None, (args_string, kwargs_string))
+        strings = [_f for _f in (args_string, kwargs_string) if _f]
         
         big_string = ', '.join(strings)
         
@@ -225,13 +222,10 @@ class StepProfile(ArgumentsProfile):
         if short_form:
             step_function_address = describe(self.step_function)
             final_big_string = ', '.join(
-                filter(
-                    None,
-                    (
+                [_f for _f in (
                         '<state>',
                         big_string
-                    )
-                )
+                    ) if _f]
             )
             return '%s(%s)' % (
                 step_function_address,
@@ -240,13 +234,10 @@ class StepProfile(ArgumentsProfile):
             
         else:
             final_big_string = ', '.join(
-                filter(
-                    None,
-                    (
+                [_f for _f in (
                         describe(self.step_function),
                         big_string
-                    )
-                )
+                    ) if _f]
             )
             return '%s(%s)' % (type(self).__name__, final_big_string)
     

@@ -15,7 +15,7 @@ from collections import Iterator
 import garlicsim
 
 
-class BaseStepIterator(Iterator, object):
+class BaseStepIterator(Iterator, object, metaclass=abc.ABCMeta):
     '''
     An iterator that uses a simpack's step function to produce states.
     
@@ -28,7 +28,6 @@ class BaseStepIterator(Iterator, object):
     This is an abstract base class; The `garlicsim.misc.step_iterators` package
     contains a collection of step iterators, one for each step type.
     '''
-    __metaclass__ = abc.ABCMeta
 
     
     @abc.abstractmethod

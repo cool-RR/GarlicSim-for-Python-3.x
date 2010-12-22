@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from io import StringIO
 
 import unittest
 from garlicsim.general_misc.third_party import unittest2

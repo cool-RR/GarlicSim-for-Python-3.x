@@ -11,7 +11,7 @@ def filter_items(d, condition, _dict_constructor=dict):
     `condition` is a function that takes a key and a value.
     '''
     return _dict_constructor(
-        (key, value) for (key, value) in d.iteritems() if condition(key, value)
+        (key, value) for (key, value) in d.items() if condition(key, value)
     )
 
 
@@ -22,7 +22,7 @@ def get_list(d, iterable):
 
 def get_contained(d, container):
     '''Get a list of the values in the dict whose keys are in `container`.'''
-    return [value for (key, value) in d.items() if (key in container)]
+    return [value for (key, value) in list(d.items()) if (key in container)]
 
 
 def fancy_string(d, indent=0):
@@ -59,13 +59,13 @@ def reverse_with_set_values(d):
             
     '''
     new_dict = {}
-    for key, value in d.iteritems():
+    for key, value in d.items():
         if value not in new_dict:
             new_dict[value] = []
         new_dict[value].append(key)
     
     # Making into sets:
-    for key, value in new_dict.copy().iteritems():
+    for key, value in new_dict.copy().items():
         new_dict[key] = set(value)
         
     return new_dict

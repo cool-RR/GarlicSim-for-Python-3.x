@@ -2,7 +2,7 @@ import gc
 import os
 import weakref
 
-from cStringIO import StringIO
+from io import StringIO
 
 try:
     import signal

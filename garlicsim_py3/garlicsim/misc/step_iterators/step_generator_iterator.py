@@ -58,14 +58,14 @@ class StepGeneratorIterator(BaseStepIterator):
         )
     
     
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         try:        
             try:
-                self.current_state = self.raw_generator.next()
+                self.current_state = next(self.raw_generator)
             except StopIteration:
                 self.__build_raw_generator()
-                self.current_state = self.raw_generator.next()
+                self.current_state = next(self.raw_generator)
         except StopIteration:
                 raise SimpackError('The step generator %s raised '
                                    '`StopIteration` without yielding even one '

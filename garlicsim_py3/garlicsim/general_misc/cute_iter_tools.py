@@ -25,7 +25,7 @@ def consecutive_pairs(iterable, wrap_around=False):
     iterator = iter(iterable)
     
     try:
-        first_item = iterator.next()
+        first_item = next(iterator)
     except StopIteration:
         raise StopIteration
     
@@ -133,7 +133,7 @@ def product(*args, **kwargs):
         
     '''
     # todo: revamp
-    pools = map(tuple, args) * kwargs.get('repeat', 1)
+    pools = list(map(tuple, args)) * kwargs.get('repeat', 1)
     result = [[]]
     for pool in pools:
         result = [x + [y] for x in result for y in pool]

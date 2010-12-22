@@ -107,7 +107,7 @@ def get_packages_and_modules_filenames(root, recursive=False):
     module_name_to_filenames = \
         dict_tools.reverse_with_set_values(filename_to_module_name)
     
-    for module_name, filenames in module_name_to_filenames.iteritems():
+    for module_name, filenames in module_name_to_filenames.items():
         if len(filenames) <= 1:
             # Does this save us from the case of packages?
             continue

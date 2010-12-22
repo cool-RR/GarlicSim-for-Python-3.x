@@ -137,7 +137,7 @@ class Project(object):
             if leaf.ends: # todo: Not every end should count.
                 del leaves_dict[leaf]
         
-        for item in leaves_dict.items():
+        for item in list(leaves_dict.items()):
 
             leaf = item[0]
             

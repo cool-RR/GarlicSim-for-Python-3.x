@@ -43,7 +43,7 @@ class FunctionAnchoringType(type):
         my_getted_vars = misc_tools.getted_vars(my_type)
         # Repeat after me: "Getted, not dict."
         
-        functions_to_anchor = [value for value in my_getted_vars.itervalues()
+        functions_to_anchor = [value for value in my_getted_vars.values()
                                if isinstance(value, types.FunctionType)]
         for function in functions_to_anchor:
             module_name = function.__module__

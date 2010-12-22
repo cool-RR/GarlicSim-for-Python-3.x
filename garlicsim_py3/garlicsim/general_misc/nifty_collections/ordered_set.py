@@ -11,7 +11,7 @@ See its documentation for more details.
 import collections
 
 
-KEY, PREV, NEXT = range(3)
+KEY, PREV, NEXT = list(range(3))
 
 
 class OrderedSet(collections.MutableSet):
@@ -75,7 +75,7 @@ class OrderedSet(collections.MutableSet):
         """Remove and return an arbitrary set element."""
         if not self:
             raise KeyError('set is empty')
-        key = reversed(self).next() if last else iter(self).next()
+        key = next(reversed(self)) if last else next(iter(self))
         self.discard(key)
         return key
 

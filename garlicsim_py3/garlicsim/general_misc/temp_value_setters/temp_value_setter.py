@@ -8,6 +8,7 @@ See its documentation for more details.
 '''
 
 from garlicsim.general_misc import address_tools
+import collections
 
 
 class TempValueSetter(object):
@@ -32,13 +33,13 @@ class TempValueSetter(object):
         except Exception:
             raise Exception("`variable` must be either `(my_object, "
                             "'my_attribute')` or `(getter, setter)`.")
-        if callable(second):
-            if not callable(first):
+        if isinstance(second, collections.Callable):
+            if not isinstance(first, collections.Callable):
                 raise Exception("`variable` must be either `(my_object, "
                                 "'my_attribute')` or `(getter, setter)`.")
             self.getter, self.setter = first, second
         else:
-            if not isinstance(second, basestring):
+            if not isinstance(second, str):
                 raise Exception("`variable` must be either `(my_object, "
                                 "'my_attribute')` or `(getter, setter)`.")
             

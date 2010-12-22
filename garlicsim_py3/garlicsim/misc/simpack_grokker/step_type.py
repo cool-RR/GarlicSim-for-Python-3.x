@@ -15,6 +15,7 @@ from garlicsim.general_misc.third_party import abc
 
 from garlicsim.general_misc import logic_tools
 from garlicsim.general_misc import caching
+import collections
 
 
 class StepType(abc.ABCMeta):
@@ -83,7 +84,7 @@ class StepType(abc.ABCMeta):
         if hasattr(thing, '_BaseStepType__step_type'):
             return thing._BaseStepType__step_type
         
-        if not callable(thing) or not hasattr(thing, '__name__'):
+        if not isinstance(thing, collections.Callable) or not hasattr(thing, '__name__'):
             return None
         
         step_types = BaseStep.__subclasses__()
@@ -108,7 +109,7 @@ class StepType(abc.ABCMeta):
                  step_type.name_identifier == maximal_matching_name_identifier]
         
         actual_function = (
-            thing.im_func if
+            thing.__func__ if
             isinstance(thing, types.MethodType)
             else thing
         )

@@ -52,7 +52,7 @@ except ImportError:
     CO_NESTED, CO_GENERATOR, CO_NOFREE = 0x10, 0x20, 0x40
 else:
     mod_dict = globals()
-    for k, v in _flag_names.items():
+    for k, v in list(_flag_names.items()):
         mod_dict["CO_" + v] = k
 
 # See Include/object.h
@@ -483,7 +483,7 @@ def getmodule(object, _filename=None):
         return sys.modules.get(modulesbyfile[file])
     # Update the filename to module name cache and check yet again
     # Copy sys.modules in order to cope with changes while iterating
-    for modname, module in sys.modules.items():
+    for modname, module in list(sys.modules.items()):
         if ismodule(module) and hasattr(module, '__file__'):
             f = module.__file__
             if f == _filesbymodname.get(modname, None):

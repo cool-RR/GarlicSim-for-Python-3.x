@@ -10,16 +10,13 @@ See its documentation for more information.
 from garlicsim.general_misc.third_party import abc
     
     
-class TreeMember(object):
+class TreeMember(object, metaclass=abc.ABCMeta):
     '''
     A member of the tree.
     
     This is an abstract base class for all kinds of objects that are members of
     a tree.
     '''
-    # todo: add .step_profile as abstract
-    
-    __metaclass__ = abc.ABCMeta
   
     @abc.abstractmethod
     def __len__(self):

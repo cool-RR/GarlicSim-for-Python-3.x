@@ -48,7 +48,7 @@ class BaseTestSuite(unittest.TestSuite):
         self._tests.append(test)
 
     def addTests(self, tests):
-        if isinstance(tests, basestring):
+        if isinstance(tests, str):
             raise TypeError("tests must be an iterable of tests, not a string")
         for test in tests:
             self.addTest(test)
@@ -138,7 +138,7 @@ class TestSuite(BaseTestSuite):
         if setUpClass is not None:
             try:
                 setUpClass()
-            except Exception, e:
+            except Exception as e:
                 if isinstance(result, _DebugResult):
                     raise
                 currentClass._classSetupFailed = True
@@ -172,7 +172,7 @@ class TestSuite(BaseTestSuite):
         if setUpModule is not None:
             try:
                 setUpModule()
-            except Exception, e:
+            except Exception as e:
                 if isinstance(result, _DebugResult):
                     raise
                 result._moduleSetUpFailed = True
@@ -203,7 +203,7 @@ class TestSuite(BaseTestSuite):
         if tearDownModule is not None:
             try:
                 tearDownModule()
-            except Exception, e:
+            except Exception as e:
                 if isinstance(result, _DebugResult):
                     raise
                 errorName = 'tearDownModule (%s)' % previousModule
@@ -225,7 +225,7 @@ class TestSuite(BaseTestSuite):
         if tearDownClass is not None:
             try:
                 tearDownClass()
-            except Exception, e:
+            except Exception as e:
                 if isinstance(result, _DebugResult):
                     raise
                 className = util.strclass(previousClass)

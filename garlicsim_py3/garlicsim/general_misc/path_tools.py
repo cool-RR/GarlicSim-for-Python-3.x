@@ -11,5 +11,5 @@ def list_sub_folders(path):
     '''List all the immediate sub-folders of the folder at `path`.'''
     assert os.path.isdir(path)
     files_and_folders = glob.glob(os.path.join(path, '*'))
-    folders = filter(os.path.isdir, files_and_folders)
+    folders = list(filter(os.path.isdir, files_and_folders))
     return folders
