@@ -61,7 +61,7 @@ class CuteSleekValueDict(MutableMapping):
             
             
     def __len__(self):
-        return len(list(self))
+        return len(self.data) # todo: remove dead ones
     
     
     def __delitem__(self):

@@ -3,6 +3,8 @@
 
 '''Defines various tools for manipulating sequences.'''
 
+import collections
+
         
 def are_equal_regardless_of_order(seq1, seq2):
     '''
@@ -10,8 +12,8 @@ def are_equal_regardless_of_order(seq1, seq2):
     regardless of the order of the elements.
     
     Currently will fail for items that have problems with comparing.
-    '''
-    return sorted(seq1) == sorted(seq2)
+    '''    
+    return collections.Counter(seq1) == collections.Counter(seq2)
         
 
 def flatten(iterable):
