@@ -15,7 +15,7 @@ from collections import Iterator
 import garlicsim
 
 
-class BaseStepIterator(Iterator, object, metaclass=abc.ABCMeta):
+class BaseStepIterator(Iterator, metaclass=abc.ABCMeta):
     '''
     An iterator that uses a simpack's step function to produce states.
     
@@ -36,6 +36,6 @@ class BaseStepIterator(Iterator, object, metaclass=abc.ABCMeta):
 
     
     @abc.abstractmethod
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         

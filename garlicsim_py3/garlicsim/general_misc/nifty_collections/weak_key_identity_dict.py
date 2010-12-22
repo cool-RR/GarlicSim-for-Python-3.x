@@ -51,6 +51,10 @@ class WeakKeyIdentityDict(collections.MutableMapping):
         if dict_ is not None: self.update(dict_)
 
         
+    def __len__(self):
+        return len(self.data)
+        
+        
     def __delitem__(self, key):
         del self.data[IdentityRef(key)]
 

@@ -19,6 +19,11 @@ package.
 This program is intended for Python versions 2.5, 2.6 and 2.7.
 '''
 
+# blocktodo: kill this:
+import sys, imp, pickle
+sys.modules['_pickle'] = None
+imp.reload(pickle)
+
 import garlicsim.bootstrap
 import garlicsim.general_misc
 import garlicsim.general_misc.version_info
@@ -34,3 +39,6 @@ __all__ = ['Project', 'simulate', 'list_simulate', 'iter_simulate']
 
 __version_info__ = garlicsim.general_misc.version_info.VersionInfo(0, 6, 0)
 __version__ = '0.6.0'
+
+
+

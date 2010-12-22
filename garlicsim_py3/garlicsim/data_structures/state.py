@@ -15,7 +15,7 @@ from garlicsim.general_misc.function_anchoring_type import \
 import garlicsim
 
 
-class State(object):
+class State(metaclass=FunctionAnchoringType):
     '''
     A state describes a world state in the world of the simulation.
     
