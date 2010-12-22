@@ -32,7 +32,7 @@ class OrderedDict(dict, MutableMapping):
         except AttributeError:
             self.__hardroot = _Link()
             self.__root = root = _proxy(self.__hardroot)
-            root.prev = root.__next__ = root
+            root.prev = root.next = root
             self.__map = {}
         self.update(*args, **kwds)
 
@@ -57,7 +57,7 @@ class OrderedDict(dict, MutableMapping):
         dict_delitem(self, key)
         link = self.__map.pop(key)
         link_prev = link.prev
-        link_next = link.__next__
+        link_next = link.next
         link_prev.next = link_next
         link_next.prev = link_prev
 
@@ -65,10 +65,10 @@ class OrderedDict(dict, MutableMapping):
         'od.__iter__() <==> iter(od)'
         # Traverse the linked list in order.
         root = self.__root
-        curr = root.__next__
+        curr = root.next
         while curr is not root:
             yield curr.key
-            curr = curr.__next__
+            curr = curr.next
 
     def __reversed__(self):
         'od.__reversed__() <==> reversed(od)'
@@ -82,7 +82,7 @@ class OrderedDict(dict, MutableMapping):
     def clear(self):
         'od.clear() -> None.  Remove all items from od.'
         root = self.__root
-        root.prev = root.__next__ = root
+        root.prev = root.next = root
         self.__map.clear()
         dict.clear(self)
 
@@ -100,8 +100,8 @@ class OrderedDict(dict, MutableMapping):
             link_prev.next = root
             root.prev = link_prev
         else:
-            link = root.__next__
-            link_next = link.__next__
+            link = root.next
+            link_next = link.next
             root.next = link_next
             link_next.prev = root
         key = link.key
@@ -118,7 +118,7 @@ class OrderedDict(dict, MutableMapping):
         '''
         link = self.__map[key]
         link_prev = link.prev
-        link_next = link.__next__
+        link_next = link.next
         link_prev.next = link_next
         link_next.prev = link_prev
         root = self.__root
@@ -128,7 +128,7 @@ class OrderedDict(dict, MutableMapping):
             link.next = root
             last.next = root.prev = link
         else:
-            first = root.__next__
+            first = root.next
             link.prev = root
             link.next = first
             root.next = first.prev = link
