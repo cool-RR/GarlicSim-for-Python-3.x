@@ -117,10 +117,8 @@ class StepType(abc.ABCMeta):
         return step_type
         
                 
-class BaseStep(object):
+class BaseStep(object, metaclass=StepType):
     '''Abstract step function. See documentation of `StepType`.'''
-    
-    __metaclass__ = StepType
 
 
     name_identifier = abc.abstractproperty()
