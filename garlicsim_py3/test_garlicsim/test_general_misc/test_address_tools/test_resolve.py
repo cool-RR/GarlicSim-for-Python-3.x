@@ -2,6 +2,9 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''Testing module for `garlicsim.general_misc.address_tools.resolve`.'''
+# todo: make test about the fact that resolve must not forgive a bad address
+# string in `root`.
+
 
 import nose.tools
 
@@ -44,6 +47,7 @@ def test_locally_defined_class():
     assert resolve('D.deeper_method', root=A.C.D, namespace='email') == \
            A.C.D.deeper_method
     assert resolve('A', root=A) == A
+    
 
     
 def test_stdlib():    
@@ -51,7 +55,9 @@ def test_stdlib():
     
     result = resolve('email')
     import email
+    email.email = email # That's how it's like in Python 2.x.
     import marshal
+    
     assert result is email
     
     assert resolve('email') is \
@@ -62,19 +68,19 @@ def test_stdlib():
     result = resolve('email.base64mime.a2b_base64')
     assert result is email.base64mime.a2b_base64
     
-    result = resolve('email.email.encoders.base64.b32decode')
-    assert result is email.encoders.base64.b32decode
+    result = resolve('email.email.encoders.encode_base64')
+    assert result is email.encoders.encode_base64
+    
+    result = resolve('base64mime.b2a_base64',
+                     root='email.email')
+    assert result is email.base64mime.b2a_base64
     
     result = resolve('base64.b32decode',
-                        root='email.email.encoders.base64')
-    assert result is email.encoders.base64.b32decode
-    
-    result = resolve('base64.b32decode',
-                        namespace='email.email.encoders')
+                     namespace='email.email.encoders')
     assert result is email.encoders.base64.b32decode
     
     result = resolve('base64.b32decode', root=marshal,
-                        namespace='email.email.encoders')
+                     namespace='email.email.encoders')
     assert result is email.encoders.base64.b32decode
     
     assert resolve('object') is object

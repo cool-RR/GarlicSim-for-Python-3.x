@@ -10,7 +10,7 @@ import sys
 import nose
 
 from garlicsim.general_misc.abc_tools import abstract_static_method
-from garlicsim.general_misc.third_party import abc
+import abc
 
 
 def test_instanciate_without_subclassing():
