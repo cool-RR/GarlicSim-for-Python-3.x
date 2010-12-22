@@ -1,13 +1,29 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''Defines several functions that may be useful when working with dicts.'''
 
-import copy
 
-def get_list(d, container):
+def filter_items(d, condition, _dict_constructor=dict):
+    '''
+    Get new `dict` with items from `d` that satisfy the `condition` functions.
+    
+    `condition` is a function that takes a key and a value.
+    '''
+    return _dict_constructor(
+        (key, value) for (key, value) in d.iteritems() if condition(key, value)
+    )
+
+
+def get_list(d, iterable):
+    '''Get a list of values corresponding to an `iterable` of keys.'''
+    return [d[key] for key in iterable]
+
+
+def get_contained(d, container):
     '''Get a list of the values in the dict whose keys are in `container`.'''
     return [value for (key, value) in d.items() if (key in container)]
+
 
 def fancy_string(d, indent=0):
     '''Show a dict as a string, slightly nicer than dict.__repr__.'''
@@ -31,5 +47,25 @@ def fancy_string(d, indent=0):
     
     return temp2
     
+
+def reverse_with_set_values(d):
+    '''
+    Reverse the dict, with the values of the new dict being sets.
     
+    Example:
     
+        reverse_with_set_values({1: 2, 3: 4, 'meow': 2}) = \
+            {2: set([1, 'meow']), 4: set([3])}
+            
+    '''
+    new_dict = {}
+    for key, value in d.iteritems():
+        if value not in new_dict:
+            new_dict[value] = []
+        new_dict[value].append(key)
+    
+    # Making into sets:
+    for key, value in new_dict.copy().iteritems():
+        new_dict[key] = set(value)
+        
+    return new_dict

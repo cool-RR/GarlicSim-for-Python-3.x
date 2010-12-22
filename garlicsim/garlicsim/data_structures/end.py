@@ -1,18 +1,20 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-Defines the End class.
+Defines the `End` class.
 
 See its documentation for more information.
 '''
 
 from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import address_tools
 
 from .tree_member import TreeMember
 from .node import Node
-
+# from .block import Block (At bottom of file)
     
+
 class End(TreeMember):
     '''
     An end of the simulation.
@@ -54,7 +56,7 @@ class End(TreeMember):
         '''
         Just return `self`.
         
-        (This is a method of all TreeMembers that returns the block that the
+        (This is a method of all `TreeMember`s that returns the block that the
         tree member belongs to, if there is one. But an end never belongs to a
         block.)
         '''
@@ -74,14 +76,13 @@ class End(TreeMember):
         '''
         Get a list of all possible paths that lead to this end.
         
-        (This method was invented for nodes and blocks and makes sense for them;
-        For an end, it will just return the one single path that leads to it,
-        since there can't be any forks after an end.)
+        (This method was invented for nodes and blocks and makes sense for
+        them; For an end, it will just return the one single path that leads to
+        it, since there can't be any forks after an end.)
         
-        Note: There may be paths that contain this node which will not be
-        identical to one of the paths given here, because these other paths
-        may specify decisions that are not even on the same root as these
-        paths.
+        Note: There may be paths that contain this end which will not be
+        identical to one of the paths given here, because these other paths may
+        specify decisions that are not even on the same root as these paths.
         '''
         return self.parent.all_possible_paths()
     
@@ -90,8 +91,8 @@ class End(TreeMember):
         '''
         Create a path that leads to this end.
         
-        (This method was invented for nodes and blocks and makes sense for them;
-        For an end, the "past path" is identical to the one made by
+        (This method was invented for nodes and blocks and makes sense for
+        them; For an end, the "past path" is identical to the one made by
         `make_containing_path`, since there can't be any forks after an end.)
         
         Returns the path.
@@ -103,9 +104,9 @@ class End(TreeMember):
         '''
         Get `{}`.
         
-        (This method was invented for nodes and blocks and makes sense for them;
-        There are no leaves, or anything else for that matter, that come after
-        an end.)
+        (This method was invented for nodes and blocks and makes sense for
+        them; There are no leaves, or anything else for that matter, that come
+        after an end.)
         '''
         
         return {}
@@ -118,8 +119,8 @@ class End(TreeMember):
         `generations` specifies the number of generation that the returned
         ancestor should be above the current end. `round` determines how this
         method will behave if it was asked for too many generations back, and
-        not enough existed. If `round` is True, it will return the root. If
-        `round` is False, it will raise a LookupError.
+        not enough existed. If `round` is `True`, it will return the root. If
+        `round` is `False`, it will raise a `NodeLookupError`.
         '''
 
         assert generations >= 0
@@ -155,15 +156,12 @@ class End(TreeMember):
         
         Example output:        
         <garlicsim.data_structures.End from state with clock 6.5, crunched with
-        StepProfile(t=0.1), at 0x1ffde70>
+        life.State.step(<state>), at 0x1ffde70>
         '''
         
         return '<%s from state with clock %s, crunched with %s, at %s>' % \
             (
-                misc_tools.shorten_class_address(
-                    self.__class__.__module__,
-                    self.__class__.__name__
-                    ),
+                address_tools.describe(type(self), shorten=True),
                 self.parent.state.clock,
                 self.step_profile,
                 hex(id(self))

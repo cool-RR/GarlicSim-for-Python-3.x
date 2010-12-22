@@ -1,8 +1,8 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-A module that defines the Tree class and the related TreeError exception.
+Defines the `Tree` class and the related `TreeError` exception.
 
 See their documentation for more information.
 '''
@@ -10,26 +10,31 @@ See their documentation for more information.
 import copy
 
 from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import address_tools
+from garlicsim.general_misc.nifty_collections import OrderedSet
 
 import garlicsim.misc
 from garlicsim.misc import GarlicSimException
 
-# `from block import Block` in the bottom of the file.
-# `from node import Node` in the bottom of the file.
+# In bottom of file:
+# `from .node import Node`
+# `from .block import Block`
+# `from .end import End`
 
 
-__all__ = ["Tree", "TreeError"]
+__all__ = ['Tree', 'TreeError']
 
 
 class TreeError(GarlicSimException):
     '''Tree-related exception.'''
 
+    
 class Tree(object):
     '''
     A time tree, (generalization of timeline,) of the simulation.
 
-    A tree is used within a project to organize everything that is happenning in
-    the simulation.
+    A tree is used within a project to organize everything that is happenning
+    in the simulation.
     
     Often, when doing a simulation, the tree will be a degenerate tree, i.e. a
     straight, long succession of nodes with no more than one child each. The
@@ -56,8 +61,8 @@ class Tree(object):
         A read-write lock that guards access to the tree.
         
         We need such a thing because some simulations are history-dependent and
-        require reading from the tree in the same time that sync_crunchers could
-        potentially be writing to it.
+        require reading from the tree in the same time that `.sync_crunchers`
+        could potentially be writing to it.
         '''
 
         
@@ -69,14 +74,14 @@ class Tree(object):
         the new node is usually modified by the user after it is created, and
         after that the node is finalized and used in simulation.
         
-        This is useful when you want to make some changes in the world state and
-        see what they will cause in the simulation.
+        This is useful when you want to make some changes in the world state
+        and see what they will cause in the simulation.
         
         Returns the node.
         '''
         new_state = copy.deepcopy(
             template_node.state,
-            garlicsim.misc.persistent.DontCopyPersistent()
+            garlicsim.general_misc.persistent.DontCopyPersistent()
         )
 
         parent = template_node.parent
@@ -91,7 +96,7 @@ class Tree(object):
     def add_state(self, state, parent=None, step_profile=None,
                   template_node=None):
         '''
-        Wrap state in node and add to tree.
+        Wrap `state` in a node and add to the tree.
         
         Returns the node.
         '''
@@ -119,11 +124,11 @@ class Tree(object):
         '''
         if template_node is not None:
             if parent != template_node.parent:
-                raise TreeError('''Parent you specified and parent of \
-template_node aren't the same!''')
+                raise TreeError("Parent you specified and parent of "
+                                "`template_node` aren't the same!")
             if not node.touched:
-                raise TreeError('''You tried adding an untouched state to a \
-tree while specifying a template_node.''')
+                raise TreeError("You tried adding an untouched state to a "
+                                "tree while specifying a `template_node`.")
             template_node.derived_nodes.append(node)
             
 
@@ -184,6 +189,52 @@ tree while specifying a template_node.''')
         for root in self.roots:
             result += root.all_possible_paths()
         return result
+
+
+    def get_step_profiles(self):
+        '''Get an ordered set of all the step profiles used in this tree.'''
+        tree_members_iterator = \
+            self.iterate_tree_members(include_blockful_nodes=False)
+        
+        step_profiles = OrderedSet(
+            tree_member.step_profile for tree_member in tree_members_iterator
+        )
+        
+        if None in step_profiles:
+            step_profiles.remove(None)
+        
+        return step_profiles
+    
+    
+    def iterate_tree_members(self, include_blockful_nodes=True):
+        '''
+        Iterate over all the members (nodes, blocks, ends) in this tree.
+        
+        By default, all nodes will be included; You may specify
+        `include_blockful_nodes=False` to exclude them. (Their block will be
+        included.)
+        '''
+        members_to_explore = self.roots[:]
+        while members_to_explore:
+            member = members_to_explore.pop()
+            yield member
+            if isinstance(member, Block):
+                if include_blockful_nodes:
+                    for node in member:
+                        yield node
+                children = member[-1].children
+                ends = member[-1].ends
+            elif isinstance(member, End):
+                children = ()
+                ends = ()
+            else:
+                children = member.children
+                ends = member.ends
+            
+            members_to_explore += [kid.soft_get_block() for kid in children]
+            members_to_explore += ends
+        
+        
     
     
     def delete_node_selection(self, node_selection):
@@ -211,22 +262,22 @@ tree while specifying a template_node.''')
         '''
         
         stitch = False
-        # todo: this is supposed to be an argument allowing the children to be
-        # stitched to the new parent, but I'm currently forcing it to be false
-        # because I haven't decided yet how I will handle stitching.
+        # todo: This is supposed to be an argument allowing the children to be
+        # stitched to the new parent, but I'm currently forcing it to be
+        # `False` because I haven't decided yet how I will handle stitching.
         
-        start_node = node_range.start if isinstance(node_range.start, Node) \
-                     else node_range.start[0]
+        head_node = node_range.head if isinstance(node_range.head, Node) \
+                     else node_range.head[0]
         
-        end_node = node_range.end if isinstance(node_range.end, Node) \
-                     else node_range.end[-1]
+        tail_node = node_range.tail if isinstance(node_range.tail, Node) \
+                     else node_range.tail[-1]
         
-        if start_node in self.roots:
-            self.roots.remove(start_node)
+        if head_node in self.roots:
+            self.roots.remove(head_node)
                         
-        big_parent = start_node.parent
+        big_parent = head_node.parent
         if big_parent is not None:
-            big_parent.children.remove(start_node)
+            big_parent.children.remove(head_node)
         
         outside_children = node_range.get_outside_children()
             
@@ -245,7 +296,7 @@ tree while specifying a template_node.''')
                 
         if current_block is not None:
             del current_block[current_block.index(last_block_change) :
-                              current_block.index(end_node)]
+                              current_block.index(tail_node)]
                     
         parent_to_use = big_parent if (stitch is True) else None
         for node in outside_children:
@@ -259,7 +310,7 @@ tree while specifying a template_node.''')
     def move_node_range(self, node_range):
         pass
     
-    def copy_node_range(self, node_range, start=None, end=None):
+    def copy_node_range(self, node_range, head=None, tail=None):
         pass
     """
 
@@ -274,10 +325,7 @@ tree while specifying a template_node.''')
         '''
         return '<%s with %s roots, %s nodes and %s possible paths at %s>' % \
                (
-                   misc_tools.shorten_class_address(
-                       self.__class__.__module__,
-                       self.__class__.__name__
-                   ),
+                   address_tools.describe(type(self), shorten=True),
                    len(self.roots),
                    len(self.nodes),
                    len(self.all_possible_paths()),
@@ -291,9 +339,9 @@ tree while specifying a template_node.''')
         return my_dict
     
     
-    def __setstate__(self, pickled_tree):
+    def __setstate__(self, pickled_tree_state):
         self.__init__()
-        self.__dict__.update(pickled_tree)
+        self.__dict__.update(pickled_tree_state)
         
         
     

@@ -1,8 +1,10 @@
 import wx
 import garlicsim.data_structures
+from garlicsim_wx.widgets.general_misc.cute_dialog import CuteDialog
 
 
-class StateCreationDialog(wx.Dialog):
+
+class StateCreationDialog(CuteDialog):
     # This is where you define a dialog for creating a root state.
     #
     # When someone loads your simpack into `garlicsim_wx` and starts a new
@@ -16,7 +18,7 @@ class StateCreationDialog(wx.Dialog):
     # should be the width and height of the new state.
     
     def __init__(self, frame):
-        wx.Dialog.__init__(self, frame, title="Creating a root state")
+        CuteDialog.__init__(self, frame, title='Creating a root state')
         
         self.frame = frame
 
@@ -24,16 +26,16 @@ class StateCreationDialog(wx.Dialog):
 
         
     def start(self):
-        # The `start` method will be used by `garlicsim_wx` after the dialog has
-        # been created to make the dialog appear on the screen, and to create a
-        # state object from the data that the dialog has collected from the
-        # user. Returns a state, or None if the user hit "cancel" or something.
+        # The `start` method will be used by `garlicsim_wx` after the dialog
+        # has been created to make the dialog appear on the screen, and to
+        # create a state object from the data that the dialog has collected
+        # from the user. Returns a state, or `None` if the user hit "cancel" or
+        # something.
         if self.ShowModal() == wx.ID_OK:
             # state = ...
             pass
         else:
             state = None
-        self.Destroy()
         return state
         
 

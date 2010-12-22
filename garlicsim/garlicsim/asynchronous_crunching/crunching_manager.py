@@ -1,17 +1,19 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the CrunchingManager class. See its documentation for more
-information.
+This module defines the `CrunchingManager` class.
+
+See its documentation for more information.
 '''
 
 
 import garlicsim.general_misc.queue_tools as queue_tools
 import garlicsim.general_misc.third_party.decorator
 import garlicsim.general_misc.change_tracker
-from garlicsim.general_misc.infinity import Infinity
+from garlicsim.general_misc.infinity import infinity
 from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import address_tools
 from garlicsim.general_misc import cute_iter_tools
 
 import garlicsim
@@ -19,18 +21,12 @@ import garlicsim.data_structures
 import garlicsim.misc
 from . import crunchers
 from .crunching_profile import CrunchingProfile
+from .base_cruncher import BaseCruncher
 from garlicsim.misc.step_profile import StepProfile
 from .misc import EndMarker
 
-__all__ = ['CrunchingManager', 'DefaultCruncher', 'DefaultHistoryCruncher']
 
-
-DefaultCruncher = crunchers.CruncherThread
-'''Cruncher class to be used by default in non-history-dependent simulations.'''
-
-
-DefaultHistoryCruncher = crunchers.CruncherThread
-'''Cruncher class to be used by default in history-dependent simulations.'''
+__all__ = ['CrunchingManager']
 
 
 @garlicsim.general_misc.third_party.decorator.decorator
@@ -60,25 +56,16 @@ class CrunchingManager(object):
     jobs. It will then take work from these crunchers, put it into the tree,
     and delete the jobs when they are completed.
     '''
+  
     def __init__(self, project):        
+        
         self.project = project
-        
-
-        FORCE_CRUNCHER = project.simpack_grokker.settings.FORCE_CRUNCHER
-        
-        if FORCE_CRUNCHER is not None:
-            self.Cruncher = FORCE_CRUNCHER
-        else:
-            history_dependent = project.simpack_grokker.history_dependent
-            
-            self.Cruncher = DefaultHistoryCruncher if history_dependent \
-                            else DefaultCruncher
         
         self.jobs = []
         '''
         The jobs that the crunching manager will be responsible for doing.
         
-        These are of the class garlicsim.asynchronous_crunching.Job.
+        These are of the class `garlicsim.asynchronous_crunching.Job`.
         '''
         
         self.crunchers = {}
@@ -88,10 +75,10 @@ class CrunchingManager(object):
         '''
         Dict that maps each cruncher to its step options profile.
         
-        This exists because a cruncher might change its step options profile
-        in the course of its work. When it does, it announces this by putting
-        the profile in the work queue. In this dict we keep track of the last
-        step options profile each cruncher was known to use.
+        This exists because if the step profile for a job changes, we need to
+        retire the cruncher and make a new one; Crunchers can't change step
+        profiles on the fly. So we use this dict to track which step profile
+        each cruncher uses.
         '''
         
         self.crunching_profiles_change_tracker = \
@@ -100,9 +87,30 @@ class CrunchingManager(object):
         A change tracker which tracks changes made to crunching profiles.
         
         This is used to update the crunchers if the crunching profile for the
-        job they're working on has changed.
+        job they're working on has been changed.
         '''
-
+        
+        available_cruncher_types = \
+            self.project.simpack_grokker.available_cruncher_types
+        
+        if not available_cruncher_types:
+            raise garlicsim.misc.GarlicSimException(
+                "The `%s` simpack doesn't allow using any of the cruncher "
+                "types we have installed." % self.project.simpack.__name__
+            )
+            
+        
+        self.cruncher_type = available_cruncher_types[0]
+        '''
+        The cruncher type that we will use to crunch the simulation.
+        
+        All crunchers that the crunching manager will create will be of this
+        type. The user may assign a different cruncher type to `.cruncher_type`,
+        and on the next call to `.sync_crunchers` the crunching manager will
+        retire all the existing crunchers and replace them with crunchers of the
+        new type.
+        '''
+        
         
     @with_tree_lock
     def sync_crunchers(self):
@@ -116,15 +124,15 @@ class CrunchingManager(object):
         Returns the total amount of nodes that were added to the tree in the
         process.
         '''
-        # Danger, Will Robinson! This right here is one of the most technical
-        # and sensitive functions in all of GarlicSim-land. It's hard to keep
-        # track of what's going on in this function. Be careful if you're trying
-        # to make changes. May the Force be with you.
-        
-        # todo: Extensively document the implementation of this function.
-        
-        total_added_nodes = garlicsim.misc.NodesAdded(0)
+        # This is one of the most technical and sensitive functions in all of
+        # GarlicSim-land. Be careful if you're trying to make changes.
 
+        total_added_nodes = garlicsim.misc.NodesAdded(0)
+        '''int-oid in which we track the number of nodes added to the tree.'''
+        
+        # The first thing we do is iterate over the crunchers whose jobs have
+        # been terminated. We take work from them, put it into the tree, and
+        # promptly retire them, deleting them from `self.crunchers`.
         
         for (job, cruncher) in list(self.crunchers.copy().items()):
             if not (job in self.jobs):
@@ -133,11 +141,22 @@ class CrunchingManager(object):
                 total_added_nodes += added_nodes
                 del self.crunchers[job]
 
-
+                
+        # In this point all the crunchers in `.crunchers` have an active job
+        # associated with them.
+        #
+        # Now we'll iterate over the active jobs.
+        
         for job in self.jobs[:]:
             
             
             if job not in self.crunchers:
+                
+                # If there is no cruncher associated with the job, we create
+                # one. (As long as the job is unfinished, and the node isn't in
+                # editing.) And that's it for this job, we `continue` to the
+                # next one.
+                
                 if not job.is_done():
                     self.__conditional_create_cruncher(job)
                 else: # job.is_done() is True
@@ -145,6 +164,14 @@ class CrunchingManager(object):
                 continue
 
             # job in self.crunchers
+            #
+            # Okay, so it's an active job. We'll take work from the cruncher and
+            # put it in the tree, updating the job to point at `new_leaf`, which
+            # is the node (leaf) containing the most recent state produced by
+            # the cruncher.
+            #
+            # The cruncher may either be active and crunching, or it may have
+            # stopped, (because of a `WorldEnded` exception, or other reasons.)
             
             cruncher = self.crunchers[job]
             
@@ -154,28 +181,81 @@ class CrunchingManager(object):
 
             job.node = new_leaf
             
-            if not job.is_done(): # (Need to call is_done again cause node changed)
+            # We took work from the cruncher, now it's time to decide if we want
+            # the cruncher to keep running or not. We will also update its
+            # crunching profile, if that has been changed on the job.
+            
+            if not job.is_done():
+                
+                # (We have called `job.is_done` again because the job's node may
+                # have changed, and possibly the new node *does* satisfy the
+                # job's crunching profile that the previous node didn't.)
                 
                 crunching_profile = job.crunching_profile
                 
-                if cruncher.is_alive():
-                                        
+                if cruncher.is_alive() and \
+                   (type(cruncher) is self.cruncher_type):
+                    
+                    # The job is not done, the cruncher's still working and it
+                    # is of the right type. In this case, the only thing left to
+                    # do is check if the crunching profile changed.
+
+                    # First we'll check if the step profile changed:
+                    
+                    if crunching_profile.step_profile != \
+                       self.step_profiles[cruncher]:
+                        
+                        # If it did, we immediately replace the cruncher,
+                        # because crunchers can't change step profile on the
+                        # fly.
+                        
+                        if cruncher.is_alive():
+                            cruncher.retire()
+                        
+                        self.__conditional_create_cruncher(job)
+                        
+                        continue
+                    
+                        
+                    # At this point we know that the step profile hasn't
+                    # changed, but possibly some other part (i.e. clock target)
+                    # has changed, and if so we update the cruncher about it.
+                        
                     if self.crunching_profiles_change_tracker.check_in \
                        (crunching_profile):
                         
                         cruncher.update_crunching_profile(crunching_profile)
                         
-                else:
+                        continue
+                        
+                else: 
+                    
+                    # Either the cruncher died, or it is of the wrong type. The
+                    # latter happens when the user changes
+                    # `crunching_manager.cruncher_type` in the middle of
+                    # simulating. In any case, this cruncher is done for.
+                    
+                    cruncher.retire() # In case it's not totally dead.
                     
                     self.__conditional_create_cruncher(job)
+                    
+                    continue
+                    
+                    
             else: # job.is_done() is True
+                
+                # The job is done; We remove it from the job list, and retire
+                # and delete the cruncher.
+                
                 self.jobs.remove(job)
                 if cruncher.is_alive():
                     cruncher.retire()
                 del self.crunchers[job]
+
             
         return total_added_nodes
 
+    
     
     def __conditional_create_cruncher(self, job):
         '''
@@ -185,15 +265,7 @@ class CrunchingManager(object):
         crunching_profile = job.crunching_profile
         
         if node.still_in_editing is False:
-            step_function = self.project.simpack_grokker.step
-            if self.Cruncher == getattr(crunchers, 'CruncherProcess', None):
-                cruncher = self.Cruncher \
-                         (node.state,
-                          self.project.simpack_grokker.step_generator,
-                          crunching_profile=crunching_profile)
-            else: # self.Cruncher == crunchers.CruncherThread
-                cruncher = self.Cruncher(node.state, self.project,
-                                         crunching_profile=crunching_profile)
+            cruncher = self.cruncher_type(self, node.state, crunching_profile)
             cruncher.start()
             self.crunchers[job] = cruncher
             
@@ -204,62 +276,64 @@ class CrunchingManager(object):
     
     def get_jobs_by_node(self, node):
         '''
-        Get all the jobs that should be done on the specified Node.
+        Get all the jobs that should be done on the specified node.
         
-        This is every job whose .node attribute is equal to the specified node.
+        This is every job whose `.node` attribute is the given node/
         '''
-        return [job for job in self.jobs if job.node == node]
+        return [job for job in self.jobs if (job.node is node)]
 
     
     def __add_work_to_tree(self, cruncher, job, retire=False):
         '''
         Take work from cruncher and add to tree at the specified job's node.
         
-        If `retire` is set to True, retires the cruncher. Keep in mind that if
-        the cruncher gives an EndMarker, it will be retired regardless of the
-        `retire` argument.
+        If `retire` is set to `True`, retires the cruncher. Keep in mind that
+        if the cruncher gives an `EndMarker`, it will be retired regardless of
+        the `retire` argument.
         
-        Returns (number, leaf), where `number` is the number of nodes that were
-        added, and `leaf` is the last node that was added.
+        Returns `(number, leaf)`, where `number` is the number of nodes that
+        were added, and `leaf` is the last node that was added.
         '''
         
         tree = self.project.tree
         node = job.node
         
-        current = node
+        current_node = node
         counter = 0
-        self.step_profiles[cruncher]
         
-        for thing in queue_tools.iterate(cruncher.work_queue):
+        queue_iterator = queue_tools.iterate(
+            cruncher.work_queue,
+            limit_to_original_size=True,
+            _prefetch_if_no_qsize=True
+        )
+        
+        for thing in queue_iterator:
             
             if isinstance(thing, garlicsim.data_structures.State):
                 counter += 1
-                current = tree.add_state(
+                current_node = tree.add_state(
                     thing,
-                    parent=current,
-                    step_profile=self.step_profiles[cruncher],
-                    
+                    parent=current_node,
+                    step_profile=self.step_profiles[cruncher],            
                 )
                 # todo optimization: save step profile in variable, it's
                 # wasteful to do a dict lookup every state.
             
             elif isinstance(thing, EndMarker):
-                tree.make_end(node=current,
+                tree.make_end(node=current_node,
                               step_profile=self.step_profiles[cruncher])
                 job.resulted_in_end = True
                 
-                
-            elif isinstance(thing, StepProfile):
-                self.step_profiles[cruncher] = thing
             else:
-                raise Exception('Unexpected object %s in work queue' % thing)
+                raise TypeError('Unexpected object `%s` in work queue' % thing)
                         
         if retire or job.resulted_in_end:
             cruncher.retire()
         
         nodes_added = garlicsim.misc.NodesAdded(counter)
 
-        return (nodes_added, current)
+        return (nodes_added, current_node)
+    
     
     def __repr__(self):
         '''
@@ -273,17 +347,13 @@ class CrunchingManager(object):
         crunchers_count = len(self.crunchers)
         job_count = len(self.jobs)
                                    
-        return '<%s currently employing %s crunchers to handle %s jobs at %s>' % \
-               (
-                   misc_tools.shorten_class_address(
-                       self.__class__.__module__,
-                       self.__class__.__name__
-                   ),
-                   crunchers_count,
-                   job_count,
-                   hex(id(self))
-               )
-    
-    
-    
+        return (
+            '<%s currently employing %s crunchers to handle %s jobs at %s>' %
+            (
+                address_tools.describe(type(self), shorten=True),
+                crunchers_count,
+                job_count,
+                hex(id(self))
+            )
+        )
     

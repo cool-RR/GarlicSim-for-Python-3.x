@@ -1,25 +1,26 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-A module that defines the Node class and the related NodeError exception.
+Defines the `Node` class and related exceptions.
 
-See documentation of Node for more information.
+See documentation of `Node` for more information.
 '''
 
-from garlicsim.general_misc.infinity import Infinity
+from garlicsim.general_misc.infinity import infinity
 from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import address_tools
 
 from garlicsim.misc import GarlicSimException
 
 from .state import State
 from .tree_member import TreeMember
 
-# We are doing `from block import Block` in the bottom of the file.
-# We are doing `from path import Path` in the bottom of the file.
+# from .path import Path (at bottom of file.)
+# from .block import Block (at bottom of file.)
 
 
-__all__ = ["Node", "NodeError"]
+__all__ = ['Node', 'NodeError', 'NodeLookupError']
 
 
 class NodeError(GarlicSimException):
@@ -49,8 +50,8 @@ class Node(TreeMember):
         
         `tree` is the tree in which this node resides. `state` is the state it
         should contain. `parent` is its parent node in the tree, which may be
-        None for a root. `step_profile` is the step profile with which the state
-        was crunched, which may be None for a state that was created from
+        `None` for a root. `step_profile` is the step profile with which the
+        state was crunched, which may be None for a state that was created from
         scratch. `touched` is whether the state was modified/created from
         scratch, in contrast to having been produced by crunching.
         '''
@@ -66,11 +67,11 @@ class Node(TreeMember):
         
         self.step_profile = step_profile
         '''
-        The step options profile with which the contained state was created.
+        The step profile with which the contained state was created.
         
-        For an untouched node, this must be a real StepProfile, even an empty
-        one. Only a touched node which was created from scratch should have
-        None for its step profile.
+        For an untouched node, this must be a real `StepProfile`. Only a
+        touched node which was created from scratch should have `None` for its
+        step profile.
         '''
         
         self.touched = touched
@@ -78,7 +79,7 @@ class Node(TreeMember):
         
         self.block = None
         '''
-        A node may be a member of a block. See class Block for more details.
+        A node may be a member of a block. See class `Block` for more details.
         '''
 
         self.children = []
@@ -86,7 +87,7 @@ class Node(TreeMember):
         A list of:
             1. Nodes whose states were produced by simulation from this node.
             2. Nodes who were "created by editing" from one of the nodes in the
-            aforementioned set.
+               aforementioned set.
         '''
 
         self.derived_nodes = []
@@ -124,16 +125,17 @@ class Node(TreeMember):
         Finalize the node, assuming it's in currectly in editing mode.
         
         Before an edited node is finalized, it cannot be crunched from and
-        cannot have children. (i.e. nodes that follow it in time.) After getting
-        finalized, it may be crunched from and be assigned children.
+        cannot have children. (i.e. nodes that follow it in time.) After
+        getting finalized, it may be crunched from and be assigned children.
         '''
         if self.still_in_editing is False:
             if self.touched:
-                message = '''You tried to finalize a touched node, but it has \
-already been finalized.'''
+                message = ('You tried to finalize a touched node, but it has '
+                           'already been finalized.')
             else: # self.touched is False
-                message = '''You tried to finalize an untouched node. \
-Untouched nodes can't be edited, so they have no concept of being finalized.'''
+                message = ("You tried to finalize an untouched node. "
+                           "Untouched nodes can't be edited, so they have no "
+                           "concept of being finalized.")
             raise NodeError(message)
         
         self.still_in_editing = False
@@ -162,7 +164,7 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
         
         path.get_last_node()
         # Calling this will make the path notice the forks in the nodes beyond
-        # this node and put them in its `decisions` dict.
+        # this node and put them in its `.decisions` dict.
         
         return path
     
@@ -180,7 +182,7 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
         past_path = self.make_past_path()
         paths = []
         fork = None
-        for thing in past_path.iterate_blockwise(start=self):
+        for thing in past_path.iterate_blockwise(head=self):
             real_thing = thing[-1] if isinstance(thing, Block) else thing
             if len(real_thing.children):
                 fork = real_thing
@@ -192,10 +194,11 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
             return paths
         else: # fork is None and real_thing is the final node of the path
             # In this case there are no forks after our node, we just return
-            # the past_path which we have driven to its end. (Not that it has
-            # any forks to decide on anyway.)
+            # the past_path which we have driven to its last node. (Not that it
+            # has any forks to decide on anyway.)
             return [past_path]
-    
+
+        
     def make_past_path(self):
         '''
         Create a path that contains this node.
@@ -219,6 +222,7 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
 
         return path
 
+    
     def get_all_leaves(self, max_nodes_distance=None, max_clock_distance=None):
         '''
         Get all leaves that are descendents of this node.
@@ -243,18 +247,18 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
             
         '''
         if max_nodes_distance is None:
-            max_nodes_distance = Infinity
+            max_nodes_distance = infinity
         if max_clock_distance is None:
-            max_clock_distance = Infinity
+            max_clock_distance = infinity
                     
-        nodes = {self: {"nodes_distance": 0, "clock_distance": 0}}
+        nodes = {self: {'nodes_distance': 0, 'clock_distance': 0}}
         leaves = {}
 
         while nodes:
             item = nodes.popitem()
             node = item[0]
-            nodes_distance = item[1]["nodes_distance"]
-            clock_distance = item[1]["clock_distance"]
+            nodes_distance = item[1]['nodes_distance']
+            clock_distance = item[1]['clock_distance']
             
             if nodes_distance > max_nodes_distance and \
                clock_distance > max_clock_distance:
@@ -265,16 +269,16 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
             if not kids:
                 # We have a leaf!
                 leaves[node] = {
-                    "nodes_distance": nodes_distance,
-                    "clock_distance": clock_distance,
+                    'nodes_distance': nodes_distance,
+                    'clock_distance': clock_distance,
                 }
                 continue
             
             if (node.block is None) or node.is_last_on_block():
                 for kid in kids:
                     nodes[kid] = {
-                        "nodes_distance": nodes_distance + 1,
-                        "clock_distance": kid.state.clock - self.state.clock,
+                        'nodes_distance': nodes_distance + 1,
+                        'clock_distance': kid.state.clock - self.state.clock,
                     }
                 continue
             else:
@@ -287,8 +291,8 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
 
                 last = block[-1]
                 nodes[last] = {
-                    "nodes_distance": nodes_distance + rest_of_block,
-                    "clock_distance": last.state.clock - self.state.clock,
+                    'nodes_distance': nodes_distance + rest_of_block,
+                    'clock_distance': last.state.clock - self.state.clock,
                 }
                 continue
             
@@ -302,8 +306,8 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
         `generations` specifies the number of generation that the returned
         ancestor should be above the current node. `round` determines how this
         method will behave if it was asked for too many generations back, and
-        not enough existed. If `round` is True, it will return the root. If
-        `round` is False, it will raise a LookupError.
+        not enough existed. If `round` is `True`, it will return the root. If
+        `round` is `False`, it will raise a `NodeLookupError`.
         '''
 
         assert generations >= 0
@@ -316,8 +320,8 @@ Untouched nodes can't be edited, so they have no concept of being finalized.'''
                 if round:
                     return self
                 else: # round is False
-                    raise NodeLookupError('''You asked for the node's parent, \
-but it's a root.''')                
+                    raise NodeLookupError("You asked for the node's parent, "
+                                          "but it's a root.") 
                 
         block = self.block
         if block:
@@ -325,17 +329,20 @@ but it's a root.''')
             wanted_index = our_index - generations
             if wanted_index >= 0:
                 return block[wanted_index]
-            else: # wanted index < 0
+            else: # wanted_index < 0
                 first_node = block[0]
                 parent_of_first = first_node.parent
                 if parent_of_first is None:
                     if round:
                         return first_node
                     else: # round is False
-                        raise NodeLookupError('''You asked for too many \
-generations back. This node's ancestry line doesn't go back that far.''')
+                        raise NodeLookupError(
+                            "You asked for too many generations back. This "
+                            "node's ancestry line doesn't go back that far."
+                        )
                 
-                return parent_of_first.get_ancestor(- wanted_index - 1, round=round)
+                return parent_of_first.get_ancestor(-wanted_index-1,
+                                                    round=round)
         
         assert self.block is None
         if self.parent:
@@ -344,8 +351,9 @@ generations back. This node's ancestry line doesn't go back that far.''')
             if round:
                 return self
             else: # round is False
-                raise NodeLookupError('''You asked for too many generations \
-back. This node's ancestry line doesn't go back that far.''')
+                raise NodeLookupError("You asked for too many generations "
+                                      "back. This node's ancestry line "
+                                      "doesn't go back that far.")
 
             
     def get_root(self):
@@ -362,17 +370,20 @@ back. This node's ancestry line doesn't go back that far.''')
                 lowest = lowest.block[0]
         return lowest
     
+    
     def is_last_on_block(self):
         '''Return whether the node the last one on its block.'''
         return self.block and (self.block.index(self) == len(self.block) - 1)
+
     
     def is_first_on_block(self):
         '''Return whether the node the first one on its block.'''
         return self.block and (self.block.index(self) == 0)
+
     
     def is_overlapping(self, tree_member):
         '''
-        Return whether this node overlaps with the given tree_member.
+        Return whether this node overlaps with the given `tree_member`.
         
         `tree_member` may be a node, in which case overlapping means being the
         same node. `tree_member` can also be a block, in which case overlapping
@@ -384,29 +395,29 @@ back. This node's ancestry line doesn't go back that far.''')
         else:
             assert isinstance(tree_member, Block)
             return (self in tree_member)
-    
+
+        
     def __repr__(self):
         '''
         Get a string representation of the node.
         
-        Example output:
-        <garlicsim.data_structures.Node with clock 6.5, untouched, belongs
-        to a block, crunched with StepProfile(t=0.1), at 0x1ffde70>
+        Example output:        
+        
+            <garlicsim.data_structures.Node with clock 6.5, untouched,
+            blockful, crunched with life.State.step(<state>), at 0x1ffde70>
+            
         '''
-        return '<%s%s, %s%s%s, %s, %sat %s>' % \
-            (
-                misc_tools.shorten_class_address(
-                    self.__class__.__module__,
-                    self.__class__.__name__
-                    ),
-                ' with clock %s' % self.state.clock if hasattr(self.state, 'clock') else '',
-                'root, ' if (self.parent is None) else '',
-                'leaf, ' if (len(self.children) == 0) else '',
-                'touched' if self.touched else 'untouched',
-                'belongs to a block' if self.block else 'blockless',
-                'crunched with %s, ' % self.step_profile if self.step_profile else '',
-                hex(id(self))
-            )
+        return '<%s%s, %s%s%s, %s, %sat %s>' % (
+            address_tools.describe(type(self), shorten=True),
+            ' with clock %s' % self.state.clock if hasattr(self.state, 'clock') else '',
+            'root, ' if (self.parent is None) else '',
+            'leaf, ' if (len(self.children) == 0) else '',
+            'touched' if self.touched else 'untouched',
+            'blockful' if self.block else 'blockless',
+            'crunched with %s, ' % self.step_profile.__repr__(short_form=True)
+            if self.step_profile else '',
+            hex(id(self))
+        )
 
 from .path import Path
 from .block import Block

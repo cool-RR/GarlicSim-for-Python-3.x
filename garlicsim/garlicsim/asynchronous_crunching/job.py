@@ -1,13 +1,17 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the Job class.
+This module defines the `Job` class.
 
 See its documentation for more info.
 '''
 
-__all__ = ['Job']
+import garlicsim
+
+# At bottom:
+# from .crunching_profile import CrunchingProfile
+
 
 class Job(object):
     '''
@@ -20,14 +24,18 @@ class Job(object):
     
     def __init__(self, node, crunching_profile):
         
+        assert isinstance(node, garlicsim.data_structures.Node)
         self.node = node
         '''The node from which we need to crunch.'''
         
+        assert isinstance(crunching_profile, CrunchingProfile)
         self.crunching_profile = crunching_profile
         '''The crunching profile to be used for crunching.'''
         
         self.resulted_in_end = False
-        '''Flag marking that the job has resulted in an end of the simulation.'''
+        '''
+        Flag marking that the job has resulted in an end of the simulation.
+        '''
   
         
     def is_done(self):
@@ -44,14 +52,18 @@ class Job(object):
         
         Example output: 
 
-        Job(node=<garlicsim.data_structures.node.Node with clock 17, untouched,
-        belongs to a block, crunched with StepProfile(), at 0x20664b0>,
-        crunching_profile=CrunchingProfile(clock_target=100,
-        step_profile=StepProfile()))
+            Job(node=<garlicsim.data_structures.node.Node with clock 17,
+            untouched, blockful, crunched with life.State.step(<state>),
+            at 0x20664b0>, crunching_profile=CrunchingProfile(clock_target=100,
+            step_profile=life.State.step(<state>))
         '''
+        # todo: too long, should shorten
         
         stuff = []
         stuff.append("node=%s" % self.node)
         stuff.append("crunching_profile=%s" % self.crunching_profile)
         temp = ", ".join(stuff)
         return ("Job(%s)" % temp)
+    
+    
+from .crunching_profile import CrunchingProfile

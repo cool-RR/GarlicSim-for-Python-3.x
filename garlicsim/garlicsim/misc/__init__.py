@@ -1,4 +1,5 @@
-# Copyright 2009-2010 Ram Rachum.
+
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
@@ -11,12 +12,11 @@ namespace.
 
 from .step_copy import StepCopy
 from .exceptions import (InvalidSimpack, SimpackError, GarlicSimWarning,
-                        GarlicSimException, WorldEnd)
+                         GarlicSimException, WorldEnded)
 from .auto_clock_generator import AutoClockGenerator
 from .base_history_browser import BaseHistoryBrowser
-from .step_iterator import StepIterator
-from . import persistent
-from .persistent import Persistent, CrossProcessPersistent
+from .base_step_iterator import BaseStepIterator
+from . import step_iterators
 from .step_profile import StepProfile
 from .nodes_added import NodesAdded
 from .simpack_grokker import SimpackGrokker

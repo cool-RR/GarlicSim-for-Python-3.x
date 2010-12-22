@@ -1,8 +1,8 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the CopyMode class.
+This module defines the `CopyMode` class.
 
 See its documentation for more information.
 '''
@@ -17,22 +17,18 @@ class CopyMode(dict):
     
     Typical usage:
     
-    ##############################################
-    
-    class NetworkStyleCopying(CopyMode): pass
+        class NetworkStyleCopying(CopyMode): pass
+            
+        class Something(object):
+            def __deepcopy__(self, memo):
+                if isinstance(memo, NetworkStlyeCopying):
+                    # Do network-style copying, whatever that means.
+                else:
+                    # Do normal copying.
+                    
+        s = Something()
         
-    class Something(object):
-        def __deepcopy__(self, memo):
-            if isinstance(memo, NetworkStlyeCopying):
-                # Do network-style copying, whatever that means
-            else:
-                # Do normal copying
-                
-    s = Something()
-    
-    new_copy = copy.deepcopy(s, NetworkStyleCopying())
-    # Now the new copy will be created using network style copying
-    
-    ##############################################
+        new_copy = copy.deepcopy(s, NetworkStyleCopying())
+        # Now the new copy will be created using network style copying
     '''
     __repr__ = object.__repr__

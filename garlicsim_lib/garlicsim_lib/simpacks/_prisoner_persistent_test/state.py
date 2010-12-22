@@ -1,4 +1,4 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
@@ -12,7 +12,7 @@ random.seed()
 
 import garlicsim.data_structures
 from garlicsim.misc import StepCopy
-from garlicsim.misc import CrossProcessPersistent
+from garlicsim.general_misc.persistent import CrossProcessPersistent
 
 ROUNDS = 7
 NUMBER_OF_PLAYERS = 70
@@ -153,11 +153,11 @@ class Angel(Player):
     def play(self, round):
         return True
 
-class Asshole(Player):
+class Devil(Player):
     def play(self, round):
         return False
 
-class Smarty(Player):
+class TitForTat(Player):
     def play(self, round):
         if round == 0:
             return True
@@ -168,7 +168,7 @@ class Smarty(Player):
         self.last_play = move
 
 
-player_types=[Angel, Asshole, Smarty]
+player_types=[Angel, Devil, TitForTat]
 
 def how_many_players_of_certain_type(pool, type):
     n = 0

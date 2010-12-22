@@ -1,8 +1,8 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-A module that defines the Path class and a few related exceptions.
+A module that Defines the `Path` class and a few related exceptions.
 
 See its documentation for more information.
 '''
@@ -13,39 +13,50 @@ import builtins
 from garlicsim.general_misc import binary_search
 from garlicsim.general_misc.math_tools import cmp
 from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import address_tools
 from garlicsim.general_misc import cute_iter_tools
 
 from garlicsim.misc import GarlicSimException
 
 from .node import Node
 from .block import Block
-# We are doing `from tree import Tree` in the bottom of the file.
+# from .tree import Tree (at bottom of the file)
 
 
-__all__ = ['Path', 'PathError', 'PathOutOfRangeError', 'EndNotReached',
-           'StartNotReached']
+__all__ = ['Path', 'PathError', 'PathOutOfRangeError', 'TailNotReached',
+           'HeadNotReached']
 
+
+### Definining path-related exceptions: #######################################
+#                                                                             #
 
 class PathError(GarlicSimException):
     '''Path-related exception.'''
 
+    
 class PathLookupError(PathError, LookupError):
     '''Path-related exception.'''    
+
     
 class PathOutOfRangeError(PathError, IndexError):
     '''Nodes are requested from the path which are out of its range.'''
 
-class EndNotReached(PathError):
+    
+class TailNotReached(PathError): 
     '''
-    An end node/block is specified but it turns out not to be on the path.
+    A tail node/block is specified but it turns out not to be on the path.
     '''
     # todo: consider subclass from one of the obscure exceptions like
     # LookupError
 
-class StartNotReached(PathError):
+    
+class HeadNotReached(PathError):
     '''
-    A start node/block is specified but it turns out not to be on the path.
+    A head node/block is specified but it turns out not to be on the path.
     '''
+
+#                                                                             #
+### Finished definining path-related exceptions. ##############################
     
 
 class Path(object):
@@ -56,9 +67,9 @@ class Path(object):
     line through it. Therefore, a path object contains information about which
     child to choose when going through a node which has multiple children.
     
-    Some of Path's method accept `start` and `end` parameters for specifying a
-    sub-range inside the path. It should be noted that this range will include
-    both endpoints.
+    Some of `Path`'s method accept `head` and `tail` parameters for specifying
+    a sub-range inside the path. It should be noted that this range will
+    include both endpoints.
     '''
     
     def __init__(self, tree, root=None, decisions={}):
@@ -86,33 +97,33 @@ class Path(object):
          # dictoids.
 
          
-    def __len__(self, start=None, end=None):
+    def __len__(self, head=None, tail=None):
         '''
         Get the length of the path in nodes.
         
-        You can optionally specify `start` and/or `end`, which may be either
+        You can optionally specify `head` and/or `tail`, which may be either
         nodes or blocks.
         '''
-        if start is None and self.root is None:
+        if head is None and self.root is None:
             return 0
             
         return sum(len(thing) for thing in 
-                   self.iterate_blockwise(start=start, end=end))
+                   self.iterate_blockwise(head=head, tail=tail))
 
 
-    def __iter__(self, start=None, end=None):
+    def __iter__(self, head=None, tail=None):
         '''
         Iterate over the nodes in the path.
         
-        You can optionally specify `start` and/or `end`, which may be either
+        You can optionally specify `head` and/or `tail`, which may be either
         nodes or blocks.
         '''
-        if start is None:
+        if head is None:
             if self.root is None:
                 raise StopIteration
             current = self.root
         else:
-            current = start
+            current = head
         
         current = current if isinstance(current, Node) else current[0]
             
@@ -120,142 +131,151 @@ class Path(object):
             
             yield current
             
-            if end is not None:
-                if current is end:
+            if tail is not None:
+                if current is tail:
                     raise StopIteration
-                elif isinstance(end, Block) and (current in end):
+                elif isinstance(tail, Block) and (current in tail):
                     if current.is_last_on_block():
                         raise StopIteration
                         
             try:
                 current = self.next_node(current)           
             except PathOutOfRangeError:
-                if end is not None:
-                    raise EndNotReached
+                if tail is not None:
+                    raise TailNotReached
                 raise StopIteration
 
             
     def __reversed__(self):
-        '''Iterate on the nodes in the path from end to start.'''
-        # todo: may add start and end
-        current_node = self[-1]
+        '''Iterate over the nodes in the path in reverse order.'''
+        # todo: may add head and tail
+        try:
+            current_node = self[-1]
+        except PathOutOfRangeError:
+            raise StopIteration
         while current_node is not None:
             yield current_node
             current_node = current_node.parent
             
             
-    def iterate_blockwise(self, start=None, end=None):
+    def iterate_blockwise(self, head=None, tail=None):
         '''
         Iterate on the path, yielding blocks when possible.
         
-        You can optionally specify `start` and/or `end`, which may be either
+        You may optionally specify `head` and/or `tail`, which may be either
         nodes or blocks.
         '''
 
-        if start is None:
+        if head is None:
             if self.root is None:
                 raise StopIteration
             current = self.root
-        else: # start is not None
-            current = start
-            if isinstance(start, Node) and start.block is not None and \
-               start.is_first_on_block() is False:
+        else: # head is not None
+            current = head
+            if isinstance(head, Node) and head.block is not None and \
+               head.is_first_on_block() is False:
                 # We are starting iteration on a node in a block. (And it's not
                 # the first one on the block.) We will not yield its block at
                 # all. We'll yield all the nodes one by one until the next
                 # node/block in the tree.
-                index_of_start = start.block.index(start)
-                for current in start.block[index_of_start:]:
+                index_of_head = head.block.index(head)
+                for current in head.block[index_of_head:]:
                     yield current
-                    if current is end:
+                    if current is tail:
                         raise StopIteration
                     
-                assert current is start.block[-1]
+                assert current is head.block[-1]
                 
                 try:
                     current = self.next_node(current)
                 except PathOutOfRangeError:
-                    if end is not None:
-                        raise EndNotReached
+                    if tail is not None:
+                        raise TailNotReached
                     raise StopIteration
                 
         while True:
             if current.block is not None:
-                if end is not None:
-                    if end is current.block:
+                if tail is not None:
+                    if tail is current.block:
                         yield current.block
                         raise StopIteration
-                    elif end in current.block:
-                        index_of_end = current.block.index(end)
-                        for thing in current.block[ 0 : (index_of_end + 1) ]:
+                    elif tail in current.block:
+                        index_of_tail = current.block.index(tail)
+                        for thing in current.block[ 0 : (index_of_tail + 1) ]:
                             yield thing
                         raise StopIteration
-                    else: # end isn't here
+                    else: # tail isn't here
                         current = current.block
                         yield current    
-                else: # end is None
+                else: # tail is None
                     current = current.block
                     yield current
             else: # current.block is None
                 yield current
-                if current.is_overlapping(end):
+                if current.is_overlapping(tail):
                     raise StopIteration
             try:
                 current = self.next_node(current)
             except PathOutOfRangeError:
-                if end is not None:
-                    raise EndNotReached
+                if tail is not None:
+                    raise TailNotReached
                 raise StopIteration
     
             
-    def iterate_blockwise_reversed(self, end, start=None):
+    def iterate_blockwise_reversed(self, head=None, tail=None):
         '''
         Iterate backwards on the path, yielding blocks when possible.
         
-        You must specify an `end`. You may optionally specify a `start`. Both of
-        these may be either nodes or blocks.
+        You may optionally specify `head` and/or `tail`, which may be either
+        nodes or blocks.
         '''
-        current = end
-        if isinstance(end, Node) and end.block is not None and \
-           end.is_last_on_block() is False:
+        if tail is None:
+            try:
+                tail = self.get_last_node()
+            except PathOutOfRangeError:
+                raise StopIteration
+        
+        current = tail
+        if isinstance(tail, Node) and tail.block is not None and \
+           tail.is_last_on_block() is False:
             # We are starting iteration on a node in a block. (And it's not the
             # last one on the block.) We will not yield its block at all. We'll
             # yield all the nodes one by one until the previous node/block in
             # the tree.
-            index_of_end = end.block.index(end)
-            for current in end.block[ index_of_end : : -1 ]:
+            index_of_tail = tail.block.index(tail)
+            for current in tail.block[ index_of_tail : : -1 ]:
                 yield current
-                if current is start:
+                if current is head:
                     raise StopIteration
 
-            assert current is end.block[0]
+            assert current is tail.block[0]
             
             if isinstance(current, Node):
                 current = current.parent
             else: # isinstance(current, Block)
                 current = current[0].parent
             if current is None:
-                if start is not None:
-                    raise StartNotReached
+                if head is not None:
+                    raise HeadNotReached
                 raise StopIteration
                 
         while True:
             if current.block is not None:
-                if start is not None:
-                    if start is current.block:
+                if head is not None:
+                    if head is current.block:
                         yield current.block
                         raise StopIteration
-                    elif start in current.block:
-                        index_of_start = current.block.index(start)
-                        for thing in current.block[ : (index_of_start - 1) : -1 ]:
+                    elif head in current.block:
+                        index_of_head = current.block.index(head)
+                        for thing in current.block[:(index_of_head - 1):-1]:
                             yield thing
                         raise StopIteration
-                else: # start is None
+                else: # head is None
                     current = current.block
                     yield current
             else: # current.block is None
                 yield current
-                if current.is_overlapping(start):
+                if current.is_overlapping(head):
                     raise StopIteration
 
             if isinstance(current, Node):
@@ -263,17 +283,22 @@ class Path(object):
             else: # isinstance(current, Block)
                 current = current[0].parent
             if current is None:
-                if start is not None:
-                    raise StartNotReached
+                if head is not None:
+                    raise HeadNotReached
                 raise StopIteration
             
 
-    def __contains__(self, thing, start=None, end=None):
-        '''Return whether the path contains the specified node/block.'''
+    def __contains__(self, thing, head=None, tail=None):
+        '''
+        Return whether the path contains the specified node/block.
+
+        You may optionally specify `head` and/or `tail`, which may be either
+        nodes or blocks.
+        '''
         
         assert isinstance(thing, Node) or isinstance(thing, Block)
 
-        for candidate in self.iterate_blockwise(start=start, end=end):
+        for candidate in self.iterate_blockwise(head=head, tail=tail):
             if candidate is thing:
                 return True
             elif isinstance(candidate, Block) and thing in candidate:
@@ -305,8 +330,8 @@ class Path(object):
         if len(kids) > 1:
             kid = kids[0]
             # Whether it should take `kids[0]` or `kids[-1]` is a subject for
-            # debate. The question is, when you update the tree, do you want the
-            # old paths to point to the new nodes or the old?
+            # debate. The question is, when you update the tree, do you want
+            # the old paths to point to the new nodes or the old?
             self.decisions[real_thing] = kid
             return kid
 
@@ -315,52 +340,51 @@ class Path(object):
 
     
 
-    def __getitem__(self, index, end=None):
+    def __getitem__(self, index, tail=None):
         '''
         Get a node by its index number in the path.
 
-        You can optionally specify an end node in which the path ends.
+        You may optionally specify a `tail` node.
         '''
         #todo: allow slicing? make Path.states for this and for iterating?
-        #todo: generalize `end` to blocks
+        #todo: generalize `tail` to blocks
         assert isinstance(index, int)
         
-        
         if index >= 0:
-            return self.__get_item_positive(index, end=end)
+            return self.__get_item_positive(index, tail=tail)
         else:
-            return self.__get_item_negative(index, end=end)
+            return self.__get_item_negative(index, tail=tail)
 
         
-    def __get_item_negative(self, index, end=None):
+    def __get_item_negative(self, index, tail=None):
         '''
         Get a node by its index number in the path. Negative indices only.
 
-        You can optionally specify an end node in which the path ends.
+        You may optionally specify a `tail`.
         '''
-        if end is None:
-            end = self.get_last_node()
+        if tail is None:
+            tail = self.get_last_node()
         else:
-            assert isinstance(end, Node) or isinstance(end, Block)
+            assert isinstance(tail, Node) or isinstance(tail, Block)
         if index == -1:
-            return end
+            return tail
         
         my_index = -1
         
-        if end.block:
-            block = end.block
-            index_of_end = block.index(end)
+        if tail.block:
+            block = tail.block
+            index_of_tail = block.index(tail)
             
-            my_index -= (index_of_end)
+            my_index -= (index_of_tail)
             
             if my_index <= index:
                 return block[index - my_index]
             
-            end = end.block[0]
+            tail = tail.block[0]
         
         my_index += 1
             
-        for thing in self.iterate_blockwise_reversed(end=end):
+        for thing in self.iterate_blockwise_reversed(tail=tail):
             my_index -= len(thing)
             if my_index <= index:
                 if isinstance(thing, Block):
@@ -372,16 +396,16 @@ class Path(object):
         raise PathOutOfRangeError
         
     
-    def __get_item_positive(self, index, end=None):
+    def __get_item_positive(self, index, tail=None):
         '''
         Get a node by its index number in the path. Positive indices only.
 
-        You can optionally specify an end node in which the path ends.
+        You may optionally specify a `tail` node.
         '''
         # todo: supports blocks?
         my_index = -1
         answer = None
-        for thing in self.iterate_blockwise(end=end):
+        for thing in self.iterate_blockwise(tail=tail):
             my_index += len(thing)
             if my_index >= index:
                 if isinstance(thing, Block):
@@ -395,16 +419,18 @@ class Path(object):
             return answer
         raise PathOutOfRangeError
 
-    def get_last_node(self, start=None):
+    
+    def get_last_node(self, head=None):
         '''
         Get the last node in the path.
         
-        You can optionally specify `start`, which may be either a node or block.
+        You may optionally specify `head`, which may be either a node or block.
         '''
 
-        thing = None # Setting to None before loop, so we know if loop was empty
+        # Setting to `None` before loop, so we know if loop was empty:
+        thing = None 
         
-        for thing in self.iterate_blockwise(start=start):
+        for thing in self.iterate_blockwise(head=head):
             pass
 
         if isinstance(thing, Block):
@@ -412,36 +438,46 @@ class Path(object):
         elif isinstance(thing, Node):
             return thing
         else: # thing is None
-            raise PathOutOfRangeError('''You asked for the last node in the \
-path, but it's completely empty.''')
-    
+            raise PathOutOfRangeError("You asked for the last node in the "
+                                      "path, but it's completely empty.")
+
+        
+    def get_ends_of_last_node(self, head=None):
+        '''Get the ends of the last node in the path.'''
+        last_node = self.get_last_node(head=head)
+        return last_node.ends
+        
         
     def get_node_by_clock(self, clock, rounding=binary_search.CLOSEST,
-                          end_node=None):
+                          tail_node=None):
         '''
         Get a node according to its clock.
         
-        See documentation of binary_search.roundings for details about rounding
-        options.
+        See documentation of `binary_search.roundings` for details about
+        rounding options.
+        
+        You may optionally specify a `tail_node`.
         '''
         
         my_function = lambda node: node.state.clock
         return self.get_node_by_monotonic_function(function=my_function,
                                                    value=clock,
                                                    rounding=rounding,
-                                                   end_node=end_node)    
+                                                   tail_node=tail_node)    
         
     
     def get_node_by_monotonic_function(self, function, value,
                                        rounding=binary_search.CLOSEST,
-                                       end_node=None):
+                                       tail_node=None):
         '''
         Get a node by specifying a measure function and a desired value.
         
         The function must be a monotonic rising function on the timeline.
         
-        See documentation of binary_search.roundings for details about rounding
-        options.
+        See documentation of `binary_search.roundings` for details about
+        rounding options.
+        
+        You may optionally specify a `tail_node`.
         '''
         
         assert issubclass(rounding, binary_search.Rounding)
@@ -449,14 +485,14 @@ path, but it's completely empty.''')
         both = \
              self.__get_node_by_monotonic_function_with_both_rounding(function,
                                                                       value)
-        if end_node is not None:
+        if tail_node is not None:
             new_both = list(both)
-            end_clock = end_node.state.clock
-            if new_both[0] and new_both[0].state.clock >= end_clock:
-                new_both[0] = end_node
-            if new_both[1] and new_both[1].state.clock >= end_clock:
+            tail_clock = tail_node.state.clock
+            if new_both[0] and new_both[0].state.clock > tail_clock:
+                new_both[0] = tail_node
+            if new_both[1] and new_both[1].state.clock > tail_clock:
                 new_both[1] = None
-            both = new_both
+            both = tuple(new_both)
             
         binary_search_profile = \
             binary_search.BinarySearchProfile(self, function, value, both)
@@ -473,8 +509,8 @@ path, but it's completely empty.''')
         
         The rounding option used is `binary_search.BOTH`.
         
-        Note that this function does not let you specify an end node. Currently
-        we're not optimizing for the case where you have an end node and this
+        Note that this function does not let you specify a tail node. Currently
+        we're not optimizing for the case where you have a tail node and this
         function might waste resources exploring beyond it.
         '''
         
@@ -569,12 +605,12 @@ path, but it's completely empty.''')
         Get the node which "occupies" the given timepoint.
         
         A node is considered to "occupy" a timepoint if it is the
-        highest-clocked node before the timepoint, AND there exists another node
-        which has a clock higher than timepoint (that higher node is not
+        highest-clocked node before the timepoint, AND there exists another
+        node which has a clock higher than timepoint (that higher node is not
         returned, it just has to exist for the first node to qualify as
         "occupying".)
         
-        If no such node exists, returns None.
+        If no such node exists, returns `None`.
         '''
         return self.get_node_by_clock(timepoint,
                                       rounding=binary_search.LOW_IF_BOTH)
@@ -584,10 +620,12 @@ path, but it's completely empty.''')
         '''
         Get the existing time segment between `start_time` and `end_time`.
         
-        Example: In the path the first node's clock reading is 3.2, the last is
-        7.6.
-        `start_time` is 2 and `end_time` is 5.
-        The function will return [3.2, 5].
+        Example: 
+        
+            In the path the first node's clock reading is 3.2, the last is
+            7.6.
+            `start_time` is 2 and `end_time` is 5.
+            The function will return [3.2, 5].
         '''
 
         clock_of_first = self.root.state.clock
@@ -625,15 +663,16 @@ path, but it's completely empty.''')
         '''
         Get a lower path than this one.
         
-        "Lower" means that in some point in the past the other path goes through
-        a child node with a lower index number (in `children`) than this path.
+        "Lower" means that in some point in the past the other path goes
+        through a child node with a lower index number (in `children`) than
+        this path.
         
         This method will return the highest path that is just below this path.
         '''
-        return self._get_higher_path(node, reverse=True)
+        return self._get_higher_path(node, _reverse=True)
                 
     
-    def _get_higher_path(self, node, reverse=False):
+    def _get_higher_path(self, node, _reverse=False):
         '''
         Get a higher path than this one.
         
@@ -644,7 +683,7 @@ path, but it's completely empty.''')
         This method will return the lowest path that is just above this path.
         '''
 
-        my_iter = builtins.reversed if reverse else iter
+        my_iter = builtins.reversed if _reverse else iter
         
         wanted_clock = node.state.clock
         
@@ -653,18 +692,18 @@ path, but it's completely empty.''')
                 continue
             my_index = parent.children.index(kid)
 
-            if reverse:
+            if _reverse:
                 if my_index > 0:
                     kids_to_try = parent.children[:my_index]
                     break
             
-            if not reverse:
+            if not _reverse:
                 if my_index < len(parent.children) -1:
                     kids_to_try = parent.children[my_index+1:]
                     break
         else:
             raise PathLookupError('This path is the %s one.' % \
-                                  ('lowest' if reverse else 'highest'))
+                                  ('lowest' if _reverse else 'highest'))
         
         for node in my_iter(kids_to_try):
             paths = node.all_possible_paths() # todo: make reversed argument
@@ -673,9 +712,9 @@ path, but it's completely empty.''')
                 if path[-1].state.clock >= wanted_clock:
                     return path
         
-        raise PathLookupError('''This path is the %s one which extends enough \
-in the future to the clock of the specified node.''' % \
-            ('lowest' if reverse else 'highest'))
+        raise PathLookupError('This path is the %s one which extends enough '
+                              'in the future to the clock of the specified  '
+                              'node.' % ('lowest' if _reverse else 'highest'))
                
             
     def __repr__(self):
@@ -687,10 +726,7 @@ in the future to the clock of the specified node.''' % \
         '''
         return '<%s of length %s at %s>' % \
                (
-                   misc_tools.shorten_class_address(
-                       self.__class__.__module__,
-                       self.__class__.__name__
-                   ),
+                   address_tools.describe(type(self), shorten=True),
                    len(self),
                    hex(id(self))
                )
@@ -711,16 +747,13 @@ in the future to the clock of the specified node.''' % \
     
     __copy__ = copy
     
+    
     def __eq__(self, other):
         # Currently horribly inefficient
         assert isinstance(other, Path)
         return list(self) == list(other)
     
-    def __hash__(self):
-        # Defining __hash__ because there's __eq__ which makes the default
-        # __hash__ disappear on Python 3.
-        return id(self)
-        
+    
     def __req__(self, other):
         return self.__eq__(other)
     

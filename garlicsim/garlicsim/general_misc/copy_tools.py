@@ -1,4 +1,4 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
@@ -6,6 +6,7 @@ This module defines tools related to copying and deepcopying operations.
 '''
 
 import copy
+
 
 def deepcopy_as_simple_object(thing, memo=None):
     '''

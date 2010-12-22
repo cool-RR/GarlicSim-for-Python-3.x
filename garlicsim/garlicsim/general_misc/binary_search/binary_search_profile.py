@@ -1,8 +1,8 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-Defines the BinarySearchProfile class.
+Defines the `BinarySearchProfile` class.
 
 See its documentation for more info.
 '''
@@ -21,14 +21,14 @@ class BinarySearchProfile(object):
     '''
     A profile of binary search results.
     
-    A binary search profile allows to access all kinds of aspects of the results
-    of a binary search, while not having to execute the search more than one
-    time.
+    A binary search profile allows to access all kinds of aspects of the
+    results of a binary search, while not having to execute the search more
+    than one time.
     '''
     
     def __init__(self, sequence, function, value, both=None):
         '''
-        Constructor for BinarySearchProfile.
+        Construct a `BinarySearchProfile`.
         
         `sequence` is the sequence through which the search is made. `function`
         is a monotonically rising function on the sequence. `value` is the

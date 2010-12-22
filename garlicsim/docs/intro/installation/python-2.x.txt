@@ -1,3 +1,8 @@
+..
+   Copyright 2009-2011 Ram Rachum. This work is licensed under a Creative
+   Commons Attribution-Share Alike 2.5 Israel License, which may be obtained at
+   http://creativecommons.org/licenses/by-sa/2.5/il/
+
 .. _intro-installation-python-2.x:
 
 ==================================
@@ -44,13 +49,13 @@ Optional but recommended:
 For some simpacks in ``garlicsim_lib``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* `SciPy and NumPy`_
+* `NumPy`_
  
 
 For ``garlicsim_wx``
 ^^^^^^^^^^^^^^^^^^^^
 
-* `wxPython 2.8.10.1 or above`_
+* `wxPython 2.8.10.1 or above (but below 2.9)`_
 
 
 
@@ -82,12 +87,12 @@ Installing from source
 GarlicSim is pure-Python and thus doesn't require building. These are the three
 source packages:
 
-* `garlicsim source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.5.1.tar.gz>`_
-  `.zip <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.5.1.zip>`_
-* `garlicsim_lib source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.5.1.tar.gz>`_
-  `.zip <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.5.1.zip>`_
-* `garlicsim_wx source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.5.1.tar.gz>`_
-  `.zip <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.5.1.zip>`_
+* `garlicsim source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.6.0.tar.gz>`_
+  `.zip <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.6.0.zip>`_
+* `garlicsim_lib source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.6.0.tar.gz>`_
+  `.zip <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.6.0.zip>`_
+* `garlicsim_wx source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.6.0.tar.gz>`_
+  `.zip <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.6.0.zip>`_
 
 Use the standard ``python setup.py install`` to install.
 
@@ -99,15 +104,15 @@ Some binaries for Windows are available:
 
 For Python 2.5:
 
-* `garlicsim Windows installer <http://pypi.python.org/packages/2.5/g/garlicsim/garlicsim-0.5.1.win32-py2.5.msi>`_
-* `garlicsim_lib Windows installer <http://pypi.python.org/packages/2.5/g/garlicsim_lib/garlicsim_lib-0.5.1.win32-py2.5.msi>`_
-* `garlicsim_wx Windows installer <http://pypi.python.org/packages/2.5/g/garlicsim_wx/garlicsim_wx-0.5.1.win32-py2.5.msi>`_
+* `garlicsim Windows installer <http://pypi.python.org/packages/2.5/g/garlicsim/garlicsim-0.6.0.win32-py2.5.msi>`_
+* `garlicsim_lib Windows installer <http://pypi.python.org/packages/2.5/g/garlicsim_lib/garlicsim_lib-0.6.0.win32-py2.5.msi>`_
+* `garlicsim_wx Windows installer <http://pypi.python.org/packages/2.5/g/garlicsim_wx/garlicsim_wx-0.6.0.win32-py2.5.msi>`_
   
 For Python 2.6:
 
-* `garlicsim Windows installer <http://pypi.python.org/packages/2.6/g/garlicsim/garlicsim-0.5.1.win32-py2.6.msi>`_
-* `garlicsim_lib Windows installer <http://pypi.python.org/packages/2.6/g/garlicsim_lib/garlicsim_lib-0.5.1.win32-py2.6.msi>`_
-* `garlicsim_wx Windows installer <http://pypi.python.org/packages/2.6/g/garlicsim_wx/garlicsim_wx-0.5.1.win32-py2.6.msi>`_
+* `garlicsim Windows installer <http://pypi.python.org/packages/2.6/g/garlicsim/garlicsim-0.6.0.win32-py2.6.msi>`_
+* `garlicsim_lib Windows installer <http://pypi.python.org/packages/2.6/g/garlicsim_lib/garlicsim_lib-0.6.0.win32-py2.6.msi>`_
+* `garlicsim_wx Windows installer <http://pypi.python.org/packages/2.6/g/garlicsim_wx/garlicsim_wx-0.6.0.win32-py2.6.msi>`_
 
 
 To start the GUI
@@ -128,5 +133,5 @@ interpreter:
 .. _Backport of the multiprocessing module: http://pypi.python.org/pypi/multiprocessing/
 .. _Python for Windows Extensions: http://sourceforge.net/projects/pywin32
 .. _Psyco: http://psyco.sourceforge.net
-.. _SciPy and NumPy: http://scipy.org/Download
-.. _wxPython 2.8.10.1 or above: http://wxpython.org/download.php
+.. _NumPy: http://scipy.org/Download
+.. _wxPython 2.8.10.1 or above (but below 2.9): http://wxpython.org/download.php

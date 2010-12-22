@@ -1,21 +1,23 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-A module that defines the Block class and the related BlockError exception.
+A module that Defines the `Block` class and the related BlockError exception.
 
 See the documentation of Block for more information.
 '''
 
 from garlicsim.general_misc import logic_tools
 from garlicsim.general_misc import misc_tools
+from garlicsim.general_misc import address_tools
 
 from garlicsim.misc import GarlicSimException
 
 from .tree_member import TreeMember
-# We are doing `from .node import Node` in the bottom of the file.
+# from .node import Node (at bottom of file.)
 
-__all__ = ["Block", "BlockError"]
+
+__all__ = ['Block', 'BlockError']
 
 
 class BlockError(GarlicSimException):
@@ -40,20 +42,32 @@ class Block(TreeMember):
         2. All members, except the last one, must have no ends, and no
            children except their successor in the block.
         3. The last node may have any kinds of children and ends.
-        4. All members share the same step_profile.
+        4. All members share the same `.step_profile`.
 
     If you want to check whether a certain node is in a block or not,
-    check its ".block" attribute.
+    check its `.block` attribute.
 
     '''
+    # todo: Possibly add a `children` property that will get from the last
+    # node. Will simplify a lot of code. (Possibly `parent` too.)
+    
     def __init__(self, node_list):
-        '''Construct a block from the members of node_list.'''
+        '''Construct a block from the members of `node_list`.'''
+        
         self.alive = True
+        '''Flag saying whether this block is alive.'''
+        
+        self.step_profile = None
+        '''Step profile with which all the nodes in the block were crunched.'''
+        
         self.__node_list = []
         self.add_node_list(node_list)
 
+        
     def soft_get_block(self):
+        '''Get the block.'''
         return self
+    
     
     def append_node(self, node):
         '''
@@ -67,33 +81,34 @@ class Block(TreeMember):
         assert self.alive
         
         if not self.__node_list:
-            # If the node list is [], let's make it [node].
+            # If the node list is `[]`, let's make it `[node]`.
             self.__node_list.append(node)
             node.block = self
+            self.step_profile = node.step_profile
             return
         
-        if node.step_profile != self.get_step_profile():
-            raise BlockError('''Tried to add node which has a different
-step_profile.''')
+        if node.step_profile != self.step_profile:
+            raise BlockError('Tried to add node which has a different step '
+                             'profile.')
             
         
         # If the flow reached here, the block is not empty.
         last_in_block = self.__node_list[-1]
         if node.parent == last_in_block:
-            # We're appending the node to the end of the block.
+            # We're appending the node to the tail of the block.
             self.__node_list.append(node)
             node.block = self
             return
         
         first_in_block = self.__node_list[0]
         if node == first_in_block.parent:
-            # We're appending the node to the start of the block.
+            # We're appending the node to the head of the block.
             self.__node_list.insert(0, node)
             node.block = self
             return
         
-        raise BlockError('''Tried to add a node which is not a direct \
-successor or a direct ancestor of the block.''')
+        raise BlockError('Tried to add a node which is not a direct '
+                         'successor or a direct ancestor of the block.')
 
     
     def add_node_list(self, node_list):
@@ -101,9 +116,12 @@ successor or a direct ancestor of the block.''')
         Add a list of nodes to the block.
         
         These nodes must already be successive to each other.
+        
         Also, one of the following conditions must be true:
+        
             1. The first node in the list is a child of the last node in the
                block.
+               
             2. The last node in the list is the parent of the first node in
                the block.
         '''
@@ -119,15 +137,15 @@ successor or a direct ancestor of the block.''')
         
         if not logic_tools.all_equal((node.step_profile for node
                                       in node_list)):
-            raise BlockError('''Tried to add node list that doesn't share the \
-same step options profile.''')
+            raise BlockError("Tried to add node list that doesn't share the "
+                             "same step profile.")
         
         sample_step_profile = node_list[0].step_profile
         
         if self.__node_list and \
-           sample_step_profile != self.get_step_profile():
-            raise BlockError('''Tried to add nodelist which contains node \
-that has a different step_profile.''')
+           sample_step_profile != self.step_profile:
+            raise BlockError("Tried to add node list which contains node that "
+                             "has a different step profile.")
         
         # We now make sure the node_list is successive, untouched, and has no
         # unwanted children.
@@ -135,8 +153,9 @@ that has a different step_profile.''')
             if (i >= 1) and (node_list[i].parent != node_list[i-1]):
                 raise BlockError('Tried to add non-consecutive nodes to block.')
             if (len(node_list) - i >= 2) and (len(node_list[i].children) != 1):
-                raise BlockError('''Tried to add to the block a node which \
-doesn't have exactly one child, and not as the last node in the block.''')
+                raise BlockError("Tried to add to the block a node which "
+                                 "doesn't have exactly one child, and not as "
+                                 "the last node in the block.")
             if node_list[i].touched:
                 raise BlockError("Tried to add touched nodes to block.")
         
@@ -145,6 +164,7 @@ doesn't have exactly one child, and not as the last node in the block.''')
             self.__node_list = list(node_list)
             for node in node_list:
                 node.block = self
+            self.step_profile = sample_step_profile
             return
         
         if node_list[0].parent == self.__node_list[-1]:
@@ -212,11 +232,11 @@ doesn't have exactly one child, and not as the last node in the block.''')
                 self.__node_list[i].block = None
                 return self.__node_list.__delitem__(i)
             elif (-len(self) < i < len(self) - 1):
-                    raise BlockError('''Can't remove a node from the \
-middle of a block''')
+                    raise BlockError("Can't remove a node from the middle of "
+                                     "a block")
             else:
-                raise IndexError('''Tried to remove a node by index, \
-while the index was bigger than the block's length.''')
+                raise IndexError("Tried to remove a node by index, while the "
+                                 "index was bigger than the block's length.")
         
         elif isinstance(i, slice):
             if i.start < 0:
@@ -226,18 +246,18 @@ while the index was bigger than the block's length.''')
             
             assert 0 <= i.start <= i.stop < len(self)
             
-            start_node, end_node = [self[index] for index in (i.start, i.stop)]
+            head_node, tail_node = [self[index] for index in (i.start, i.stop)]
             
-            self.split(end_node)
+            self.split(tail_node)
 
             if self.alive is False:                
                 return
             
-            if i.start >= 1:                
-                self.split(start_node.parent)
+            if i.start >= 1:
+                self.split(head_node.parent)
                 
-            if start_node.block is not None:
-                start_node.block.delete()
+            if head_node.block is not None:
+                head_node.block.delete()
             
         else:
             raise NotImplementedError
@@ -280,15 +300,6 @@ while the index was bigger than the block's length.''')
         return self.__node_list.index(node)
     
     
-    def get_step_profile(self):
-        '''
-        Get the step profile of the nodes in this block.
-        
-        The same profile is used in all of the nodes in the block.
-        '''
-        assert self.alive
-        return self.__node_list[0].step_profile
-     
     def is_overlapping(self, tree_member):
         '''
         Return whether this block overlaps with the given tree member.
@@ -304,15 +315,15 @@ while the index was bigger than the block's length.''')
             return (self is tree_member)
         else:
             assert isinstance(tree_member, Node)
-            return (self in tree_member)
+            return (tree_member in self)
     
     
     def make_containing_path(self):
         '''
         Create a path that contains this block.
         
-        There may be multiple different paths that contain this block. This will
-        return the one which points to the newest possible forks.
+        There may be multiple different paths that contain this block. This
+        will return the one which points to the newest possible forks.
         
         Returns the path.
         '''
@@ -348,8 +359,8 @@ while the index was bigger than the block's length.''')
         Get all leaves that are descendents of this block.
         
         Only leaves with a distance of at most `max_nodes_distance` in nodes or
-        `max_clock_distance` in clock are returned. (Note this is an OR relation
-        between the two condintions)
+        `max_clock_distance` in clock are returned. (Note this is an OR
+        relation between the two condintions)
         
         Returns a dict of the form:
         
@@ -378,12 +389,11 @@ while the index was bigger than the block's length.''')
         `generations` specifies the number of generation that the returned
         ancestor should be above the current block. `round` determines how this
         method will behave if it was asked for too many generations back, and
-        not enough existed. If `round` is True, it will return the root. If
-        `round` is False, it will raise a LookupError.
+        not enough existed. If `round` is `True`, it will return the root. If
+        `round` is `False`, it will raise a `NodeLookupError`.
         '''
         return self[0].get_ancestor(generations, round)
 
-    
     
     def get_root(self):
         '''
@@ -401,17 +411,14 @@ while the index was bigger than the block's length.''')
         
         Example output:
         <garlicsim.data_structures.Block of length 40 crunched with
-        StepProfile(t=0.1) at 0x1c84d70>
+        life.State.step(<state>), t=0.1) at 0x1c84d70>
         '''
         assert self.alive # todo: say "Dead block"
         return '<%s of length %s, crunched with %s at %s>' % \
                (
-                   misc_tools.shorten_class_address(
-                       self.__class__.__module__,
-                       self.__class__.__name__
-                   ),
+                   address_tools.describe(type(self), shorten=True),
                    len(self),
-                   self.get_step_profile(),
+                   self.step_profile.__repr__(short_form=True),
                    hex(id(self))
                )
         

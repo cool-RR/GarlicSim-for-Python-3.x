@@ -1,13 +1,16 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-See documentation of class ReadWriteLock defined in this module.
+See documentation of class `ReadWriteLock` defined in this module.
 '''
+# todo: organize.
 
 from . import original_read_write_lock
 
-__all__ = ["ReadWriteLock"]
+
+__all__ = ['ReadWriteLock']
+
 
 class ContextManager(object):
     def __init__(self, lock, acquire_func):
@@ -18,6 +21,7 @@ class ContextManager(object):
     def __exit__(self, *args, **kwargs):
         self.lock.release()
 
+        
 class ReadWriteLock(original_read_write_lock.ReadWriteLock):
     '''
     A ReadWriteLock subclassed from a different ReadWriteLock class defined

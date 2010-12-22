@@ -1,8 +1,8 @@
-# Copyright 2009-2010 Ram Rachum.
+# Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
 '''
-Defines the TreeMember class.
+Defines the `TreeMember` class.
 
 See its documentation for more information.
 '''
@@ -17,6 +17,8 @@ class TreeMember(object):
     This is an abstract base class for all kinds of objects that are members of
     a tree.
     '''
+    # todo: add .step_profile as abstract
+    
     __metaclass__ = abc.ABCMeta
   
     @abc.abstractmethod
@@ -24,8 +26,8 @@ class TreeMember(object):
         '''
         Get the length of the tree member.
         
-        For a node or an end, this will be 1. For a block, it will be the number
-        of contained nodes.
+        For a node or an end, this will be 1. For a block, it will be the
+        number of contained nodes.
         '''
         raise NotImplementedError
 
@@ -37,8 +39,7 @@ class TreeMember(object):
         
         If it's not a part of a block, return itself.
         '''
-        raise NotImplementedError
-
+        
     
     @abc.abstractmethod
     def make_containing_path(self):
@@ -49,7 +50,6 @@ class TreeMember(object):
         This will return the one which points to the newest possible forks.
         Returns the path.
         '''
-        raise NotImplementedError
         
     
     @abc.abstractmethod
@@ -57,11 +57,11 @@ class TreeMember(object):
         '''
         Get a list of all possible paths that contain this tree member.
         
-        Note: There may be paths that contain this tree member which will not be
-        identical to one of the paths given here, because these other paths may
-        specify decisions that are not even on the same root as these paths.
+        Note: There may be paths that contain this tree member which will not
+        be identical to one of the paths given here, because these other paths
+        may specify decisions that are not even on the same root as these
+        paths.
         '''
-        raise NotImplementedError
     
     
     @abc.abstractmethod
@@ -73,7 +73,6 @@ class TreeMember(object):
         This will return a path that doesn't specify any decisions after this
         tree member.
         '''
-        raise NotImplementedError
 
 
     @abc.abstractmethod
@@ -100,7 +99,6 @@ class TreeMember(object):
         }
             
         '''
-        raise NotImplementedError
 
     
     @abc.abstractmethod
@@ -109,13 +107,11 @@ class TreeMember(object):
         Get an ancestor of this tree member.
         
         `generations` specifies the number of generation that the returned
-        ancestor should be above the current tree member. `round` determines how
-        this method will behave if it was asked for too many generations back,
-        and not enough existed. If `round` is True, it will return the root. If
-        `round` is False, it will raise a LookupError.
+        ancestor should be above the current tree member. `round` determines
+        how this method will behave if it was asked for too many generations
+        back, and not enough existed. If `round` is `True`, it will return the
+        root. If `round` is `False`, it will raise a `NodeLookupError`.
         '''
-
-        raise NotImplementedError
 
     
     @abc.abstractmethod
@@ -126,7 +122,6 @@ class TreeMember(object):
         This means the node which is the parent of the parent of the parent
         of... the parent of this tree member.
         '''
-        raise NotImplementedError
     
     
     @abc.abstractmethod
@@ -134,9 +129,3 @@ class TreeMember(object):
         '''
         Return whether this tree member overlaps with the given tree member.
         '''
-        raise NotImplementedError
-    
-        
-
-
-
