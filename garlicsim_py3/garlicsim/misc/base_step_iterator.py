@@ -8,8 +8,8 @@ See its documentation for more information.
 '''
 
 import copy
+import abc
 
-from garlicsim.general_misc.third_party import abc
 from collections import Iterator
 
 import garlicsim
