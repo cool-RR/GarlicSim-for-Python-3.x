@@ -30,9 +30,6 @@ def monkeypatch_method(class_, name=None):
         # Note that unlike most decorators, this decorator retuns the function
         # it was given without modifying it. It modifies the class only.
         name_ = name or function.__name__
-        new_method = types.MethodType(function, None, class_)
-        # todo: Last line was: `new_method = types.MethodType(function,
-        # class_)`, is subtly wrong, make tests to prove
-        setattr(class_, name_, new_method)
+        setattr(class_, name_, function)
         return function
     return decorator
