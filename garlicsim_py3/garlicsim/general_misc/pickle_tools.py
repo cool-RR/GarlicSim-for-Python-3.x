@@ -9,7 +9,6 @@ See its documentation for more details.
 
 
 import re
-import pickle as pickle_module
 import pickle # Importing just to get dispatch table, not pickling with it.
 import copyreg
 import types
@@ -29,7 +28,7 @@ def is_atomically_pickleable(thing):
     
     However, the `threading.Lock()` itself is not atomically pickleable.
     '''
-    my_type = misc_tools.get_actual_type(thing)
+    my_type = type(thing)
     return _is_type_atomically_pickleable(my_type, thing)
 
 
@@ -139,7 +138,7 @@ class CutePickler(object):
     (Not subclassing `cPickle.Pickler` because it doesn't support subclassing.)
     '''
     def __init__(self, file_, protocol=0): 
-        pickler = self.pickler = pickle_module.Pickler(file_, protocol) 
+        pickler = self.pickler = pickle.Pickler(file_, protocol) 
         pickler.persistent_id = self.persistent_id
         self.dump, self.clear_memo = \
             pickler.dump, pickler.clear_memo
@@ -174,7 +173,7 @@ class CuteUnpickler(object):
     subclassing.)
     '''
     def __init__(self, file_): 
-        unpickler = self.unpickler = pickle_module.Unpickler(file_) 
+        unpickler = self.unpickler = pickle.Unpickler(file_) 
         unpickler.persistent_load = self.persistent_load
         self.load = unpickler.load
         self.noload = getattr(unpickler, 'noload', None)
@@ -187,7 +186,7 @@ class CuteUnpickler(object):
             description = match.groupdict()['description']            
             return FilteredObject(description) 
         else: 
-            raise pickle_module.UnpicklingError('Invalid persistent id')
+            raise pickle.UnpicklingError('Invalid persistent id')
  
  
     

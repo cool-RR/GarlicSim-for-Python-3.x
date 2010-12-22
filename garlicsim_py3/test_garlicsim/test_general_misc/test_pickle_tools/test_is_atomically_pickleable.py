@@ -7,17 +7,13 @@
 
 import threading
 import io
-import io
-
-# We're importing `pickle_module` from `pickle_tools`, so we get the exact same
-# pickle module it's using. (Giving it the freedom to change between `cPickle`
-# and `pickle`.)
-from garlicsim.general_misc.pickle_tools import pickle_module
+import pickle
 
 import nose
 
 from garlicsim.general_misc import import_tools
 
+import garlicsim
 from garlicsim.general_misc import pickle_tools
 
 from .shared import PickleableObject, NonPickleableObject
@@ -26,8 +22,8 @@ from .shared import PickleableObject, NonPickleableObject
 def is_pickle_successful(thing):
     '''`try` to pickle `thing` and return whether it worked.'''
     try:
-        string = pickle_module.dumps(thing)
-        unpickled_thing = pickle_module.loads(string)
+        string = pickle.dumps(thing)
+        unpickled_thing = pickle.loads(string)
     except Exception:
         return False
     else:
@@ -44,7 +40,6 @@ def test_simple_atomically_pickleables():
         ['one', 'two', (3, 4)],
         set([1, 2, 3, 1]),
         frozenset((1, 2, 3, 1, 'meow', frozenset())),
-        io.StringIO(),
         sum, slice, type
     ]
     
@@ -60,6 +55,14 @@ def test_simple_atomically_pickleables():
     for thing in atomically_pickleables:
         assert pickle_tools.is_atomically_pickleable(thing)
         
+
+def test_string_io():
+    '''Test `StringIO` is considered pickleable.'''
+    if garlicsim.__version_info__ <= (0, 6, 0):
+        raise nose.SkipTest("Can't handle `StringIO` yet.")
+    string_io = io.StringIO()
+    assert is_pickle_successful(string_io)
+    assert pickle_tools.is_atomically_pickleable(string_io)
         
         
 def test_non_atomically_pickleables_multiprocessing():
@@ -125,7 +128,6 @@ def test_non_atomically_pickleables():
 
     non_pickleables = [
         threading.Lock(),
-        io.StringIO()
     ]
         
     for thing in non_pickleables:

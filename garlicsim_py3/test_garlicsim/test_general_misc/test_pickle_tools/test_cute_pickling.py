@@ -4,13 +4,9 @@
 '''Testing module for `CutePickler` and `CuteUnpickler`.'''
 
 import threading
-from io import StringIO 
+from io import BytesIO 
 import tempfile
-
-# We're importing `pickle_module` from `pickle_tools`, so we get the exact same
-# pickle module it's using. (Giving it the freedom to change between `cPickle`
-# and `pickle`.)
-from garlicsim.general_misc.pickle_tools import pickle_module
+import pickle
 
 import nose
 
@@ -38,7 +34,7 @@ def test_totally_pickleable():
     ]
     
     for thing in totally_pickleable_things:
-        stream = StringIO() 
+        stream = BytesIO() 
         pickler = CutePickler(stream)
         pickler.dump(thing) 
  
@@ -69,7 +65,7 @@ def test_without_multiprocessing():
     thing.x = threading.Lock()
     thing.z = NonPickleableObject()
     
-    stream = StringIO() 
+    stream = BytesIO() 
     pickler = CutePickler(stream)
     pickler.dump(thing) 
 
@@ -118,7 +114,7 @@ def test():
     thing.y = multiprocessing.Lock()
     thing.z = NonPickleableObject()
     
-    stream = StringIO() 
+    stream = BytesIO() 
     pickler = CutePickler(stream)
     pickler.dump(thing) 
 

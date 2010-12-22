@@ -252,6 +252,28 @@ def test_bad_module_name():
         '.'.join((non_sensical_module_name, 'A'))
     assert describe(A, shorten=True, root=email, namespace={}) == \
         '.'.join((non_sensical_module_name, 'A'))
+
+    
+def test_bad_module_name():
+    '''
+    Test `describe` works for methods with bad `__module__` attribute.
+    
+    The `__module__` attribute usually says where an object can be reached. But
+    in some cases, like when working in a shell, you can't really access the
+    objects from that non-existant module. So `describe` must not fail for
+    these cases.
+    '''
+    
+    raise nose.SkipTest("Can't handle methods yet.")
+    
+    non_sensical_module_name = '__whoop_dee_doo___rrrar'
+    
+    my_locals = locals().copy()
+    my_locals['__name__'] = non_sensical_module_name
+    
+    exec('def f(): pass', my_locals)
+    exec(('class A(object):\n'
+          '    def m(self): pass'), my_locals)
     
     assert describe(A.m) == \
         '.'.join((non_sensical_module_name, 'A.m'))
