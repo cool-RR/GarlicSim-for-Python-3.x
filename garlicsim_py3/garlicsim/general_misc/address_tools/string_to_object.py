@@ -116,6 +116,8 @@ def get_object_by_address(address, root=None, namespace={}):
     else:
         parent_object, namespace_dict = None, None
             
+    if parent_object is None:
+        parent_object = root
         
     # Finished pre-processing `root` and `namespace`.                         #
     ###########################################################################
