@@ -17,7 +17,7 @@ from .exceptions import SleekRefDied
 __all__ = ['CuteSleekValueDict']
 
 
-class CuteSleekValueDict(MutableMapping, object):
+class CuteSleekValueDict(MutableMapping):
     """
     A dictionary which sleekrefs its values and propagates their callback.
     
@@ -40,7 +40,13 @@ class CuteSleekValueDict(MutableMapping, object):
                 del csvd.data[sleek_ref.key]
                 csvd.callback()
         self._remove = remove
-        UserDict.UserDict.__init__(self, *args, **kwargs)
+        
+        self.data = {}
+        if args:
+            (arg,) = args
+            self.update(arg)
+        if kwargs:
+            self.update(kwargs)
 
         
     def __getitem__(self, key):
@@ -53,7 +59,15 @@ class CuteSleekValueDict(MutableMapping, object):
             else:
                 raise KeyError(key)
             
-        
+            
+    def __len__(self):
+        return len(list(self))
+    
+    
+    def __delitem__(self):
+        raise NotImplementedError()
+
+    
     def __contains__(self, key):
         try:
             self.data[key]()
