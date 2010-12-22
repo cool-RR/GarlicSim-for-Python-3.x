@@ -111,7 +111,4 @@ def test_cached_history_function():
     assert result_1 == result_2
     
 
-cached_state_function_test()
-cached_history_function_test()
-assert False
 
