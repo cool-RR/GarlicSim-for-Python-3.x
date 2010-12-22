@@ -109,11 +109,13 @@ def test_unhashable_arguments():
     '''Test `cache` works with unhashable arguments.'''
     
     f = cache()(counting_func)
+
+    x1 = set((1, 2))
+    x2 = set((1, 2))
     
+    assert f(x1) == f(x2)
     
-    assert f(set((1, 2))) == f(set((1, 2)))
-    
-    assert f(7, set((1, 2))) != f(8, set((1, 2)))
+    assert f(7, x1) != f(8, x2)
     
     assert f('boo') != f(meow='frrr')
     
