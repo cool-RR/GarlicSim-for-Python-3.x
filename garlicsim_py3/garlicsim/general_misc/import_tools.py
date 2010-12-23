@@ -12,7 +12,8 @@ from garlicsim.general_misc import caching
 from functools import reduce
     
 
-def import_all(package, exclude='__init__', silent_fail=False):
+def import_all(package, exclude=['__init__', '__pycache__'],
+               silent_fail=False):
     '''
     Import all the modules and packages that live inside the given package.
     
@@ -21,7 +22,7 @@ def import_all(package, exclude='__init__', silent_fail=False):
     anyway.)
     
     You may specify a module/package to exclude, which is by default
-    `__init__`.
+    `__init__`. tododoc
     
     Returns a list with all the imported modules and packages.
     
@@ -30,10 +31,13 @@ def import_all(package, exclude='__init__', silent_fail=False):
     
     paths = package_finder.get_packages_and_modules_filenames(package)
     
+    if isinstance(exclude, str): # Allowing one exclusion instead of a set
+        exclude = [exclude]
+    
     names = {}
     for path in paths:
         name = os.path.splitext(os.path.split(path)[1])[0]
-        if name == exclude:
+        if name in exclude:
             continue
         full_name = package.__name__ + '.' + name
         names[path] = full_name
