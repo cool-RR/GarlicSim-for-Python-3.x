@@ -8,7 +8,12 @@ import glob
 
 
 def list_sub_folders(path, exclude=[]):
-    '''List all the immediate sub-folders of the folder at `path`.tododoc'''
+    '''
+    List all the immediate sub-folders of the folder at `path`.
+    
+    You may specify a list of folder names to exclude as the `exclude`
+    argument.
+    '''
     
     if isinstance(exclude, str): # Allowing single `exclude` instead of set
         exclude = [exclude]

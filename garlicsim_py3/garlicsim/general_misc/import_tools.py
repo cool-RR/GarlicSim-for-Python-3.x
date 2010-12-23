@@ -21,8 +21,8 @@ def import_all(package, exclude=['__init__', '__pycache__'],
     will not be imported (of course, that subpackage itself may import them
     anyway.)
     
-    You may specify a module/package to exclude, which is by default
-    `__init__`. tododoc
+    You may specify a list of modules/packages to exclude, which is by default
+    `['__init__', '__pycache__']`.
     
     Returns a list with all the imported modules and packages.
     
