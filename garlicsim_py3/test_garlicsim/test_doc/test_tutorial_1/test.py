@@ -20,7 +20,7 @@ def test():
     new_state = garlicsim.simulate(state, 20)
     assert life_board_pattern.match(repr(new_state))
     result = garlicsim.list_simulate(state, 20)
-    assert repr(type(result)) == "<type 'list'>"
+    assert repr(type(result)) == "<class 'list'>"
     assert len(result) == 21
     assert life_board_pattern.match(repr(result[0]))
     assert result[0] == state

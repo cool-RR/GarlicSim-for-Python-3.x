@@ -24,8 +24,8 @@ def resolve(string, root=None, namespace={}):
     For example:
     
         >>> address_tools.resolve('[list, [1, 2], email]')
-        [<type 'list'>, [1, 2], <module 'email' from
-        'c:\Python27\lib\email\__init__.pyc'>]
+        [<class 'list'>, [1, 2], <module 'email' from
+        'c:\Python31\lib\email\__init__.pyc'>]
         
     `root` is an object (usually a module) whose attributes will be looked at
     when searching for the object. `namespace` is a `dict` whose keys will be

@@ -163,7 +163,7 @@ states, from the first given one to the last.
 
     >>> result = garlicsim.list_simulate(state, 20)
     >>> type(result)
-    <type 'list'>
+    <class 'list'>
     >>> len(result)
     21
 

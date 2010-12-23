@@ -12,7 +12,7 @@ For example:
     >>> address_tools.describe(list)
     'list'
     >>> address_tools.resolve('list')
-    <type 'list'>
+    <class 'list'>
     >>> address_tools.describe([1, 2, {3: 4}])
     '[1, 2, {3: 4}]'
     >>> address_tools.resolve('{email.encoders: 1}')

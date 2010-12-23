@@ -20,14 +20,14 @@ from .shared import (_address_pattern, _contained_address_pattern,
 
 
 _unresolvable_string_pattern = re.compile("<[^<>]*?'[^<>]*?'[^<>]*?>")
-'''Pattern for unresorvable strings, like "<type 'list'>".'''
+'''Pattern for unresorvable strings, like "<class 'list'>".'''
 
 
 _address_in_unresolvable_string_pattern = re.compile("[^']*?'([^']*?)'[^']*?")
 '''
 Pattern for extracting address from unresorvable strings.
 
-For example, matching "type 'list'" would result in `match.groups() ==
+For example, matching "class 'list'" would result in `match.groups() ==
 ('list',)`.
 '''
 
@@ -84,7 +84,7 @@ def describe(obj, shorten=False, root=None, namespace={}):
         ugly_reprs = _unresolvable_string_pattern.findall(current_result)
         
         for ugly_repr in ugly_reprs:
-            # An `ugly_repr` is something like "<type 'list'>"
+            # An `ugly_repr` is something like "<class 'list'>"
             
             # We try to extract an address from it:...
             re_match = _address_in_unresolvable_string_pattern.match(ugly_repr)
