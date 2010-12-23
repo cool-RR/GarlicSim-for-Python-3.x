@@ -1,89 +1,15 @@
+import unittest2
+
+import contextlib
+import re
 import sys
 import warnings
-
-from garlicsim.general_misc.third_party import unittest2
 
 
 def resultFactory(*_):
     return unittest2.TestResult()
 
-class OldTestResult(object):
-    """An object honouring TestResult before startTestRun/stopTestRun."""
-
-    def __init__(self, *_):
-        self.failures = []
-        self.errors = []
-        self.testsRun = 0
-        self.shouldStop = False
-
-    def startTest(self, test):
-        pass
-
-    def stopTest(self, test):
-        pass
-
-    def addError(self, test, err):
-        self.errors.append((test, err))
-
-    def addFailure(self, test, err):
-        self.failures.append((test, err))
-
-    def addSuccess(self, test):
-        pass
-
-    def wasSuccessful(self):
-        return True
-
-    def printErrors(self):
-        pass
-
-class LoggingResult(unittest2.TestResult):
-    def __init__(self, log):
-        self._events = log
-        super(LoggingResult, self).__init__()
-
-    def startTest(self, test):
-        self._events.append('startTest')
-        super(LoggingResult, self).startTest(test)
-
-    def startTestRun(self):
-        self._events.append('startTestRun')
-        super(LoggingResult, self).startTestRun()
-
-    def stopTest(self, test):
-        self._events.append('stopTest')
-        super(LoggingResult, self).stopTest(test)
-
-    def stopTestRun(self):
-        self._events.append('stopTestRun')
-        super(LoggingResult, self).stopTestRun()
-
-    def addFailure(self, *args):
-        self._events.append('addFailure')
-        super(LoggingResult, self).addFailure(*args)
-
-    def addSuccess(self, *args):
-        self._events.append('addSuccess')
-        super(LoggingResult, self).addSuccess(*args)
-
-    def addError(self, *args):
-        self._events.append('addError')
-        super(LoggingResult, self).addError(*args)
-
-    def addSkip(self, *args):
-        self._events.append('addSkip')
-        super(LoggingResult, self).addSkip(*args)
-
-    def addExpectedFailure(self, *args):
-        self._events.append('addExpectedFailure')
-        super(LoggingResult, self).addExpectedFailure(*args)
-
-    def addUnexpectedSuccess(self, *args):
-        self._events.append('addUnexpectedSuccess')
-        super(LoggingResult, self).addUnexpectedSuccess(*args)
-
-
-class EqualityMixin(object):
+class TestEquality(object):
     """Used as a mixin for TestCase"""
 
     # Check for a valid __eq__ implementation
@@ -98,7 +24,7 @@ class EqualityMixin(object):
             self.assertNotEqual(obj_1, obj_2)
             self.assertNotEqual(obj_2, obj_1)
 
-class HashingMixin(object):
+class TestHashing(object):
     """Used as a mixin for TestCase"""
 
     # Check for a valid __hash__ implementation
@@ -123,55 +49,164 @@ class HashingMixin(object):
                 self.fail("Problem hashing %s and %s: %s" % (obj_1, obj_2, e))
 
 
+class LoggingResult(unittest2.TestResult):
+    def __init__(self, log):
+        self._events = log
+        super().__init__()
 
-# copied from Python 2.6
-try:
-    from warnings import catch_warnings
-except ImportError:
-    class catch_warnings(object):
-        def __init__(self, record=False, module=None):
-            self._record = record
-            self._module = sys.modules['warnings']
-            self._entered = False
-    
-        def __repr__(self):
-            args = []
-            if self._record:
-                args.append("record=True")
-            name = type(self).__name__
-            return "%s(%s)" % (name, ", ".join(args))
-    
-        def __enter__(self):
-            if self._entered:
-                raise RuntimeError("Cannot enter %r twice" % self)
-            self._entered = True
-            self._filters = self._module.filters
-            self._module.filters = self._filters[:]
-            self._showwarning = self._module.showwarning
-            if self._record:
-                log = []
-                def showwarning(*args, **kwargs):
-                    log.append(WarningMessage(*args, **kwargs))
-                self._module.showwarning = showwarning
-                return log
-            else:
-                return None
-    
-        def __exit__(self, *exc_info):
-            if not self._entered:
-                raise RuntimeError("Cannot exit %r without entering first" % self)
-            self._module.filters = self._filters
-            self._module.showwarning = self._showwarning
+    def startTest(self, test):
+        self._events.append('startTest')
+        super().startTest(test)
 
-    class WarningMessage(object):
-        _WARNING_DETAILS = ("message", "category", "filename", "lineno", "file",
-                            "line")
-        def __init__(self, message, category, filename, lineno, file=None,
-                        line=None):
-            local_values = locals()
-            for attr in self._WARNING_DETAILS:
-                setattr(self, attr, local_values[attr])
-            self._category_name = None
-            if category.__name__:
-                self._category_name = category.__name__
+    def startTestRun(self):
+        self._events.append('startTestRun')
+        super(LoggingResult, self).startTestRun()
 
+    def stopTest(self, test):
+        self._events.append('stopTest')
+        super().stopTest(test)
+
+    def stopTestRun(self):
+        self._events.append('stopTestRun')
+        super(LoggingResult, self).stopTestRun()
+
+    def addFailure(self, *args):
+        self._events.append('addFailure')
+        super().addFailure(*args)
+
+    def addSuccess(self, *args):
+        self._events.append('addSuccess')
+        super(LoggingResult, self).addSuccess(*args)
+
+    def addError(self, *args):
+        self._events.append('addError')
+        super().addError(*args)
+
+    def addSkip(self, *args):
+        self._events.append('addSkip')
+        super(LoggingResult, self).addSkip(*args)
+
+    def addExpectedFailure(self, *args):
+        self._events.append('addExpectedFailure')
+        super(LoggingResult, self).addExpectedFailure(*args)
+
+    def addUnexpectedSuccess(self, *args):
+        self._events.append('addUnexpectedSuccess')
+        super(LoggingResult, self).addUnexpectedSuccess(*args)
+
+
+class ResultWithNoStartTestRunStopTestRun(object):
+    """An object honouring TestResult before startTestRun/stopTestRun."""
+
+    def __init__(self):
+        self.failures = []
+        self.errors = []
+        self.testsRun = 0
+        self.skipped = []
+        self.expectedFailures = []
+        self.unexpectedSuccesses = []
+        self.shouldStop = False
+
+    def startTest(self, test):
+        pass
+
+    def stopTest(self, test):
+        pass
+
+    def addError(self, test):
+        pass
+
+    def addFailure(self, test):
+        pass
+
+    def addSuccess(self, test):
+        pass
+
+    def wasSuccessful(self):
+        return True
+
+# copied from test.support in Python 3.2
+
+class WarningsRecorder(object):
+    """Convenience wrapper for the warnings list returned on
+       entry to the warnings.catch_warnings() context manager.
+    """
+    def __init__(self, warnings_list):
+        self._warnings = warnings_list
+        self._last = 0
+
+    def __getattr__(self, attr):
+        if len(self._warnings) > self._last:
+            return getattr(self._warnings[-1], attr)
+        elif attr in warnings.WarningMessage._WARNING_DETAILS:
+            return None
+        raise AttributeError("%r has no attribute %r" % (self, attr))
+
+    @property
+    def warnings(self):
+        return self._warnings[self._last:]
+
+    def reset(self):
+        self._last = len(self._warnings)
+
+def _filterwarnings(filters, quiet=False):
+    """Catch the warnings, then check if all the expected
+    warnings have been raised and re-raise unexpected warnings.
+    If 'quiet' is True, only re-raise the unexpected warnings.
+    """
+    # Clear the warning registry of the calling module
+    # in order to re-raise the warnings.
+    frame = sys._getframe(2)
+    registry = frame.f_globals.get('__warningregistry__')
+    if registry:
+        registry.clear()
+    with warnings.catch_warnings(record=True) as w:
+        # Set filter "always" to record all warnings.  Because
+        # test_warnings swap the module, we need to look up in
+        # the sys.modules dictionary.
+        sys.modules['warnings'].simplefilter("always")
+        yield WarningsRecorder(w)
+    # Filter the recorded warnings
+    reraise = [warning.message for warning in w]
+    missing = []
+    for msg, cat in filters:
+        seen = False
+        for exc in reraise[:]:
+            message = str(exc)
+            # Filter out the matching messages
+            if (re.match(msg, message, re.I) and
+                issubclass(exc.__class__, cat)):
+                seen = True
+                reraise.remove(exc)
+        if not seen and not quiet:
+            # This filter caught nothing
+            missing.append((msg, cat.__name__))
+    if reraise:
+        raise AssertionError("unhandled warning %r" % reraise[0])
+    if missing:
+        raise AssertionError("filter (%r, %s) did not catch any warning" %
+                             missing[0])
+
+
+@contextlib.contextmanager
+def check_warnings(*filters, **kwargs):
+    """Context manager to silence warnings.
+
+    Accept 2-tuples as positional arguments:
+        ("message regexp", WarningCategory)
+
+    Optional argument:
+     - if 'quiet' is True, it does not fail if a filter catches nothing
+        (default True without argument,
+         default False if some filters are defined)
+
+    Without argument, it defaults to:
+        check_warnings(("", Warning), quiet=True)
+    """
+    quiet = kwargs.get('quiet')
+    if not filters:
+        filters = (("", Warning),)
+        # Preserve backward compatibility
+        if quiet is None:
+            quiet = True
+    return _filterwarnings(filters, quiet)

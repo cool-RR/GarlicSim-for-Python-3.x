@@ -1,13 +1,13 @@
 """Test result object"""
 
+import os
+import io
 import sys
 import traceback
 import unittest
 
-from io import StringIO
-
-from garlicsim.general_misc.third_party.unittest2 import util
-from garlicsim.general_misc.third_party.unittest2.compatibility import wraps
+from . import util
+from functools import wraps
 
 __unittest = True
 
@@ -19,9 +19,9 @@ def failfast(method):
         return method(self, *args, **kw)
     return inner
 
-
 STDOUT_LINE = '\nStdout:\n%s'
 STDERR_LINE = '\nStderr:\n%s'
+
 
 class TestResult(unittest.TestResult):
     """Holder for test result information.
@@ -36,8 +36,7 @@ class TestResult(unittest.TestResult):
     """
     _previousTestClass = None
     _moduleSetUpFailed = False
-    
-    def __init__(self):
+    def __init__(self, stream=None, descriptions=None, verbosity=None):
         self.failfast = False
         self.failures = []
         self.errors = []
@@ -52,15 +51,18 @@ class TestResult(unittest.TestResult):
         self._original_stdout = sys.stdout
         self._original_stderr = sys.stderr
         self._mirrorOutput = False
-    
+
+    def printErrors(self):
+        "Called by TestRunner after test run"
+
     def startTest(self, test):
         "Called when the given test is about to be run"
         self.testsRun += 1
         self._mirrorOutput = False
         if self.buffer:
             if self._stderr_buffer is None:
-                self._stderr_buffer = StringIO()
-                self._stdout_buffer = StringIO()
+                self._stderr_buffer = io.StringIO()
+                self._stdout_buffer = io.StringIO()
             sys.stdout = self._stdout_buffer
             sys.stderr = self._stderr_buffer
 
@@ -84,7 +86,7 @@ class TestResult(unittest.TestResult):
                     if not error.endswith('\n'):
                         error += '\n'
                     self._original_stderr.write(STDERR_LINE % error)
-                
+
             sys.stdout = self._original_stdout
             sys.stderr = self._original_stderr
             self._stdout_buffer.seek(0)
@@ -92,7 +94,6 @@ class TestResult(unittest.TestResult):
             self._stderr_buffer.seek(0)
             self._stderr_buffer.truncate()
         self._mirrorOutput = False
-        
 
     def stopTestRun(self):
         """Called once after all tests are executed.
@@ -135,7 +136,7 @@ class TestResult(unittest.TestResult):
 
     def wasSuccessful(self):
         "Tells whether or not this result was a success"
-        return (len(self.failures) + len(self.errors) == 0)
+        return len(self.failures) == len(self.errors) == 0
 
     def stop(self):
         "Indicates that the tests should be aborted"
@@ -147,16 +148,17 @@ class TestResult(unittest.TestResult):
         # Skip test runner traceback levels
         while tb and self._is_relevant_tb_level(tb):
             tb = tb.tb_next
+
         if exctype is test.failureException:
             # Skip assert*() traceback levels
             length = self._count_relevant_tb_levels(tb)
             msgLines = traceback.format_exception(exctype, value, tb, length)
         else:
             msgLines = traceback.format_exception(exctype, value, tb)
-        
+
         if self.buffer:
             output = sys.stdout.getvalue()
-            error = sys.stderr.getvalue()            
+            error = sys.stderr.getvalue()
             if output:
                 if not output.endswith('\n'):
                     output += '\n'
@@ -166,6 +168,7 @@ class TestResult(unittest.TestResult):
                     error += '\n'
                 msgLines.append(STDERR_LINE % error)
         return ''.join(msgLines)
+
 
     def _is_relevant_tb_level(self, tb):
         return '__unittest' in tb.tb_frame.f_globals
@@ -178,6 +181,6 @@ class TestResult(unittest.TestResult):
         return length
 
     def __repr__(self):
-        return "<%s run=%i errors=%i failures=%i>" % \
+        return ("<%s run=%i errors=%i failures=%i>" %
                (util.strclass(self.__class__), self.testsRun, len(self.errors),
-                len(self.failures))
+                len(self.failures)))

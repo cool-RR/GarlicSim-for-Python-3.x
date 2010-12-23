@@ -1,7 +1,8 @@
 import sys
 import types
 
-from garlicsim.general_misc.third_party import unittest2
+
+import unittest2
 
 
 class Test_TestLoader(unittest2.TestCase):
@@ -184,9 +185,8 @@ class Test_TestLoader(unittest2.TestCase):
         self.assertIsInstance(suite, unittest2.TestSuite)
         self.assertEqual(suite.countTestCases(), 1)
         test = list(suite)[0]
-        
+
         self.assertRaisesRegexp(TypeError, "some failure", test.m)
-        
 
     ################################################################
     ### /Tests for TestLoader.loadTestsFromModule()
@@ -292,7 +292,7 @@ class Test_TestLoader(unittest2.TestCase):
 
         try:
             loader.loadTestsFromName('', unittest2)
-        except AttributeError:
+        except AttributeError as e:
             pass
         else:
             self.fail("Failed to raise AttributeError")
@@ -512,7 +512,7 @@ class Test_TestLoader(unittest2.TestCase):
 
         loader = unittest2.TestLoader()
         try:
-            loader.loadTestsFromName('return_wrong', m)
+            suite = loader.loadTestsFromName('return_wrong', m)
         except TypeError:
             pass
         else:
@@ -633,7 +633,7 @@ class Test_TestLoader(unittest2.TestCase):
         loader = unittest2.TestLoader()
 
         try:
-            loader.loadTestsFromNames(['unittest2.sdasfasfasdf', 'unittest2'])
+            loader.loadTestsFromNames(['unittest2.sdasfasfasdf', 'unittest'])
         except AttributeError as e:
             self.assertEqual(str(e), "'module' object has no attribute 'sdasfasfasdf'")
         else:
@@ -895,7 +895,7 @@ class Test_TestLoader(unittest2.TestCase):
 
         loader = unittest2.TestLoader()
         try:
-            loader.loadTestsFromNames(['return_wrong'], m)
+            suite = loader.loadTestsFromNames(['return_wrong'], m)
         except TypeError:
             pass
         else:
@@ -1093,7 +1093,7 @@ class Test_TestLoader(unittest2.TestCase):
     # "The default value is 'test'"
     def test_testMethodPrefix__default_value(self):
         loader = unittest2.TestLoader()
-        self.assertTrue(loader.testMethodPrefix == 'test')
+        self.assertEqual(loader.testMethodPrefix, 'test')
 
     ################################################################
     ### /Tests for TestLoader.testMethodPrefix
@@ -1105,7 +1105,7 @@ class Test_TestLoader(unittest2.TestCase):
     # getTestCaseNames() and all the loadTestsFromX() methods"
     def test_sortTestMethodsUsing__loadTestsFromTestCase(self):
         def reversed_cmp(x, y):
-            return -cmp(x, y)
+            return -((x > y) - (x < y))
 
         class Foo(unittest2.TestCase):
             def test_1(self): pass
@@ -1121,7 +1121,7 @@ class Test_TestLoader(unittest2.TestCase):
     # getTestCaseNames() and all the loadTestsFromX() methods"
     def test_sortTestMethodsUsing__loadTestsFromModule(self):
         def reversed_cmp(x, y):
-            return -cmp(x, y)
+            return -((x > y) - (x < y))
 
         m = types.ModuleType('m')
         class Foo(unittest2.TestCase):
@@ -1139,7 +1139,7 @@ class Test_TestLoader(unittest2.TestCase):
     # getTestCaseNames() and all the loadTestsFromX() methods"
     def test_sortTestMethodsUsing__loadTestsFromName(self):
         def reversed_cmp(x, y):
-            return -cmp(x, y)
+            return -((x > y) - (x < y))
 
         m = types.ModuleType('m')
         class Foo(unittest2.TestCase):
@@ -1157,7 +1157,7 @@ class Test_TestLoader(unittest2.TestCase):
     # getTestCaseNames() and all the loadTestsFromX() methods"
     def test_sortTestMethodsUsing__loadTestsFromNames(self):
         def reversed_cmp(x, y):
-            return -cmp(x, y)
+            return -((x > y) - (x < y))
 
         m = types.ModuleType('m')
         class Foo(unittest2.TestCase):
@@ -1177,7 +1177,7 @@ class Test_TestLoader(unittest2.TestCase):
     # Does it actually affect getTestCaseNames()?
     def test_sortTestMethodsUsing__getTestCaseNames(self):
         def reversed_cmp(x, y):
-            return -cmp(x, y)
+            return -((x > y) - (x < y))
 
         class Foo(unittest2.TestCase):
             def test_1(self): pass
@@ -1190,9 +1190,19 @@ class Test_TestLoader(unittest2.TestCase):
         self.assertEqual(loader.getTestCaseNames(Foo), test_names)
 
     # "The default value is the built-in cmp() function"
+    # Since cmp is now defunct, we simply verify that the results
+    # occur in the same order as they would with the default sort.
     def test_sortTestMethodsUsing__default_value(self):
         loader = unittest2.TestLoader()
-        self.assertTrue(loader.sortTestMethodsUsing is cmp)
+
+        class Foo(unittest2.TestCase):
+            def test_2(self): pass
+            def test_3(self): pass
+            def test_1(self): pass
+
+        test_names = ['test_2', 'test_3', 'test_1']
+        self.assertEqual(loader.getTestCaseNames(Foo), sorted(test_names))
+
 
     # "it can be set to None to disable the sort."
     #
@@ -1280,7 +1290,3 @@ class Test_TestLoader(unittest2.TestCase):
     def test_suiteClass__default_value(self):
         loader = unittest2.TestLoader()
         self.assertTrue(loader.suiteClass is unittest2.TestSuite)
-
-
-if __name__ == '__main__':
-    unittest2.main()

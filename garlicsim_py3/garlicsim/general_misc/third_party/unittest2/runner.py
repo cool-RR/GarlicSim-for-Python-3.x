@@ -2,16 +2,12 @@
 
 import sys
 import time
+
 import unittest
 
-from garlicsim.general_misc.third_party.unittest2 import result
+from . import result
+from .signals import registerResult
 
-try:
-    from garlicsim.general_misc.third_party.unittest2.signals import registerResult
-except ImportError:
-    def registerResult(_):
-        pass
-    
 __unittest = True
 
 
@@ -87,7 +83,7 @@ class TextTestResult(result.TestResult):
     def addSkip(self, test, reason):
         super(TextTestResult, self).addSkip(test, reason)
         if self.showAll:
-            self.stream.writeln("skipped %r" % (reason,))
+            self.stream.writeln("skipped {0!r}".format(reason))
         elif self.dots:
             self.stream.write("s")
             self.stream.flush()
@@ -117,13 +113,9 @@ class TextTestResult(result.TestResult):
     def printErrorList(self, flavour, errors):
         for test, err in errors:
             self.stream.writeln(self.separator1)
-            self.stream.writeln("%s: %s" % (flavour, self.getDescription(test)))
+            self.stream.writeln("%s: %s" % (flavour,self.getDescription(test)))
             self.stream.writeln(self.separator2)
             self.stream.writeln("%s" % err)
-
-    def stopTestRun(self):
-        super(TextTestResult, self).stopTestRun()
-        self.printErrors()
 
 
 class TextTestRunner(unittest.TextTestRunner):
@@ -135,7 +127,7 @@ class TextTestRunner(unittest.TextTestRunner):
     resultclass = TextTestResult
 
     def __init__(self, stream=sys.stderr, descriptions=True, verbosity=1,
-                    failfast=False, buffer=False, resultclass=None):
+                 failfast=False, buffer=False, resultclass=None):
         self.stream = _WritelnDecorator(stream)
         self.descriptions = descriptions
         self.verbosity = verbosity
@@ -150,10 +142,9 @@ class TextTestRunner(unittest.TextTestRunner):
     def run(self, test):
         "Run the given test case or test suite."
         result = self._makeResult()
+        registerResult(result)
         result.failfast = self.failfast
         result.buffer = self.buffer
-        registerResult(result)
-        
         startTime = time.time()
         startTestRun = getattr(result, 'startTestRun', None)
         if startTestRun is not None:
@@ -164,29 +155,29 @@ class TextTestRunner(unittest.TextTestRunner):
             stopTestRun = getattr(result, 'stopTestRun', None)
             if stopTestRun is not None:
                 stopTestRun()
-            else:
-                result.printErrors()
         stopTime = time.time()
         timeTaken = stopTime - startTime
+        result.printErrors()
         if hasattr(result, 'separator2'):
             self.stream.writeln(result.separator2)
         run = result.testsRun
         self.stream.writeln("Ran %d test%s in %.3fs" %
                             (run, run != 1 and "s" or "", timeTaken))
         self.stream.writeln()
-        
+
         expectedFails = unexpectedSuccesses = skipped = 0
         try:
-            results = list(map(len, (result.expectedFailures,
+            results = map(len, (result.expectedFailures,
                                 result.unexpectedSuccesses,
-                                result.skipped)))
+                                result.skipped))
             expectedFails, unexpectedSuccesses, skipped = results
         except AttributeError:
             pass
+
         infos = []
         if not result.wasSuccessful():
             self.stream.write("FAILED")
-            failed, errored = list(map(len, (result.failures, result.errors)))
+            failed, errored = len(result.failures), len(result.errors)
             if failed:
                 infos.append("failures=%d" % failed)
             if errored:

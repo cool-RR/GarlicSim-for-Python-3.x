@@ -1,7 +1,7 @@
 import signal
 import weakref
 
-from garlicsim.general_misc.third_party.unittest2.compatibility import wraps
+from functools import wraps
 
 __unittest = True
 
@@ -17,11 +17,11 @@ class _InterruptHandler(object):
             # if we aren't the installed handler, then delegate immediately
             # to the default handler
             self.default_handler(signum, frame)
-            
+
         if self.called:
             self.default_handler(signum, frame)
         self.called = True
-        for result in list(_results.keys()):
+        for result in _results.keys():
             result.stop()
 
 _results = weakref.WeakKeyDictionary()

@@ -1,6 +1,6 @@
 import datetime
 
-from garlicsim.general_misc.third_party import unittest2
+import unittest2
 
 
 class Test_Assertions(unittest2.TestCase):
@@ -23,40 +23,74 @@ class Test_Assertions(unittest2.TestCase):
         self.assertRaises(self.failureException,
                           self.assertNotAlmostEqual, 0, .1+.1j, places=0)
 
-        try:
-            self.assertAlmostEqual(float('inf'), float('inf'))
-            self.assertRaises(self.failureException, self.assertNotAlmostEqual,
-                              float('inf'), float('inf'))
-        except ValueError:
-            # float('inf') is invalid on Windows in Python 2.4 / 2.5
-            x = object()
-            self.assertAlmostEqual(x, x)
-            self.assertRaises(self.failureException, self.assertNotAlmostEqual,
-                              x, x)
-            
-            
+        self.assertAlmostEqual(float('inf'), float('inf'))
+        self.assertRaises(self.failureException, self.assertNotAlmostEqual,
+                          float('inf'), float('inf'))
+
     def test_AmostEqualWithDelta(self):
         self.assertAlmostEqual(1.1, 1.0, delta=0.5)
         self.assertAlmostEqual(1.0, 1.1, delta=0.5)
         self.assertNotAlmostEqual(1.1, 1.0, delta=0.05)
         self.assertNotAlmostEqual(1.0, 1.1, delta=0.05)
-        
+
         self.assertRaises(self.failureException, self.assertAlmostEqual,
                           1.1, 1.0, delta=0.05)
         self.assertRaises(self.failureException, self.assertNotAlmostEqual,
                           1.1, 1.0, delta=0.5)
-        
+
         self.assertRaises(TypeError, self.assertAlmostEqual,
                           1.1, 1.0, places=2, delta=2)
         self.assertRaises(TypeError, self.assertNotAlmostEqual,
                           1.1, 1.0, places=2, delta=2)
-        
+
         first = datetime.datetime.now()
         second = first + datetime.timedelta(seconds=10)
         self.assertAlmostEqual(first, second,
                                delta=datetime.timedelta(seconds=20))
         self.assertNotAlmostEqual(first, second,
                                   delta=datetime.timedelta(seconds=5))
+
+    def test_assertRaises(self):
+        def _raise(e):
+            raise e
+        self.assertRaises(KeyError, _raise, KeyError)
+        self.assertRaises(KeyError, _raise, KeyError("key"))
+        try:
+            self.assertRaises(KeyError, lambda: None)
+        except self.failureException as e:
+            self.assertIn("KeyError not raised", str(e))
+        else:
+            self.fail("assertRaises() didn't fail")
+        try:
+            self.assertRaises(KeyError, _raise, ValueError)
+        except ValueError:
+            pass
+        else:
+            self.fail("assertRaises() didn't let exception pass through")
+        with self.assertRaises(KeyError) as cm:
+            try:
+                raise KeyError
+            except Exception as e:
+                exc = e
+                raise
+        self.assertIs(cm.exception, exc)
+
+        with self.assertRaises(KeyError):
+            raise KeyError("key")
+        try:
+            with self.assertRaises(KeyError):
+                pass
+        except self.failureException as e:
+            self.assertIn("KeyError not raised", str(e))
+        else:
+            self.fail("assertRaises() didn't fail")
+        try:
+            with self.assertRaises(KeyError):
+                raise ValueError
+        except ValueError:
+            pass
+        else:
+            self.fail("assertRaises() didn't let exception pass through")
 
     def testAssertNotRegexpMatches(self):
         self.assertNotRegexpMatches('Ala ma kota', r'r+')
@@ -101,9 +135,14 @@ class TestLongMessage(unittest2.TestCase):
 
         self.assertEquals(self.testableTrue._formatMessage(None, "foo"), "foo")
         self.assertEquals(self.testableTrue._formatMessage("foo", "bar"), "bar : foo")
-        
+
         # This blows up if _formatMessage uses string concatenation
         self.testableTrue._formatMessage(object(), 'foo')
+
+    def test_formatMessage_unicode_error(self):
+        one = ''.join(chr(i) for i in range(255))
+        # this used to cause a UnicodeDecodeError constructing msg
+        self.testableTrue._formatMessage(one, '\uFFFD')
 
     def assertMessages(self, methodName, args, errors):
         def getMethod(i):
@@ -121,10 +160,10 @@ class TestLongMessage(unittest2.TestCase):
             if withMsg:
                 kwargs = {"msg": "oops"}
 
-            self.assertRaisesRegexp(self.failureException,
-                                    expected_regexp,
-                                    lambda: testMethod(*args, **kwargs))
-            
+            with self.assertRaisesRegexp(self.failureException,
+                                         expected_regexp=expected_regexp):
+                testMethod(*args, **kwargs)
+
     def testAssertTrue(self):
         self.assertMessages('assertTrue', (False,),
                             ["^False is not True$", "^oops$", "^False is not True$",
@@ -248,7 +287,3 @@ class TestLongMessage(unittest2.TestCase):
                             ["^unexpectedly identical: None$", "^oops$",
                              "^unexpectedly identical: None$",
                              "^unexpectedly identical: None : oops$"])
-
-
-if __name__ == '__main__':
-    unittest2.main()

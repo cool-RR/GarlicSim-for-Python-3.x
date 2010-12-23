@@ -1,9 +1,9 @@
 from io import StringIO
 
 import unittest
-from garlicsim.general_misc.third_party import unittest2
+import unittest2
 
-from garlicsim.general_misc.third_party.unittest2.test.support import resultFactory
+from .support import resultFactory
 
 
 class TestUnittest(unittest2.TestCase):

@@ -1,12 +1,12 @@
-from garlicsim.general_misc.third_party import unittest2
+import unittest2
 
-from garlicsim.general_misc.third_party.unittest2.test.support import LoggingResult
+from .support import LoggingResult
 
 
 class Test_FunctionTestCase(unittest2.TestCase):
 
     # "Return the number of tests represented by the this test object. For
-    # unittest2.TestCase instances, this will always be 1"
+    # TestCase instances, this will always be 1"
     def test_countTestCases(self):
         test = unittest2.FunctionTestCase(lambda: None)
 
@@ -142,8 +142,3 @@ class Test_FunctionTestCase(unittest2.TestCase):
         test = unittest2.FunctionTestCase(lambda: None, description=desc)
 
         self.assertEqual(test.shortDescription(), "this tests foo")
-
-
-
-if __name__ == '__main__':
-    unittest2.main()

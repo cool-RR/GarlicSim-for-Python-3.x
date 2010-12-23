@@ -1,11 +1,27 @@
-from io import StringIO
+import io
 
+import os
 import sys
-from garlicsim.general_misc.third_party import unittest2
+import unittest2
 
-hasInstallHandler = hasattr(unittest2, 'installHandler')
 
 class Test_TestProgram(unittest2.TestCase):
+
+    def test_discovery_from_dotted_path(self):
+        loader = unittest2.TestLoader()
+
+        tests = [self]
+        expectedPath = os.path.abspath(os.path.dirname(unittest2.test.__file__))
+
+        self.wasRun = False
+        def _find_tests(start_dir, pattern):
+            self.wasRun = True
+            self.assertEqual(start_dir, expectedPath)
+            return tests
+        loader._find_tests = _find_tests
+        suite = loader.discover('unittest2.test')
+        self.assertTrue(self.wasRun)
+        self.assertEqual(suite._tests, tests)
 
     # Horrible white box test
     def testNoExit(self):
@@ -52,7 +68,7 @@ class Test_TestProgram(unittest2.TestCase):
     def test_NonExit(self):
         program = unittest2.main(exit=False,
                                 argv=["foobar"],
-                                testRunner=unittest2.TextTestRunner(stream=StringIO()),
+                                testRunner=unittest2.TextTestRunner(stream=io.StringIO()),
                                 testLoader=self.FooBarLoader())
         self.assertTrue(hasattr(program, 'result'))
 
@@ -62,7 +78,7 @@ class Test_TestProgram(unittest2.TestCase):
             SystemExit,
             unittest2.main,
             argv=["foobar"],
-            testRunner=unittest2.TextTestRunner(stream=StringIO()),
+            testRunner=unittest2.TextTestRunner(stream=io.StringIO()),
             exit=True,
             testLoader=self.FooBarLoader())
 
@@ -72,7 +88,7 @@ class Test_TestProgram(unittest2.TestCase):
             SystemExit,
             unittest2.main,
             argv=["foobar"],
-            testRunner=unittest2.TextTestRunner(stream=StringIO()),
+            testRunner=unittest2.TextTestRunner(stream=io.StringIO()),
             testLoader=self.FooBarLoader())
 
 
@@ -106,34 +122,34 @@ class FakeRunner(object):
         return RESULT
 
 class TestCommandLineArgs(unittest2.TestCase):
-    
+
     def setUp(self):
         self.program = InitialisableProgram()
         self.program.createTests = lambda: None
         FakeRunner.initArgs = None
         FakeRunner.test = None
         FakeRunner.raiseError = False
-    
+
     def testHelpAndUnknown(self):
         program = self.program
         def usageExit(msg=None):
             program.msg = msg
             program.exit = True
         program.usageExit = usageExit
-        
+
         for opt in '-h', '-H', '--help':
             program.exit = False
             program.parseArgs([None, opt])
             self.assertTrue(program.exit)
             self.assertIsNone(program.msg)
-    
+
         program.parseArgs([None, '-$'])
         self.assertTrue(program.exit)
         self.assertIsNotNone(program.msg)
-    
+
     def testVerbosity(self):
         program = self.program
-        
+
         for opt in '-q', '--quiet':
             program.verbosity = 1
             program.parseArgs([None, opt])
@@ -150,33 +166,33 @@ class TestCommandLineArgs(unittest2.TestCase):
                       ('catch', 'catchbreak')):
             if attr == 'catch' and not hasInstallHandler:
                 continue
-            
+
             short_opt = '-%s' % arg[0]
             long_opt = '--%s' % arg
             for opt in short_opt, long_opt:
                 setattr(program, attr, None)
-                
+
                 program.parseArgs([None, opt])
                 self.assertTrue(getattr(program, attr))
 
             for opt in short_opt, long_opt:
                 not_none = object()
                 setattr(program, attr, not_none)
-                
+
                 program.parseArgs([None, opt])
                 self.assertEqual(getattr(program, attr), not_none)
 
     def testRunTestsRunnerClass(self):
         program = self.program
-        
+
         program.testRunner = FakeRunner
         program.verbosity = 'verbosity'
         program.failfast = 'failfast'
         program.buffer = 'buffer'
-        
+
         program.runTests()
-        
-        self.assertEqual(FakeRunner.initArgs, {'verbosity': 'verbosity', 
+
+        self.assertEqual(FakeRunner.initArgs, {'verbosity': 'verbosity',
                                                 'failfast': 'failfast',
                                                 'buffer': 'buffer'})
         self.assertEqual(FakeRunner.test, 'test')
@@ -184,36 +200,36 @@ class TestCommandLineArgs(unittest2.TestCase):
 
     def testRunTestsRunnerInstance(self):
         program = self.program
-        
+
         program.testRunner = FakeRunner()
         FakeRunner.initArgs = None
-        
+
         program.runTests()
 
         # A new FakeRunner should not have been instantiated
         self.assertIsNone(FakeRunner.initArgs)
-        
+
         self.assertEqual(FakeRunner.test, 'test')
         self.assertIs(program.result, RESULT)
 
     def testRunTestsOldRunnerClass(self):
         program = self.program
-        
+
         FakeRunner.raiseError = True
         program.testRunner = FakeRunner
         program.verbosity = 'verbosity'
         program.failfast = 'failfast'
         program.buffer = 'buffer'
         program.test = 'test'
-        
+
         program.runTests()
-        
+
         # If initialising raises a type error it should be retried
         # without the new keyword arguments
         self.assertEqual(FakeRunner.initArgs, {})
         self.assertEqual(FakeRunner.test, 'test')
         self.assertIs(program.result, RESULT)
-    
+
     def testCatchBreakInstallsHandler(self):
         module = sys.modules['unittest2.main']
         original = module.installHandler
@@ -225,12 +241,12 @@ class TestCommandLineArgs(unittest2.TestCase):
         def fakeInstallHandler():
             self.installed = True
         module.installHandler = fakeInstallHandler
-        
+
         program = self.program
         program.catchbreak = True
-        
+
         program.testRunner = FakeRunner
-        
+
         program.runTests()
         self.assertTrue(self.installed)
 

@@ -9,25 +9,10 @@ import unittest
 
 from fnmatch import fnmatch
 
-from garlicsim.general_misc.third_party.unittest2 import case, suite
-
-try:
-    from os.path import relpath
-except ImportError:
-    from garlicsim.general_misc.third_party.unittest2.compatibility import relpath
+from . import case, suite, util
+from .compatibility import cmp_to_key
 
 __unittest = True
-
-
-def _CmpToKey(mycmp):
-    'Convert a cmp= function into a key= function'
-    class K(object):
-        def __init__(self, obj):
-            self.obj = obj
-        def __lt__(self, other):
-            return mycmp(self.obj, other.obj) == -1
-    return K
-
 
 # what about .pyc or .pyo (etc)
 # we would need to avoid loading the same tests multiple times
@@ -36,11 +21,7 @@ VALID_MODULE_NAME = re.compile(r'[_a-z]\w*\.py$', re.IGNORECASE)
 
 
 def _make_failed_import_test(name, suiteClass):
-    message = 'Failed to import test module: %s' % name
-    if hasattr(traceback, 'format_exc'):
-        # Python 2.3 compatibility
-        # format_exc returns two frames of discover.py as well
-        message += '\n%s' % traceback.format_exc()
+    message = 'Failed to import test module: %s\n%s' % (name, traceback.format_exc())
     return _make_failed_test('ModuleImportFailure', name, ImportError(message),
                              suiteClass)
 
@@ -53,7 +34,7 @@ def _make_failed_test(classname, methodname, exception, suiteClass):
     attrs = {methodname: testFailure}
     TestClass = type(classname, (case.TestCase,), attrs)
     return suiteClass((TestClass(methodname),))
-    
+
 
 class TestLoader(unittest.TestLoader):
     """
@@ -61,19 +42,19 @@ class TestLoader(unittest.TestLoader):
     and returning them wrapped in a TestSuite
     """
     testMethodPrefix = 'test'
-    sortTestMethodsUsing = cmp
+    sortTestMethodsUsing = staticmethod(util.three_way_cmp)
     suiteClass = suite.TestSuite
     _top_level_dir = None
 
     def loadTestsFromTestCase(self, testCaseClass):
         """Return a suite of all tests cases contained in testCaseClass"""
         if issubclass(testCaseClass, suite.TestSuite):
-            raise TypeError("Test cases should not be derived from TestSuite."
-                            " Maybe you meant to derive from TestCase?")
+            raise TypeError("Test cases should not be derived from TestSuite." \
+                                " Maybe you meant to derive from TestCase?")
         testCaseNames = self.getTestCaseNames(testCaseClass)
         if not testCaseNames and hasattr(testCaseClass, 'runTest'):
             testCaseNames = ['runTest']
-        loaded_suite = self.suiteClass(list(map(testCaseClass, testCaseNames)))
+        loaded_suite = self.suiteClass(map(testCaseClass, testCaseNames))
         return loaded_suite
 
     def loadTestsFromModule(self, module, use_load_tests=True):
@@ -81,7 +62,7 @@ class TestLoader(unittest.TestLoader):
         tests = []
         for name in dir(module):
             obj = getattr(module, name)
-            if isinstance(obj, type) and issubclass(obj, unittest.TestCase):
+            if isinstance(obj, type) and issubclass(obj, case.TestCase):
                 tests.append(self.loadTestsFromTestCase(obj))
 
         load_tests = getattr(module, 'load_tests', None)
@@ -121,19 +102,23 @@ class TestLoader(unittest.TestLoader):
 
         if isinstance(obj, types.ModuleType):
             return self.loadTestsFromModule(obj)
-        elif isinstance(obj, type) and issubclass(obj, unittest.TestCase):
+        elif isinstance(obj, type) and issubclass(obj, case.TestCase):
             return self.loadTestsFromTestCase(obj)
-        elif (isinstance(obj, types.UnboundMethodType) and
+        elif (isinstance(obj, types.FunctionType) and
               isinstance(parent, type) and
               issubclass(parent, case.TestCase)):
-            return self.suiteClass([parent(obj.__name__)])
-        elif isinstance(obj, unittest.TestSuite):
+            name = obj.__name__
+            inst = parent(name)
+            # static methods follow a different path
+            if not isinstance(getattr(inst, name), types.FunctionType):
+                return self.suiteClass([inst])
+        elif isinstance(obj, suite.TestSuite):
             return obj
-        elif hasattr(obj, '__call__'):
+        if hasattr(obj, '__call__'):
             test = obj()
-            if isinstance(test, unittest.TestSuite):
+            if isinstance(test, suite.TestSuite):
                 return test
-            elif isinstance(test, unittest.TestCase):
+            elif isinstance(test, case.TestCase):
                 return self.suiteClass([test])
             else:
                 raise TypeError("calling %s returned %s, not a test" %
@@ -155,9 +140,10 @@ class TestLoader(unittest.TestLoader):
                          prefix=self.testMethodPrefix):
             return attrname.startswith(prefix) and \
                 hasattr(getattr(testCaseClass, attrname), '__call__')
-        testFnNames = list(filter(isTestMethod, dir(testCaseClass)))
+        testFnNames = testFnNames = list(filter(isTestMethod,
+                                                dir(testCaseClass)))
         if self.sortTestMethodsUsing:
-            testFnNames.sort(key=_CmpToKey(self.sortTestMethodsUsing))
+            testFnNames.sort(key=cmp_to_key(self.sortTestMethodsUsing))
         return testFnNames
 
     def discover(self, start_dir, pattern='test*.py', top_level_dir=None):
@@ -215,7 +201,7 @@ class TestLoader(unittest.TestLoader):
                 top_part = start_dir.split('.')[0]
                 start_dir = os.path.abspath(os.path.dirname((the_module.__file__)))
                 if set_implicit_top:
-                    self._top_level_dir = os.path.abspath(os.path.dirname(os.path.dirname(sys.modules[top_part].__file__)))
+                    self._top_level_dir = self._get_directory_containing_module(top_part)
                     sys.path.remove(top_level_dir)
 
         if is_not_importable:
@@ -224,10 +210,22 @@ class TestLoader(unittest.TestLoader):
         tests = list(self._find_tests(start_dir, pattern))
         return self.suiteClass(tests)
 
+    def _get_directory_containing_module(self, module_name):
+        module = sys.modules[module_name]
+        full_path = os.path.abspath(module.__file__)
+
+        if os.path.basename(full_path).lower().startswith('__init__.py'):
+            return os.path.dirname(os.path.dirname(full_path))
+        else:
+            # here we have been given a module rather than a package - so
+            # all we can do is search the *same* directory the module is in
+            # should an exception be raised instead
+            return os.path.dirname(full_path)
+
     def _get_name_from_path(self, path):
         path = os.path.splitext(os.path.normpath(path))[0]
 
-        _relpath = relpath(path, self._top_level_dir)
+        _relpath = os.path.relpath(path, self._top_level_dir)
         assert not os.path.isabs(_relpath), "Path must be within the project"
         assert not _relpath.startswith('..'), "Path must be within the project"
 
@@ -241,7 +239,7 @@ class TestLoader(unittest.TestLoader):
     def _match_path(self, path, full_path, pattern):
         # override this method to use alternative matching strategy
         return fnmatch(path, pattern)
-    
+
     def _find_tests(self, start_dir, pattern):
         """Used by discovery. Yields test suites it loads."""
         paths = os.listdir(start_dir)
@@ -310,13 +308,15 @@ def _makeLoader(prefix, sortUsing, suiteClass=None):
         loader.suiteClass = suiteClass
     return loader
 
-def getTestCaseNames(testCaseClass, prefix, sortUsing=cmp):
+def getTestCaseNames(testCaseClass, prefix, sortUsing=util.three_way_cmp):
     return _makeLoader(prefix, sortUsing).getTestCaseNames(testCaseClass)
 
-def makeSuite(testCaseClass, prefix='test', sortUsing=cmp,
+def makeSuite(testCaseClass, prefix='test', sortUsing=util.three_way_cmp,
               suiteClass=suite.TestSuite):
-    return _makeLoader(prefix, sortUsing, suiteClass).loadTestsFromTestCase(testCaseClass)
+    return _makeLoader(prefix, sortUsing, suiteClass).loadTestsFromTestCase(
+        testCaseClass)
 
-def findTestCases(module, prefix='test', sortUsing=cmp,
+def findTestCases(module, prefix='test', sortUsing=util.three_way_cmp,
                   suiteClass=suite.TestSuite):
-    return _makeLoader(prefix, sortUsing, suiteClass).loadTestsFromModule(module)
+    return _makeLoader(prefix, sortUsing, suiteClass).loadTestsFromModule(\
+        module)

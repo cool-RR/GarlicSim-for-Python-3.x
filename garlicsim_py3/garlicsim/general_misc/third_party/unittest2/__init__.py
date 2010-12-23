@@ -1,12 +1,30 @@
 """
-unittest2
+Python unit testing framework, based on Erich Gamma's JUnit and Kent Beck's
+Smalltalk testing framework.
 
-unittest2 is a backport of the new features added to the unittest testing
-framework in Python 2.7. It is tested to run on Python 2.4 - 2.6.
+This module contains the core framework classes that form the basis of
+specific test cases and suites (TestCase, TestSuite etc.), and also a
+text-based utility class for running the tests and reporting the results
+ (TextTestRunner).
 
-To use unittest2 instead of unittest simply replace ``import unittest`` with
-``from garlicsim.general_misc.third_party import unittest2``.
+Simple usage:
 
+    import unittest2
+
+    class IntegerArithmenticTestCase(unittest2.TestCase):
+        def testAdd(self):  ## test method names begin 'test*'
+            self.assertEqual((1 + 2), 3)
+            self.assertEqual(0 + 1, 1)
+        def testMultiply(self):
+            self.assertEqual((0 * 10), 0)
+            self.assertEqual((5 * 8), 40)
+
+    if __name__ == '__main__':
+        unittest2.main()
+
+Further information is available in the bundled documentation, and from
+
+  http://docs.python.org/library/unittest.html
 
 Copyright (c) 1999-2003 Steve Purcell
 Copyright (c) 2003-2010 Python Software Foundation
@@ -29,40 +47,25 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 __all__ = ['TestResult', 'TestCase', 'TestSuite',
            'TextTestRunner', 'TestLoader', 'FunctionTestCase', 'main',
            'defaultTestLoader', 'SkipTest', 'skip', 'skipIf', 'skipUnless',
-           'expectedFailure', 'TextTestResult', '__version__', 'collector']
-
-__version__ = '0.5.1'
+           'expectedFailure', 'TextTestResult', 'installHandler',
+           'registerResult', 'removeResult', 'removeHandler']
 
 # Expose obsolete functions for backwards compatibility
 __all__.extend(['getTestCaseNames', 'makeSuite', 'findTestCases'])
 
+__unittest = True
 
-from garlicsim.general_misc.third_party.unittest2.collector import collector
-from garlicsim.general_misc.third_party.unittest2.result import TestResult
-from garlicsim.general_misc.third_party.unittest2.case import (
-    TestCase, FunctionTestCase, SkipTest, skip, skipIf,
-    skipUnless, expectedFailure
-)
-from garlicsim.general_misc.third_party.unittest2.suite import BaseTestSuite, TestSuite
-from garlicsim.general_misc.third_party.unittest2.loader import (
-    TestLoader, defaultTestLoader, makeSuite, getTestCaseNames,
-    findTestCases
-)
-from garlicsim.general_misc.third_party.unittest2.main import TestProgram, main, main_
-from garlicsim.general_misc.third_party.unittest2.runner import TextTestRunner, TextTestResult
+__version__ = '0.5.1'
 
-try:
-    from garlicsim.general_misc.third_party.unittest2.signals import (
-        installHandler, registerResult, removeResult, removeHandler
-    )
-except ImportError:
-    # Compatibility with platforms that don't have the signal module
-    pass
-else:
-    __all__.extend(['installHandler', 'registerResult', 'removeResult', 
-                    'removeHandler'])
+from .result import TestResult
+from .case import (TestCase, FunctionTestCase, SkipTest, skip, skipIf,
+                   skipUnless, expectedFailure)
+from .suite import BaseTestSuite, TestSuite
+from .loader import (TestLoader, defaultTestLoader, makeSuite, getTestCaseNames,
+                     findTestCases)
+from .main import TestProgram, main, main_
+from .runner import TextTestRunner, TextTestResult
+from .signals import installHandler, registerResult, removeResult, removeHandler
 
 # deprecated
 _TextTestResult = TextTestResult
-
-__unittest = True

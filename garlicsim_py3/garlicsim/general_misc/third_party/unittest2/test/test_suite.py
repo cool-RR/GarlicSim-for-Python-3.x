@@ -1,7 +1,11 @@
-from garlicsim.general_misc.third_party.unittest2.test.support import EqualityMixin, LoggingResult
+import unittest2
 
 import sys
-from garlicsim.general_misc.third_party import unittest2
+from .support import LoggingResult, TestEquality
+
+
+### Support code for Test_TestSuite
+################################################################
 
 class Test(object):
     class Foo(unittest2.TestCase):
@@ -13,22 +17,24 @@ class Test(object):
 def _mk_TestSuite(*names):
     return unittest2.TestSuite(Test.Foo(n) for n in names)
 
+################################################################
 
-class Test_TestSuite(unittest2.TestCase, EqualityMixin):
+
+class Test_TestSuite(unittest2.TestCase, TestEquality):
 
     ### Set up attributes needed by inherited tests
     ################################################################
 
-    # Used by EqualityMixin.test_eq
-    eq_pairs = [(unittest2.TestSuite(), unittest2.TestSuite()),
-                (unittest2.TestSuite(), unittest2.TestSuite([])),
-                (_mk_TestSuite('test_1'), _mk_TestSuite('test_1'))]
+    # Used by TestEquality.test_eq
+    eq_pairs = [(unittest2.TestSuite(), unittest2.TestSuite())
+               ,(unittest2.TestSuite(), unittest2.TestSuite([]))
+               ,(_mk_TestSuite('test_1'), _mk_TestSuite('test_1'))]
 
-    # Used by EqualityMixin.test_ne
-    ne_pairs = [(unittest2.TestSuite(), _mk_TestSuite('test_1')),
-                (unittest2.TestSuite([]), _mk_TestSuite('test_1')),
-                (_mk_TestSuite('test_1', 'test_2'), _mk_TestSuite('test_1', 'test_3')),
-                (_mk_TestSuite('test_1'), _mk_TestSuite('test_2'))]
+    # Used by TestEquality.test_ne
+    ne_pairs = [(unittest2.TestSuite(), _mk_TestSuite('test_1'))
+               ,(unittest2.TestSuite([]), _mk_TestSuite('test_1'))
+               ,(_mk_TestSuite('test_1', 'test_2'), _mk_TestSuite('test_1', 'test_3'))
+               ,(_mk_TestSuite('test_1'), _mk_TestSuite('test_2'))]
 
     ################################################################
     ### /Set up attributes needed by inherited tests
@@ -295,6 +301,7 @@ class Test_TestSuite(unittest2.TestCase, EqualityMixin):
         suite.run(unittest2.TestResult())
 
 
+
     def test_basetestsuite(self):
         class Test(unittest2.TestCase):
             wasSetUp = False
@@ -318,11 +325,11 @@ class Test_TestSuite(unittest2.TestCase, EqualityMixin):
             @staticmethod
             def tearDownModule():
                 Module.wasTornDown = True
-        
+
         Test.__module__ = 'Module'
         sys.modules['Module'] = Module
         self.addCleanup(sys.modules.pop, 'Module')
-        
+
         suite = unittest2.BaseTestSuite()
         suite.addTests([Test('testPass'), Test('testFail')])
         self.assertEqual(suite.countTestCases(), 2)
@@ -336,6 +343,7 @@ class Test_TestSuite(unittest2.TestCase, EqualityMixin):
         self.assertEqual(len(result.errors), 1)
         self.assertEqual(len(result.failures), 0)
         self.assertEqual(result.testsRun, 2)
+
 
 if __name__ == '__main__':
     unittest2.main()

@@ -1,9 +1,11 @@
+import io
 import sys
 import textwrap
-from io import StringIO
 
-from garlicsim.general_misc.third_party import unittest2
+import traceback
+import unittest2
 
+from .support import check_warnings
 
 class Test_TestResult(unittest2.TestCase):
     # Note: there are not separate tests for TestResult.wasSuccessful(),
@@ -231,6 +233,8 @@ class Test_TestResult(unittest2.TestCase):
                 'testGetDescriptionWithoutDocstring (' + __name__ +
                 '.Test_TestResult)')
 
+    @unittest2.skipIf(sys.flags.optimize >= 2,
+                     "Docstrings are omitted with -O2 and above")
     def testGetDescriptionWithOneLineDocstring(self):
         """Tests getDescription() for a method with a docstring."""
         result = unittest2.TextTestResult(None, True, 1)
@@ -240,6 +244,8 @@ class Test_TestResult(unittest2.TestCase):
                 '(' + __name__ + '.Test_TestResult)\n'
                 'Tests getDescription() for a method with a docstring.'))
 
+    @unittest2.skipIf(sys.flags.optimize >= 2,
+                     "Docstrings are omitted with -O2 and above")
     def testGetDescriptionWithMultiLineDocstring(self):
         """Tests getDescription() for a method with a longer docstring.
         The second line of the docstring.
@@ -258,7 +264,7 @@ class Test_TestResult(unittest2.TestCase):
                 f_globals = {}
         result = unittest2.TestResult()
         self.assertFalse(result._is_relevant_tb_level(Frame))
-        
+
         Frame.tb_frame.f_globals['__unittest'] = True
         self.assertTrue(result._is_relevant_tb_level(Frame))
 
@@ -282,13 +288,86 @@ class Test_TestResult(unittest2.TestCase):
         self.assertTrue(result.shouldStop)
 
     def testFailFastSetByRunner(self):
-        runner = unittest2.TextTestRunner(stream=StringIO(), failfast=True)
-        self.testRan = False
+        runner = unittest2.TextTestRunner(stream=io.StringIO(), failfast=True)
         def test(result):
-            self.testRan = True
             self.assertTrue(result.failfast)
-        runner.run(test)
-        self.assertTrue(self.testRan)
+        result = runner.run(test)
+
+
+classDict = dict(unittest2.TestResult.__dict__)
+for m in ('addSkip', 'addExpectedFailure', 'addUnexpectedSuccess',
+           '__init__'):
+    del classDict[m]
+
+def __init__(self, stream=None, descriptions=None, verbosity=None):
+    self.failures = []
+    self.errors = []
+    self.testsRun = 0
+    self.shouldStop = False
+    self.buffer = False
+
+classDict['__init__'] = __init__
+OldResult = type('OldResult', (object,), classDict)
+
+class Test_OldTestResult(unittest2.TestCase):
+
+    def assertOldResultWarning(self, test, failures):
+        with check_warnings(("TestResult has no add.+ method,",
+                                     RuntimeWarning)):
+            result = OldResult()
+            test.run(result)
+            self.assertEqual(len(result.failures), failures)
+
+    def testOldTestResult(self):
+        class Test(unittest2.TestCase):
+            def testSkip(self):
+                self.skipTest('foobar')
+            @unittest2.expectedFailure
+            def testExpectedFail(self):
+                raise TypeError
+            @unittest2.expectedFailure
+            def testUnexpectedSuccess(self):
+                pass
+
+        for test_name, should_pass in (('testSkip', True),
+                                       ('testExpectedFail', True),
+                                       ('testUnexpectedSuccess', False)):
+            test = Test(test_name)
+            self.assertOldResultWarning(test, int(not should_pass))
+
+    def testOldTestTesultSetup(self):
+        class Test(unittest2.TestCase):
+            def setUp(self):
+                self.skipTest('no reason')
+            def testFoo(self):
+                pass
+        self.assertOldResultWarning(Test('testFoo'), 0)
+
+    def testOldTestResultClass(self):
+        @unittest2.skip('no reason')
+        class Test(unittest2.TestCase):
+            def testFoo(self):
+                pass
+        self.assertOldResultWarning(Test('testFoo'), 0)
+
+    def testOldResultWithRunner(self):
+        class Test(unittest2.TestCase):
+            def testFoo(self):
+                pass
+        runner = unittest2.TextTestRunner(resultclass=OldResult,
+                                          stream=io.StringIO())
+        # This will raise an exception if TextTestRunner can't handle old
+        # test result objects
+        runner.run(Test('testFoo'))
+
+
+class MockTraceback(object):
+    @staticmethod
+    def format_exception(*_):
+        return ['A traceback']
+
+def restore_traceback():
+    unittest2.result.traceback = traceback
 
 
 class TestOutputBuffering(unittest2.TestCase):
@@ -304,65 +383,65 @@ class TestOutputBuffering(unittest2.TestCase):
     def testBufferOutputOff(self):
         real_out = self._real_out
         real_err = self._real_err
-        
+
         result = unittest2.TestResult()
         self.assertFalse(result.buffer)
-    
+
         self.assertIs(real_out, sys.stdout)
         self.assertIs(real_err, sys.stderr)
-        
+
         result.startTest(self)
-        
+
         self.assertIs(real_out, sys.stdout)
         self.assertIs(real_err, sys.stderr)
 
     def testBufferOutputStartTestAddSuccess(self):
         real_out = self._real_out
         real_err = self._real_err
-        
+
         result = unittest2.TestResult()
         self.assertFalse(result.buffer)
-        
+
         result.buffer = True
-    
+
         self.assertIs(real_out, sys.stdout)
         self.assertIs(real_err, sys.stderr)
-        
+
         result.startTest(self)
-        
+
         self.assertIsNot(real_out, sys.stdout)
         self.assertIsNot(real_err, sys.stderr)
-        self.assertIsInstance(sys.stdout, StringIO)
-        self.assertIsInstance(sys.stderr, StringIO)
+        self.assertIsInstance(sys.stdout, io.StringIO)
+        self.assertIsInstance(sys.stderr, io.StringIO)
         self.assertIsNot(sys.stdout, sys.stderr)
-        
+
         out_stream = sys.stdout
         err_stream = sys.stderr
-        
-        result._original_stdout = StringIO()
-        result._original_stderr = StringIO()
-        
+
+        result._original_stdout = io.StringIO()
+        result._original_stderr = io.StringIO()
+
         print('foo')
         print('bar', file=sys.stderr)
-        
+
         self.assertEqual(out_stream.getvalue(), 'foo\n')
         self.assertEqual(err_stream.getvalue(), 'bar\n')
-        
+
         self.assertEqual(result._original_stdout.getvalue(), '')
         self.assertEqual(result._original_stderr.getvalue(), '')
-        
+
         result.addSuccess(self)
         result.stopTest(self)
-        
+
         self.assertIs(sys.stdout, result._original_stdout)
         self.assertIs(sys.stderr, result._original_stderr)
-        
+
         self.assertEqual(result._original_stdout.getvalue(), '')
         self.assertEqual(result._original_stderr.getvalue(), '')
-        
+
         self.assertEqual(out_stream.getvalue(), '')
         self.assertEqual(err_stream.getvalue(), '')
-        
+
 
     def getStartedResult(self):
         result = unittest2.TestResult()
@@ -371,27 +450,33 @@ class TestOutputBuffering(unittest2.TestCase):
         return result
 
     def testBufferOutputAddErrorOrFailure(self):
+        unittest2.result.traceback = MockTraceback
+        self.addCleanup(restore_traceback)
+
         for message_attr, add_attr, include_error in [
-            ('errors', 'addError', True), 
+            ('errors', 'addError', True),
             ('failures', 'addFailure', False),
-            ('errors', 'addError', True), 
+            ('errors', 'addError', True),
             ('failures', 'addFailure', False)
         ]:
             result = self.getStartedResult()
-            result._original_stderr = StringIO()
-            result._original_stdout = StringIO()
-            
+            buffered_out = sys.stdout
+            buffered_err = sys.stderr
+            result._original_stdout = io.StringIO()
+            result._original_stderr = io.StringIO()
+
             print('foo', file=sys.stdout)
             if include_error:
                 print('bar', file=sys.stderr)
-            
+
+
             addFunction = getattr(result, add_attr)
             addFunction(self, (None, None, None))
             result.stopTest(self)
-            
+
             result_list = getattr(result, message_attr)
             self.assertEqual(len(result_list), 1)
-            
+
             test, message = result_list[0]
             expectedOutMessage = textwrap.dedent("""
                 Stdout:
@@ -403,14 +488,13 @@ class TestOutputBuffering(unittest2.TestCase):
                 Stderr:
                 bar
             """)
-            expectedFullMessage = 'None\n%s%s' % (expectedOutMessage, expectedErrMessage)
+
+            expectedFullMessage = 'A traceback%s%s' % (expectedOutMessage, expectedErrMessage)
 
             self.assertIs(test, self)
             self.assertEqual(result._original_stdout.getvalue(), expectedOutMessage)
             self.assertEqual(result._original_stderr.getvalue(), expectedErrMessage)
             self.assertMultiLineEqual(message, expectedFullMessage)
-        
-        
 
 if __name__ == '__main__':
     unittest2.main()

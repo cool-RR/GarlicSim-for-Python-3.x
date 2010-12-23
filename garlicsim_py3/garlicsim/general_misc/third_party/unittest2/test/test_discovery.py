@@ -2,7 +2,7 @@ import os
 import re
 import sys
 
-from garlicsim.general_misc.third_party import unittest2
+import unittest2
 
 
 class TestDiscovery(unittest2.TestCase):
@@ -10,7 +10,6 @@ class TestDiscovery(unittest2.TestCase):
     # Heavily mocked tests so I can avoid hitting the filesystem
     def test_get_name_from_path(self):
         loader = unittest2.TestLoader()
-
         loader._top_level_dir = '/foo'
         name = loader._get_name_from_path('/foo/bar/baz.py')
         self.assertEqual(name, 'bar.baz')
@@ -19,9 +18,8 @@ class TestDiscovery(unittest2.TestCase):
             # asserts are off
             return
 
-        self.assertRaises(AssertionError,
-                          loader._get_name_from_path,
-                          '/bar/baz.py')
+        with self.assertRaises(AssertionError):
+            loader._get_name_from_path('/bar/baz.py')
 
     def test_find_tests(self):
         loader = unittest2.TestLoader()
@@ -106,9 +104,6 @@ class TestDiscovery(unittest2.TestCase):
             def __eq__(self, other):
                 return self.path == other.path
 
-            # Silence py3k warning
-            __hash__ = None
-
         loader._get_module_from_name = lambda name: Module(name)
         def loadTestsFromModule(module, use_load_tests):
             if use_load_tests:
@@ -148,9 +143,8 @@ class TestDiscovery(unittest2.TestCase):
         self.addCleanup(restore_path)
 
         full_path = os.path.abspath(os.path.normpath('/foo'))
-        self.assertRaises(ImportError,
-                          loader.discover,
-                          '/foo/bar', top_level_dir='/foo')
+        with self.assertRaises(ImportError):
+            loader.discover('/foo/bar', top_level_dir='/foo')
 
         self.assertEqual(loader._top_level_dir, full_path)
         self.assertIn(full_path, sys.path)
@@ -171,8 +165,8 @@ class TestDiscovery(unittest2.TestCase):
 
         suite = loader.discover('/foo/bar/baz', 'pattern', '/foo/bar')
 
-        top_level_dir = os.path.abspath(os.path.normpath('/foo/bar'))
-        start_dir = os.path.abspath(os.path.normpath('/foo/bar/baz'))
+        top_level_dir = os.path.abspath('/foo/bar')
+        start_dir = os.path.abspath('/foo/bar/baz')
         self.assertEqual(suite, "['tests']")
         self.assertEqual(loader._top_level_dir, top_level_dir)
         self.assertEqual(_find_tests_args, [(start_dir, 'pattern')])
@@ -197,8 +191,8 @@ class TestDiscovery(unittest2.TestCase):
         self.assertEqual(suite.countTestCases(), 1)
         test = list(list(suite)[0])[0] # extract test from suite
 
-        self.assertRaises(ImportError,
-            lambda: test.test_this_does_not_exist())
+        with self.assertRaises(ImportError):
+            test.test_this_does_not_exist()
 
     def test_command_line_handling_parseArgs(self):
         # Haha - take that uninstantiable class
@@ -223,9 +217,9 @@ class TestDiscovery(unittest2.TestCase):
         program = object.__new__(unittest2.TestProgram)
         program.usageExit = usageExit
 
-        self.assertRaises(Stop,
+        with self.assertRaises(Stop):
             # too many args
-            lambda: program._do_discovery(['one', 'two', 'three', 'four']))
+            program._do_discovery(['one', 'two', 'three', 'four'])
 
 
     def test_command_line_handling_do_discovery_calls_loader(self):
@@ -292,22 +286,15 @@ class TestDiscovery(unittest2.TestCase):
         self.assertFalse(program.failfast)
         self.assertFalse(program.catchbreak)
 
-        args = ['-p', 'eggs', '-s', 'fish', '-v', '-f']
-        try:
-            import signal
-        except ImportError:
-            signal = None
-        else:
-            args.append('-c')
         Loader.args = []
         program = object.__new__(unittest2.TestProgram)
-        program._do_discovery(args, Loader=Loader)
+        program._do_discovery(['-p', 'eggs', '-s', 'fish', '-v', '-f', '-c'],
+                              Loader=Loader)
         self.assertEqual(program.test, 'tests')
         self.assertEqual(Loader.args, [('fish', 'eggs', None)])
         self.assertEqual(program.verbosity, 2)
         self.assertTrue(program.failfast)
-        if signal is not None:
-            self.assertTrue(program.catchbreak)
+        self.assertTrue(program.catchbreak)
 
     def test_detect_module_clash(self):
         class Module(object):
@@ -317,7 +304,7 @@ class TestDiscovery(unittest2.TestCase):
         original_listdir = os.listdir
         original_isfile = os.path.isfile
         original_isdir = os.path.isdir
-        
+
         def cleanup():
             os.listdir = original_listdir
             os.path.isfile = original_isfile
@@ -326,7 +313,7 @@ class TestDiscovery(unittest2.TestCase):
             if full_path in sys.path:
                 sys.path.remove(full_path)
         self.addCleanup(cleanup)
-        
+
         def listdir(_):
             return ['foo.py']
         def isfile(_):
@@ -336,9 +323,9 @@ class TestDiscovery(unittest2.TestCase):
         os.listdir = listdir
         os.path.isfile = isfile
         os.path.isdir = isdir
-        
+
         loader = unittest2.TestLoader()
-        
+
         mod_dir = os.path.abspath('bar')
         expected_dir = os.path.abspath('foo')
         msg = re.escape(r"'foo' module incorrectly imported from %r. Expected %r. "
@@ -349,10 +336,10 @@ class TestDiscovery(unittest2.TestCase):
         )
         self.assertEqual(sys.path[0], full_path)
 
-        
+
     def test_discovery_from_dotted_path(self):
         loader = unittest2.TestLoader()
-        
+
         tests = [self]
         expectedPath = os.path.abspath(os.path.dirname(unittest2.test.__file__))
 

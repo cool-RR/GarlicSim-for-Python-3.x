@@ -4,11 +4,8 @@ import sys
 import os
 import types
 
-from garlicsim.general_misc.third_party.unittest2 import loader, runner
-try:
-    from garlicsim.general_misc.third_party.unittest2.signals import installHandler
-except ImportError:
-    installHandler = None
+from . import loader, runner
+from .signals import installHandler
 
 __unittest = True
 
@@ -25,10 +22,9 @@ Options:
   -q, --quiet      Minimal output
 %(failfast)s%(catchbreak)s%(buffer)s
 Examples:
-  %(progName)s test_module                       - run tests from test_module
-  %(progName)s test_module.TestClass             - run tests from
-                                                   test_module.TestClass
-  %(progName)s test_module.TestClass.test_method - run specified test method
+  %(progName)s test_module               - run tests from test_module
+  %(progName)s module.TestClass          - run tests from module.TestClass
+  %(progName)s module.Class.test_method  - run specified test method
 
 [tests] can be a list of any number of test modules, classes and test
 methods.
@@ -63,19 +59,20 @@ Examples:
 """
 
 
+
 class TestProgram(object):
     """A command-line program that runs a set of tests; this is primarily
        for making test modules conveniently executable.
     """
     USAGE = USAGE_FROM_MODULE
-    
+
     # defaults for testing
     failfast = catchbreak = buffer = progName = None
 
-    def __init__(self, module='__main__', defaultTest=None,
-                 argv=None, testRunner=None,
-                 testLoader=loader.defaultTestLoader, exit=True,
-                 verbosity=1, failfast=None, catchbreak=None, buffer=None):
+    def __init__(self, module='__main__', defaultTest=None, argv=None,
+                    testRunner=None, testLoader=loader.defaultTestLoader,
+                    exit=True, verbosity=1, failfast=None, catchbreak=None,
+                    buffer=None):
         if isinstance(module, str):
             self.module = __import__(module)
             for part in module.split('.')[1:]:
@@ -86,9 +83,9 @@ class TestProgram(object):
             argv = sys.argv
 
         self.exit = exit
-        self.verbosity = verbosity
         self.failfast = failfast
         self.catchbreak = catchbreak
+        self.verbosity = verbosity
         self.buffer = buffer
         self.defaultTest = defaultTest
         self.testRunner = testRunner
@@ -104,7 +101,7 @@ class TestProgram(object):
                  'buffer': ''}
         if self.failfast != False:
             usage['failfast'] = FAILFAST
-        if self.catchbreak != False and installHandler is not None:
+        if self.catchbreak != False:
             usage['catchbreak'] = CATCHBREAK
         if self.buffer != False:
             usage['buffer'] = BUFFEROUTPUT
@@ -132,7 +129,7 @@ class TestProgram(object):
                         self.failfast = True
                     # Should this raise an exception if -f is not valid?
                 if opt in ('-c','--catch'):
-                    if self.catchbreak is None and installHandler is not None:
+                    if self.catchbreak is None:
                         self.catchbreak = True
                     # Should this raise an exception if -c is not valid?
                 if opt in ('-b','--buffer'):
@@ -170,15 +167,15 @@ class TestProgram(object):
                           help='Verbose output', action='store_true')
         if self.failfast != False:
             parser.add_option('-f', '--failfast', dest='failfast', default=False,
-                              help='Stop on first fail or error', 
+                              help='Stop on first fail or error',
                               action='store_true')
-        if self.catchbreak != False and installHandler is not None:
+        if self.catchbreak != False:
             parser.add_option('-c', '--catch', dest='catchbreak', default=False,
-                              help='Catch ctrl-C and display results so far', 
+                              help='Catch ctrl-C and display results so far',
                               action='store_true')
         if self.buffer != False:
             parser.add_option('-b', '--buffer', dest='buffer', default=False,
-                              help='Buffer stdout and stderr during tests', 
+                              help='Buffer stdout and stderr during tests',
                               action='store_true')
         parser.add_option('-s', '--start-directory', dest='start', default='.',
                           help="Directory to start discovery ('.' default)")
@@ -193,16 +190,16 @@ class TestProgram(object):
 
         for name, value in zip(('start', 'pattern', 'top'), args):
             setattr(options, name, value)
-        
+
         # only set options from the parsing here
         # if they weren't set explicitly in the constructor
         if self.failfast is None:
             self.failfast = options.failfast
-        if self.catchbreak is None and installHandler is not None:
+        if self.catchbreak is None:
             self.catchbreak = options.catchbreak
         if self.buffer is None:
             self.buffer = options.buffer
-        
+
         if options.verbose:
             self.verbosity = 2
 
@@ -238,4 +235,3 @@ main = TestProgram
 def main_():
     TestProgram.USAGE = USAGE_AS_MAIN
     main(module=None)
-
