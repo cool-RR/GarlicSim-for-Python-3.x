@@ -8,8 +8,6 @@ See its documentation for more information.
 '''
 
 import pickle
-#import _pickle as pickle # blocktodo uncomment?
-
 
 from garlicsim.general_misc.nifty_collections import WeakKeyIdentityDict
 

@@ -19,11 +19,6 @@ package.
 This program is intended for Python versions 2.5, 2.6 and 2.7.
 '''
 
-# blocktodo: kill this:
-import sys, imp, pickle
-sys.modules['_pickle'] = None
-imp.reload(pickle)
-
 import garlicsim.bootstrap
 import garlicsim.general_misc
 import garlicsim.general_misc.version_info
