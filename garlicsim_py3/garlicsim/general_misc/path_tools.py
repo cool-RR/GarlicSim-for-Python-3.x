@@ -16,6 +16,6 @@ def list_sub_folders(path, exclude=[]):
     assert os.path.isdir(path)
     files_and_folders = glob.glob(os.path.join(path, '*'))
     folders = [folder for folder in filter(os.path.isdir, files_and_folders)
-               if folder not in exclude]
+               if os.path.split(folder)[-1] not in exclude]
     
     return folders

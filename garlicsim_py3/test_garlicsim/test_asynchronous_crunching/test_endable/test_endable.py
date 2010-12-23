@@ -43,7 +43,8 @@ def test_endable():
     # sub-folders in the `sample_endable_simpacks` folders:
     sample_endable_simpacks_dir = \
         os.path.dirname(sample_endable_simpacks.__file__)
-    assert len(path_tools.list_sub_folders(sample_endable_simpacks_dir)) == \
+    assert len(path_tools.list_sub_folders(sample_endable_simpacks_dir,
+                                           exclude='__pycache__')) == \
            len(simpacks)
     
     cruncher_types = [

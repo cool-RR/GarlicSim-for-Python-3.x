@@ -26,7 +26,8 @@ def test_simpacks():
     # sub-folders in the `sample_invalid_simpacks` folders:
     sample_invalid_simpacks_dir = \
         os.path.dirname(sample_invalid_simpacks.__file__)
-    assert len(path_tools.list_sub_folders(sample_invalid_simpacks_dir)) == \
+    assert len(path_tools.list_sub_folders(sample_invalid_simpacks_dir),
+               exclude='__pycache__') == \
            len(simpacks)
     
     for simpack in simpacks:
