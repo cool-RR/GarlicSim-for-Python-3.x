@@ -91,9 +91,6 @@ class State(garlicsim.data_structures.State):
                 
         else:
             return NotImplemented
-            
-  
-get_n_live_cells = State.get_n_live_cells # Crutch for Python 3
 
 
 class Board(object):
