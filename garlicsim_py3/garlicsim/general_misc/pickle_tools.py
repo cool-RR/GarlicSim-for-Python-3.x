@@ -71,7 +71,7 @@ def _is_type_atomically_pickleable(type_, thing=None):
             assert any((segment in message) for segment in segments)
             # todo: turn to warning
         
-        if type_ in pickle.Pickler.dispatch:
+        if type_ in pickle._Pickler.dispatch:
             return True
             
         reduce_function = copyreg.dispatch_table.get(type_)
@@ -181,6 +181,8 @@ class CuteUnpickler(object):
         # `noload`.)
 
     def persistent_load(self, id_string):
+        if isinstance(id_string, bytes):
+            id_string = id_string.decode()
         match = _filtered_string_pattern.match(id_string)
         if match:
             description = match.groupdict()['description']            
