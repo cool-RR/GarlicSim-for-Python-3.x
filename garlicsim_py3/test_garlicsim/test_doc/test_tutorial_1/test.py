@@ -57,7 +57,7 @@ def test():
     )    
     assert repr(path[-1]) == (
         '<garlicsim.data_structures.Node with clock 50, leaf, untouched, '
-        'blockful, crunched with life.State.step_generator(<state>), at '
+        'blockful, crunched with life.state.step_generator(<state>), at '
         '%s>' % hex(id(path[-1])))
     _state = path[-1].state
     assert repr(_state).count('#') == 24
