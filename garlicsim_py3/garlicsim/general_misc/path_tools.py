@@ -7,9 +7,15 @@ import os.path
 import glob
 
 
-def list_sub_folders(path):
-    '''List all the immediate sub-folders of the folder at `path`.'''
+def list_sub_folders(path, exclude=[]):
+    '''List all the immediate sub-folders of the folder at `path`.tododoc'''
+    
+    if isinstance(exclude, str): # Allowing single `exclude` instead of set
+        exclude = [exclude]
+        
     assert os.path.isdir(path)
     files_and_folders = glob.glob(os.path.join(path, '*'))
-    folders = list(filter(os.path.isdir, files_and_folders))
+    folders = [folder for folder in filter(os.path.isdir, files_and_folders)
+               if folder not in exclude]
+    
     return folders

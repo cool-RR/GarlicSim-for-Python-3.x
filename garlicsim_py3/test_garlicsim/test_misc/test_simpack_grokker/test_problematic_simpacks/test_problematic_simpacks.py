@@ -27,7 +27,8 @@ def test_simpacks():
     sample_problematic_simpacks_dir = \
         os.path.dirname(sample_problematic_simpacks.__file__)
     assert len(
-        path_tools.list_sub_folders(sample_problematic_simpacks_dir)
+        path_tools.list_sub_folders(sample_problematic_simpacks_dir,
+                                    exclude='__pycache__')
         ) == len(simpacks)
     
     for simpack in simpacks:
