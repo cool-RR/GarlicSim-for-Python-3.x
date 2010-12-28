@@ -34,7 +34,7 @@ class InplaceStepIterator(BaseStepIterator):
         self.auto_clock_generator.make_clock(self.current_state)
         
         
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''        
         
         return_value = self.step_function(self.current_state,

@@ -50,14 +50,14 @@ class DuplicatingStepGeneratorIterator(BaseStepIterator):
         
     
     
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         try:        
             try:
-                yielded_value = self.raw_generator.next()
+                yielded_value = next(self.raw_generator)
             except StopIteration:
                 self.__build_raw_generator()
-                yielded_value = self.raw_generator.next()
+                yielded_value = next(self.raw_generator)
                 
             assert yielded_value is None
                 

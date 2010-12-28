@@ -34,7 +34,7 @@ class DuplicatingStepIterator(BaseStepIterator):
         self.auto_clock_generator.make_clock(self.current_state)
         
         
-    def next(self):
+    def __next__(self):
         '''Crunch the next state.'''
         new_state = \
             garlicsim.misc.state_deepcopy.state_deepcopy(self.current_state)
