@@ -1,8 +1,6 @@
 # Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
-'''Testing module for `garlicsim.asynchronous_crunching`.'''
-
 from __future__ import division
 
 import os
@@ -25,7 +23,6 @@ import test_garlicsim
 
 
 def test():
-    '''Test `garlicsim.asynchronous_crunching`.'''
     
     from . import sample_simpacks
     
