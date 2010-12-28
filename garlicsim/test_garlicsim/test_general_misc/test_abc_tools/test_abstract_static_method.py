@@ -13,8 +13,8 @@ from garlicsim.general_misc.abc_tools import abstract_static_method
 import abc
 
 
-def test_instanriate_without_subclassing():
-    '''Test you can't instanriate a class with an `abstract_static_method`.'''
+def test_instantiate_without_subclassing():
+    '''Test you can't instantiate a class with an `abstract_static_method`.'''
     
     if sys.version_info[:2] <= (2, 5):
         raise nose.SkipTest("Python 2.5 and below can't enforce abstract "
@@ -30,7 +30,7 @@ def test_instanriate_without_subclassing():
         
 def test_override():
     '''
-    Can't instanriate subclass that doesn't override `abstract_static_method`.
+    Can't instantiate subclass that doesn't override `abstract_static_method`.
     '''
     
     class B(object, metaclass=abc.ABCMeta):

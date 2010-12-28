@@ -3,6 +3,7 @@
 
 '''Testing module for `garlicsim.asynchronous_crunching`.'''
 
+from __future__ import division
 
 import os
 import types
@@ -24,18 +25,18 @@ import test_garlicsim
 
 
 def test():
+    '''Test `garlicsim.asynchronous_crunching`.'''
     
     from . import sample_simpacks
     
     # Collecting all the test simpacks:
-    simpacks = list(import_tools.import_all(sample_simpacks).values())
+    simpacks = import_tools.import_all(sample_simpacks).values()
     
     # Making sure that we didn't miss any simpack by counting the number of
     # sub-folders in the `sample_simpacks` folders:
     sample_simpacks_dir = \
         os.path.dirname(sample_simpacks.__file__)
-    assert len(path_tools.list_sub_folders(sample_simpacks_dir,
-                                           exclude='__pycache__')) == \
+    assert len(path_tools.list_sub_folders(sample_simpacks_dir)) == \
            len(simpacks)
     
     cruncher_types = [
@@ -57,27 +58,45 @@ def check(simpack, cruncher_type):
     
     my_simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
     
-    assert my_simpack_grokker is garlicsim.misc.SimpackGrokker(simpack)
-    # Ensuring caching works.
-    
-    assert not simpack._settings_for_testing.ENDABLE
+    assert simpack._settings_for_testing.DEFAULT_STEP_FUNCTION_TYPE in \
+           [garlicsim.misc.simpack_grokker.step_types.InplaceStep,
+            garlicsim.misc.simpack_grokker.step_types.InplaceStepGenerator]
     
     assert garlicsim.misc.simpack_grokker.step_type.StepType.get_step_type(
         my_simpack_grokker.default_step_function
     ) == simpack._settings_for_testing.DEFAULT_STEP_FUNCTION_TYPE
     
-    step_profile = my_simpack_grokker.build_step_profile()
-    deterministic = \
-        my_simpack_grokker.settings.DETERMINISM_FUNCTION(step_profile)
+    assert simpack._settings_for_testing.CONSTANT_CLOCK_INTERVAL == 1
     
+    step_profile = my_simpack_grokker.build_step_profile()
     
     state = simpack.State.create_root()
+    assert state.clock == 0
+    
+    state_1 = garlicsim.simulate(state)
+    assert state.clock == 0
+    assert state_1.clock == 1
+    assert state_1 is not state
+    assert state_1.list is not state.list
+    assert state_1.cross_process_persistent is state.cross_process_persistent
+    
+    state_2 = garlicsim.simulate(state, 2)
+    assert state.clock == 0
+    assert state_1.clock == 1
+    assert state_2.clock == 2
+    assert state_2 is not state
+    assert state_2.list is not state.list
+    assert state_2.cross_process_persistent is state.cross_process_persistent
     
     
     prev_state = state
     for i in [1, 2, 3, 4]:
         new_state = garlicsim.simulate(state, i)
         assert new_state.clock >= getattr(prev_state, 'clock', 0)
+        assert new_state is not prev_state
+        assert new_state.list is not prev_state.list
+        assert new_state.cross_process_persistent is \
+               prev_state.cross_process_persistent
         prev_state = new_state
     
     result = garlicsim.list_simulate(state, 4)
