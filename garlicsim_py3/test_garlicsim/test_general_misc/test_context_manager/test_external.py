@@ -73,7 +73,7 @@ class ContextManagerTestCase(unittest2.TestCase):
             state.append(1)
             try:
                 yield 42
-            except ZeroDivisionError, e:
+            except ZeroDivisionError as e:
                 state.append(e.args[0])
                 self.assertEqual(state, [1, 42, 999])
         with woohoo() as x:

@@ -25,7 +25,7 @@ def is_subclass(candidate, base_class):
 
 
 def get_mro_depth_of_method(type_, method_name):
-    assert isinstance(method_name, basestring)
+    assert isinstance(method_name, str)
     mro = type_.mro()
     
     assert mro[0] is type_
