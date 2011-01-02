@@ -1,2 +1,2 @@
 import garlicsim
-import garlicsim.misc.persistent.human_names
+import garlicsim.general_misc.persistent.human_names

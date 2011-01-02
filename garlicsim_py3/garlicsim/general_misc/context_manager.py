@@ -113,12 +113,12 @@ from __future__ import with_statement
 
 import types
 import sys
-from garlicsim.general_misc.third_party import abc
+import abc
 
 from garlicsim.general_misc.third_party import decorator as decorator_module
 
 
-class SelfHook(object):
+class SelfHook:
     '''
     Hook that a context manager can yield in order to yield itself.
 
@@ -238,7 +238,7 @@ class ContextManagerType(abc.ABCMeta):
         )
         
     
-class ContextManager(object):
+class ContextManager:
     '''
     Allows running preperation code before a given suite and cleanup after.
     
@@ -338,7 +338,7 @@ class ContextManager(object):
             try:
                 generator.throw(type_, value, traceback)
                 raise RuntimeError("generator didn't stop after throw()")
-            except StopIteration, exc:
+            except StopIteration as exc:
                 # Suppress the exception *unless* it's the same exception that
                 # was passed to throw().  This prevents a StopIteration
                 # raised inside the "with" statement from being suppressed
