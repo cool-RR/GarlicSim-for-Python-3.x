@@ -187,7 +187,7 @@ class ContextManagerTypeType(type):
             return super(ContextManagerTypeType, cls).__call__(*args)
 
 
-class ContextManagerType(abc.ABCMeta):
+class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
     '''
     Metaclass for `ContextManager`.
     
@@ -209,9 +209,6 @@ class ContextManagerType(abc.ABCMeta):
     For more details, see documentation of the containing module,
     `garlicsim.general_misc.context_manager`.
     '''
-    
-    __metaclass__ = ContextManagerTypeType
-
     
     def __new__(mcls, name, bases, namespace):
         '''
@@ -238,7 +235,7 @@ class ContextManagerType(abc.ABCMeta):
         )
         
     
-class ContextManager:
+class ContextManager(metaclass=ContextManagerType):
     '''
     Allows running preperation code before a given suite and cleanup after.
     
@@ -254,10 +251,6 @@ class ContextManager:
     For more details, see documentation of the containing module,
     `garlicsim.general_misc.context_manager`.
     '''
-    
-    
-    __metaclass__ = ContextManagerType
-
     
     def __call__(self, function):
         '''Decorate `function` to use this context manager when it's called.'''

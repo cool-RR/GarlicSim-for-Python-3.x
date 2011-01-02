@@ -8,6 +8,7 @@ See its documentation for more details.
 '''
 
 import sys
+import collections
 
 from garlicsim.general_misc import cute_iter_tools
 from garlicsim.general_misc import address_tools
@@ -27,16 +28,17 @@ class TempFunctionCallCounter(TempValueSetter):
     
     def __init__(self, function):    
         
-        if cute_iter_tools.is_iterable(function):
+        if isinstance(function, collections.Iterable):
             first, second = function
             if isinstance(second, basestring):
                 actual_function = getattr(first, second)
             else:
-                assert callable(first) and callable(second)
+                assert isinstance(first, collections.Callable) and \
+                       isinstance(second, collections.Callable)
                 actual_function = first() # `first` is the getter in this case.
                 
-        else: # not cute_iter_tools.is_iterable(function)
-            assert callable(function)
+        else: # not isinstance(function, collections.Iterable)
+            assert isinstance(function, collections.Callable)
             actual_function = function
             try:
                 address = address_tools.object_to_string.get_address(function)
