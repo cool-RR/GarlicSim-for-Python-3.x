@@ -5,6 +5,7 @@
 Testing module for `garlicsim.general_misc.caching.cache`.
 '''
 
+import re
 import gc
 import weakref
 
@@ -136,10 +137,12 @@ def test_function_instead_of_max_size():
         confusedly_put_function_as_max_size()
     except TypeError as exception:
         assert type(exception) is TypeError
-        assert exception.args[0] == (
-            'You entered the callable `%s` where you should have '
+        assert '%s' not in exception.args[0]
+        assert re.match(
+            'You entered the callable `.*?` where you should have '
             'entered the `max_size` for the cache. You probably '
-            'used `@cache`, while you should have used `@cache()`'
+            'used `@cache`, while you should have used `@cache\(\)`',
+            exception.args[0]
         )
     else:
         raise Exception('Should have gotten `TypeError`.')

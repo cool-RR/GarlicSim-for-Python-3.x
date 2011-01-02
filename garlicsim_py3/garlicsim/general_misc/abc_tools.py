@@ -3,6 +3,10 @@
 
 '''Defines tools related to abstract base classes from the `abc` module.'''
 
+from garlicsim.general_misc import context_manager as context_manager_module
+from garlicsim.general_misc.third_party import abc
+
+
 class abstract_static_method(staticmethod):
     '''
     A combination of `abc.abstractmethod` and `staticmethod`.

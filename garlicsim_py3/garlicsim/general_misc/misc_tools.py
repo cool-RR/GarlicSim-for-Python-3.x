@@ -7,6 +7,8 @@ import re
 import math
 import types
 
+from garlicsim.general_misc import cute_iter_tools
+
 
 def is_subclass(candidate, base_class):
     '''
@@ -20,6 +22,22 @@ def is_subclass(candidate, base_class):
     '''
     return isinstance(candidate, type) and \
            issubclass(candidate, base_class)
+
+
+def get_mro_depth_of_method(type_, method_name):
+    assert isinstance(method_name, basestring)
+    mro = type_.mro()
+    
+    assert mro[0] is type_
+    method = getattr(mro[0], method_name)
+    assert method is not None
+
+    for deepest_index, base_class in reversed(list(enumerate(mro))):
+        if hasattr(base_class, method_name) and \
+           getattr(base_class, method_name) == method:
+            break
+        
+    return deepest_index
 
 
 def frange(start, finish=None, step=1.):
