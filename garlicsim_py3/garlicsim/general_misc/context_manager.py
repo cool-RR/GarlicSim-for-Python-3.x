@@ -111,6 +111,7 @@ benefits.
 
 from __future__ import with_statement
 
+import collections
 import types
 import sys
 import abc
@@ -169,7 +170,7 @@ class ContextManagerTypeType(type):
         '''
         if len(args) == 1:
             (function,) = args
-            assert callable(function)
+            assert isinstance(function, collections.Callable)
             name = function.__name__
             bases = (ContextManager,)
             namespace_dict = {
@@ -298,7 +299,7 @@ class ContextManager(metaclass=ContextManagerType):
         
         
         try:
-            generator_return_value = new_generator.next()
+            generator_return_value = next(new_generator)
             return self if (generator_return_value is SelfHook) else \
                    generator_return_value
         
@@ -318,7 +319,7 @@ class ContextManager(metaclass=ContextManagerType):
         
         if type_ is None:
             try:
-                generator.next()
+                next(generator)
             except StopIteration:
                 return
             else:
