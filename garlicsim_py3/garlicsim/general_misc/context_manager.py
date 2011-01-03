@@ -47,7 +47,7 @@ has their own advantages and disadvantages over the others.
     
         class MyContextManager(ContextManager):
             def manage_context(self):
-                do_some_prepartion()
+                do_some_preparation()
                 try:
                     with some_lock:
                         yield self
@@ -238,7 +238,7 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
     
 class ContextManager(metaclass=ContextManagerType):
     '''
-    Allows running preperation code before a given suite and cleanup after.
+    Allows running preparation code before a given suite and cleanup after.
     
     To make a context manager, use `ContextManager` as a base class and either
     (a) define `__enter__` and `__exit__` methods or (b) define a
