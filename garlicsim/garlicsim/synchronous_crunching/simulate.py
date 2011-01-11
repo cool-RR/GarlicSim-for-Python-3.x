@@ -38,8 +38,8 @@ def simulate(state, iterations=1, *args, **kwargs):
     step_profile = parse_arguments_to_step_profile(*args, **kwargs)
 
     if not hasattr(state, 'clock'):
-        # blocktodo: make mechanism to prevent deepcopying twice, both here and
-        # in inplace crap
+        # todo: make mechanism to prevent deepcopying twice, both here and
+        # in inplace handling.
         state = garlicsim.misc.state_deepcopy.state_deepcopy(state)
         state.clock = 0
     
@@ -78,7 +78,7 @@ def __history_simulate(simpack_grokker, state, iterations, step_profile):
         pass
         
     final_state = current_state
-    # Which is still here as the last value from the `for` loop
+    # Which is still here as the last value from the `for` loop.
     
     return final_state
 
@@ -93,7 +93,11 @@ def __non_history_simulate(simpack_grokker, state, iterations, step_profile):
     '''
     
     # We try to get an inplace step iterator, if our simpack supplies one.
-    # Otherwise we use a regular one.
+    # Otherwise we use a regular one. The reason we do it here in
+    # `__non_history_simulate` is because this function gives the user only the
+    # final state, without keeping any states in between. Therefore we can
+    # afford doing the steps inplace, and we get better performance because we
+    # don't deepcopy states.
     if simpack_grokker.is_inplace_iterator_available(step_profile) is True:
         state_copy = garlicsim.misc.state_deepcopy.state_deepcopy(state)
         iterator = \
@@ -112,6 +116,6 @@ def __non_history_simulate(simpack_grokker, state, iterations, step_profile):
         pass    
     
     final_state = current_state
-    # Which is still here as the last value from the `for` loop
+    # Which is still here as the last value from the `for` loop.
     
     return final_state

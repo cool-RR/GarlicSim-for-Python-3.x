@@ -1,6 +1,11 @@
 # Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
 
+'''
+This module defines the `InplaceStepGeneratorIterator` class.
+
+See its documentation for more information.
+'''
 
 import copy
 
@@ -9,6 +14,22 @@ from garlicsim.misc import BaseStepIterator, SimpackError, AutoClockGenerator
 
 
 class InplaceStepGeneratorIterator(BaseStepIterator):
+    '''
+    Step iterator that uses an inplace step generator to perform step in place.
+    
+    A step iterator uses the simpack's original step function (or in this case
+    inplace step generator) under the hood.
+    
+    This is an *inplace* step iterator; It doesn't produce new states, it
+    modifies an existing one in place. It keeps yielding the same state, except
+    it modifies it on each iteration.
+    
+    The step iterator automatically increments the state's `.clock` by 1 if the
+    step generator doesn't change the `.clock` itself.
+    
+    If the simpack's step generator will terminate, this iterator will make a
+    fresh one without alerting the user.
+    '''
     
     def __init__(self, state, step_profile):
         
@@ -29,7 +50,7 @@ class InplaceStepGeneratorIterator(BaseStepIterator):
         '''
         
         self.auto_clock_generator = AutoClockGenerator(detect_static=True)
-        '''Auto-clock generator which ensures all states have `.clock`.'''
+        '''Auto-clock generator which ensures all states have good `.clock`.'''
         
         self.auto_clock_generator.make_clock(self.current_state)
         
@@ -37,14 +58,13 @@ class InplaceStepGeneratorIterator(BaseStepIterator):
 
     
     def __build_raw_generator(self):
-        '''Build a raw generator which will provide the states for us.'''
+        '''Build a raw generator which will perform steps for us.'''
         self.raw_generator = self.step_profile.step_function(
             self.current_state,
             *self.step_profile.args,
             **self.step_profile.kwargs
         )
         
-    
     
     def __next__(self):
         '''Crunch the next state.'''
@@ -68,8 +88,8 @@ class InplaceStepGeneratorIterator(BaseStepIterator):
                 
         
     def _auto_clock(self, state):
-        '''If the state has no clock reading, give it one automatically.'''
+        '''
+        If the raw generator didn't advance the state's clock, advance it by 1.
+        '''
         state.clock = self.auto_clock_generator.make_clock(state)
         
-
-    

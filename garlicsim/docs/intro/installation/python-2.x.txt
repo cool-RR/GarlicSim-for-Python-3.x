@@ -16,9 +16,9 @@ General notes
 -------------
 
 Keep in mind that the GarlicSim project is comprised of three packages:
-``garlicsim``, ``garlicsim_lib`` and ``garlicsim_wx``. ``garlicsim`` is the core
-logic, ``garlicsim_lib`` is a collection of simpacks, and ``garlicsim_wx`` is a
-wxPython-based GUI.
+:mod:`garlicsim`, :mod:`garlicsim_lib` and :mod:`garlicsim_wx`.
+:mod:`garlicsim` is the core logic, :mod:`garlicsim_lib` is a collection of
+simpacks, and :mod:`garlicsim_wx` is a wxPython-based GUI.
 
 You don't have to install all of them. You may install only the first one, or
 only the first two, or all three, depending on which functionality you want.
@@ -27,14 +27,14 @@ only the first two, or all three, depending on which functionality you want.
 Requirements
 ------------
 
-For ``garlicsim``
-^^^^^^^^^^^^^^^^^
+For :mod:`garlicsim`
+^^^^^^^^^^^^^^^^^^^^
 
 * Python, version 2.5 or above. If you're new to Python, `download version 2.6
   <http://python.org/download/releases/2.6.5>`_. If you use Python 3.x, use
   :ref:`this fork of GarlicSim instead <intro-installation-python-3.x>`.
  
-* Either `setuptools`_ or `Distribute`_.
+* `distribute`_.
 
 And for users of Python 2.5 only:
 
@@ -46,14 +46,14 @@ Optional but recommended:
 * on Windows only: `Python for Windows Extensions`_.
 
 
-For some simpacks in ``garlicsim_lib``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+For some simpacks in :mod:`garlicsim_lib`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * `NumPy`_
  
 
-For ``garlicsim_wx``
-^^^^^^^^^^^^^^^^^^^^
+For :mod:`garlicsim_wx`
+^^^^^^^^^^^^^^^^^^^^^^^
 
 * `wxPython 2.8.10.1 or above (but below 2.9)`_
 
@@ -65,20 +65,20 @@ Installation methods
 You may choose from one of these installation methods:
 
 
-``easy_install``
-----------------
+``pip``
+-------
 
-You can use ``easy_install`` in the standard way to install:
+You can use `pip`_ in the standard way to install:
 
-* ``easy_install garlicsim``
-
-and/or
-
-* ``easy_install garlicsim_lib``
+* ``pip install garlicsim``
 
 and/or
 
-* ``easy_install garlicsim_wx``
+* ``pip install garlicsim_lib``
+
+and/or
+
+* ``pip install garlicsim_wx``
 
 
 Installing from source
@@ -87,43 +87,39 @@ Installing from source
 GarlicSim is pure-Python and thus doesn't require building. These are the three
 source packages:
 
-* `garlicsim source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.6.0.tar.gz>`_
-  `.zip <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.6.0.zip>`_
-* `garlicsim_lib source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.6.0.tar.gz>`_
-  `.zip <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.6.0.zip>`_
-* `garlicsim_wx source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.6.0.tar.gz>`_
-  `.zip <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.6.0.zip>`_
+* `garlicsim source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.6.1.tar.gz>`_
+  `.zip <http://pypi.python.org/packages/source/g/garlicsim/garlicsim-0.6.1.zip>`_
+* `garlicsim_lib source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.6.1.tar.gz>`_
+  `.zip <http://pypi.python.org/packages/source/g/garlicsim_lib/garlicsim_lib-0.6.1.zip>`_
+* `garlicsim_wx source package .tar.gz <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.6.1.tar.gz>`_
+  `.zip <http://pypi.python.org/packages/source/g/garlicsim_wx/garlicsim_wx-0.6.1.zip>`_
 
-Use the standard ``python setup.py install`` to install.
+You may use the standard ``python setup.py install`` to install.
 
 
 Windows binaries
 ----------------
 
-Some binaries for Windows are available:
+Binaries for Windows are available:
 
 For Python 2.5, Python 2.6 and Python 2.7:
 
-* `garlicsim Windows installer <http://pypi.python.org/packages/any/g/garlicsim/garlicsim-0.6.0.win32.msi>`_
-* `garlicsim_lib Windows installer <http://pypi.python.org/packages/any/g/garlicsim_lib/garlicsim_lib-0.6.0.win32.msi>`_
-* `garlicsim_wx Windows installer <http://pypi.python.org/packages/any/g/garlicsim_wx/garlicsim_wx-0.6.0.win32.msi>`_
+* `garlicsim Windows installer <http://pypi.python.org/packages/any/g/garlicsim/garlicsim-0.6.1.win32.msi>`_
+* `garlicsim_lib Windows installer <http://pypi.python.org/packages/any/g/garlicsim_lib/garlicsim_lib-0.6.1.win32.msi>`_
+* `garlicsim_wx Windows installer <http://pypi.python.org/packages/any/g/garlicsim_wx/garlicsim_wx-0.6.1.win32.msi>`_
 
 
 To start the GUI
 ================
 
-In order to start the GUI after you install it, type the following in the Python
-interpreter:
+In order to start the GUI after you install it, run the :command:`GarlicSim`
+script which is located in your Python scripts folder. In Windows it's done
+like this::
 
-  >>> import garlicsim_wx
-  >>> if __name__ == '__main__': # Needed for multiprocessing
-  ...     garlicsim_wx.start()
-  ...
-
-
-
-.. _setuptools: http://pypi.python.org/pypi/setuptools
-.. _Distribute: http://pypi.python.org/pypi/distribute
+    c:\> c:\python26\Scripts\GarlicSim.exe
+    
+.. _pip: http://pypi.python.org/pypi/pip
+.. _distribute: http://pypi.python.org/pypi/distribute
 .. _Backport of the multiprocessing module: http://pypi.python.org/pypi/multiprocessing/
 .. _Python for Windows Extensions: http://sourceforge.net/projects/pywin32
 .. _Psyco: http://psyco.sourceforge.net

@@ -9,6 +9,7 @@ import os
 import sys
 import setuptools
 
+
 if sys.version_info[0] <= 2:
     raise Exception('This package requires Python 3.x. For Python 2.5+, use '
                     '`garlicsim_lib`, which you can find on PyPI.')
@@ -43,9 +44,9 @@ my_classifiers = [
 
 setuptools.setup(
     name='garlicsim_lib_py3',
-    version='0.6.0',
-    requires=['garlicsim_py3 (== 0.6.0)'],
-    install_requires=['garlicsim_py3 == 0.6.0'],
+    version='0.6.1',
+    requires=['garlicsim (== 0.6.1)'],
+    install_requires=['garlicsim == 0.6.1'],
     description='Collection of GarlicSim simulation packages',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',

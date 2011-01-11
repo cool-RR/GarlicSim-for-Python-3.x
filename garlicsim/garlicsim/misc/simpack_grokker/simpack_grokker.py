@@ -351,14 +351,18 @@ class SimpackGrokker(object, metaclass=caching.CachedType):
         step_type = StepType.get_step_type(step_function)
         
         return step_type.step_iterator_class(state_or_history_browser,
-                                   step_profile)
+                                             step_profile)
         
     
     def get_inplace_step_iterator(self, state, step_profile):
         '''
-        Get an inplace step iterator which modifies the state in-place.
+        Get an inplace step iterator which modifies the state in place.
         
-        Not yet implemented, sorry. 
+        On every iteration of the inplace step iterator, `state` will be
+        changed to be the next moment in the simulation. No new state objects
+        will be created.
+        
+        This can only be used with inplace step functions.
         '''
         
         step_function = step_profile.step_function
@@ -366,7 +370,10 @@ class SimpackGrokker(object, metaclass=caching.CachedType):
         
         if step_type not in (step_types.InplaceStep,
                              step_types.InplaceStepGenerator):
-            raise Exception('tododoc')
+            raise Exception("Can't get an inplace step iterator for the step "
+                            "function you're using, because it's not an "
+                            "inplace step function, it's a %s." % 
+                            step_type.verbose_name)
         
         return step_type.inplace_step_iterator_class(
             state,
@@ -375,6 +382,12 @@ class SimpackGrokker(object, metaclass=caching.CachedType):
     
     
     def is_inplace_iterator_available(self, step_profile):
+        '''
+        Return whether `step_profile` allows using an inplace step iterator.
+        
+        Only step profiles that use an inplace step function (or generator)
+        allow using inplace step iterators.
+        '''
         step_function = step_profile.step_function
         step_type = StepType.get_step_type(step_function)
         

@@ -43,17 +43,15 @@ def test():
                                            exclude='__pycache__')) == \
            len(simpacks)
     
-    cruncher_types = [
-        garlicsim.asynchronous_crunching.crunchers.ThreadCruncher,
+    for simpack in simpacks:
         
-        # Until multiprocessing shit is solved, this is commented-out:
-        #garlicsim.asynchronous_crunching.crunchers.ProcessCruncher
-    ]
-    
-    for simpack, cruncher_type in \
-        cute_iter_tools.product(simpacks, cruncher_types):
         test_garlicsim.verify_sample_simpack_settings(simpack)
-        yield check, simpack, cruncher_type
+        
+        cruncher_types = \
+            garlicsim.misc.SimpackGrokker(simpack).available_cruncher_types
+        
+        for cruncher_type in cruncher_types:
+            yield check, simpack, cruncher_type
 
         
 def check(simpack, cruncher_type):
@@ -144,7 +142,8 @@ def check(simpack, cruncher_type):
     # Letting our crunching manager update our cruncher about the new clock
     # target:
     project.sync_crunchers()
-    (same_cruncher,) = list(project.crunching_manager.crunchers.values())
+    assert not job.is_done()
+    (same_cruncher,) = project.crunching_manager.crunchers.values()
     # todo: On slow machines cruncher doesn't get created fast enough for the
     # above assert to work. Probably make some function that waits for it.
     assert same_cruncher is cruncher

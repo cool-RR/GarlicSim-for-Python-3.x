@@ -44,14 +44,17 @@ my_classifiers = [
 
 setuptools.setup(
     name='garlicsim_py3',
-    version='0.6.0',
+    version='0.6.1',
     description='Pythonic framework for working with simulations',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',
     url='http://garlicsim.org',
     packages=get_packages(),
-    scripts=['garlicsim/scripts/start_simpack.py'],
-    license="LGPL v2.1",
+    entry_points={
+        'console_scripts': ['start_simpack='
+                            'garlicsim.scripts.start_simpack:start'],
+    },
+    license='LGPL v2.1',
     long_description = my_long_description,
     classifiers = my_classifiers,
     include_package_data = True,
