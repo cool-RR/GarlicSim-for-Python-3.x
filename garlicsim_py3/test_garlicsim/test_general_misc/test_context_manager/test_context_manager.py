@@ -752,7 +752,7 @@ def check_context_manager_type(context_manager_type,
     
     try:
         new_g('whatever')
-    except Exception, exception:
+    except Exception as exception:
         assert not error_catching
         assert exception_type_caught is None
         assert type(exception) is SyntaxError

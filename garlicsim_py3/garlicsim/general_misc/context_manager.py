@@ -278,17 +278,13 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
             # `__enter__`, because then it will not have an `__exit__` to work
             # with.
             
-            our_enter_uses_manage_context = (
-                getattr(result_class.__enter__, 'im_func',
-                result_class.__enter__) == ContextManager.\
-                _ContextManager__enter_using_manage_context.im_func
-            )
+            our_enter_uses_manage_context = \
+                (result_class.__enter__ == 
+                 ContextManager._ContextManager__enter_using_manage_context)
             
-            our_exit_uses_manage_context = (
-                getattr(result_class.__exit__, 'im_func',
-                result_class.__exit__) == ContextManager.\
-                _ContextManager__exit_using_manage_context.im_func
-            )
+            our_exit_uses_manage_context = \
+                (result_class.__exit__ == 
+                 ContextManager._ContextManager__exit_using_manage_context)
             
             if our_exit_uses_manage_context and not \
                our_enter_uses_manage_context:
