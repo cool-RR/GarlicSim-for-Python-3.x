@@ -110,7 +110,7 @@ def start_simpack(containing_folder, name):
             
             with open(dest_file, 'w') as destination:
                 
-                string_to_write = source.read().\
+                string_to_write = source.read()\
                                 .replace('simpack_name', name)
                 
                 destination.write(string_to_write)
