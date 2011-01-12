@@ -1,0 +1,23 @@
+Metadata-Version: 1.0
+Name: garlicsim-py3
+Version: 0.6.0
+Summary: Pythonic framework for working with simulations
+Home-page: http://garlicsim.org
+Author: Ram Rachum
+Author-email: cool-rr@cool-rr.com
+License: LGPL v2.1
+Description: GarlicSim is a platform for writing, running and analyzing simulations. It can
+        handle any kind of simulation: Physics, game theory, epidemic spread,
+        electronics, etc.
+        
+        Visit http://garlicsim.org for more info.
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.1
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Topic :: Scientific/Engineering
