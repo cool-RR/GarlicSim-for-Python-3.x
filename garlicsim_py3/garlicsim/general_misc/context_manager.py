@@ -318,7 +318,7 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
         '''
         Return whether `cls` is `ContextManager`.
         
-        #It's an ugly method, but unfortunately it's necessary because at one
+        It's an ugly method, but unfortunately it's necessary because at one
         point we want to test if a class is `ContextManager` before
         `ContextManager` is defined in this module.
         '''
