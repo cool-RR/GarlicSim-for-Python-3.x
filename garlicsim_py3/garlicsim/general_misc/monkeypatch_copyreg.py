@@ -35,6 +35,6 @@ copyreg.pickle(types.MethodType, reduce_method)
 
 def reduce_module(module):
     '''Reducer for modules.'''
-    return (import_tools, (module.__name__,))
+    return (import_tools.normal_import, (module.__name__,))
 
 copyreg.pickle(types.ModuleType, reduce_module)
