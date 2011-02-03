@@ -12,4 +12,4 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
 proj.main-file = loc('garlicsim_py3/import_cruft.py')
-testing.auto-test-file-specs = ('tests/*.py',)
+testing.auto-test-file-specs = ('test_garlicsim/test_*',)
