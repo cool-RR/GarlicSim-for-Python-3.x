@@ -4,12 +4,18 @@
 # Wing IDE project file                                          #
 ##################################################################
 [project attributes]
-proj.directory-list = [{'dirloc': loc('.'),
+proj.directory-list = [{'dirloc': loc('../../..'),
                         'excludes': [u'src',
                                      u'garlicsim_lib_py3/build',
                                      u'garlicsim_lib_py3/dist',
                                      u'garlicsim_py3/build',
                                      u'garlicsim_py3/dist',
+                                     u'garlicsim_py3/htmlcov',
+                                     u'garlicsim_py3/coverage.xml',
+                                     u'garlicsim_lib_py3/coverage.xml',
+                                     u'garlicsim_lib_py3/nosetests.xml',
+                                     u'htmlcov',
+                                     u'garlicsim_py3/nosetests.xml',
                                      u'garlicsim_py3/garlicsim_py3.egg-info',
                                      u'garlicsim_lib_py3/garlicsim_lib_py3.egg-info'],
                         'filter': '*',
@@ -17,6 +23,7 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
-proj.main-file = loc('garlicsim_py3/import_cruft.py')
-testing.auto-test-file-specs = ('test_garlicsim/test*',)
+proj.main-file = loc('.')
+testing.auto-test-file-specs = ('test_garlicsim/test*.py',
+                                'test_garlicsim_lib/test*.py')
 testing.test-framework = {None: 'nose'}
