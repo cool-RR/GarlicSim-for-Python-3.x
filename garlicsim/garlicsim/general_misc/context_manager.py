@@ -59,7 +59,7 @@ has their own advantages and disadvantages over the others.
                     yield self
                     
     This approach is sometimes cleaner than defining `__enter__` and
-    `__exit__`; Especially when using another context manager inside
+    `__exit__`; especially when using another context manager inside
     `manage_context`. In our example we did `with other_context_manager` in our
     `manage_context`, which is shorter, more idiomatic and less
     double-underscore-y than the equivalent classic definition:
@@ -120,17 +120,15 @@ benefits.
 # that will cause it to be pickled by reference to the decorated function
 
 
-from __future__ import with_statement
-
 import collections
 import types
 import sys
 import abc
 
-from garlicsim.general_misc.third_party import decorator as decorator_module
+from garlicsim.general_misc import decorator_tools
 
 
-class SelfHook:
+class SelfHook(object):
     '''
     Hook that a context manager can yield in order to yield itself.
 
@@ -318,7 +316,7 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
         '''
         Return whether `cls` is `ContextManager`.
         
-        #It's an ugly method, but unfortunately it's necessary because at one
+        It's an ugly method, but unfortunately it's necessary because at one
         point we want to test if a class is `ContextManager` before
         `ContextManager` is defined in this module.
         '''
@@ -328,10 +326,9 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
             (cls.__module__ == 'garlicsim.general_misc.context_manager') and
             (cls.mro() == [cls, object])
         )
-                
-    
-    
-class ContextManager(metaclass=ContextManagerType):
+
+
+class ContextManager(object, metaclass=ContextManagerType):
     '''
     Allows running preparation code before a given suite and cleanup after.
     
@@ -353,7 +350,7 @@ class ContextManager(metaclass=ContextManagerType):
         def inner(function_, *args, **kwargs):
             with self:
                 return function_(*args, **kwargs)
-        return decorator_module.decorator(inner, function)
+        return decorator_tools.decorator(inner, function)
     
     
     @abc.abstractmethod

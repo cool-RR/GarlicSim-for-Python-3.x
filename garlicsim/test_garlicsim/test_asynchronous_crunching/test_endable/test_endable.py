@@ -34,22 +34,22 @@ def test_endable():
     more.
     '''
     
-    from . import sample_endable_simpacks
+    from . import simpacks as simpacks_package
     
     # Collecting all the test simpacks:
-    simpacks = list(import_tools.import_all(sample_endable_simpacks).values())
+    simpacks = list(import_tools.import_all(simpacks_package).values())
     
     # Making sure that we didn't miss any simpack by counting the number of
-    # sub-folders in the `sample_endable_simpacks` folders:
-    sample_endable_simpacks_dir = \
-        os.path.dirname(sample_endable_simpacks.__file__)
-    assert len(path_tools.list_sub_folders(sample_endable_simpacks_dir,
+    # sub-folders in the `simpacks` folder:
+    simpacks_dir = \
+        os.path.dirname(simpacks_package.__file__)
+    assert len(path_tools.list_sub_folders(simpacks_dir,
                                            exclude='__pycache__')) == \
            len(simpacks)
     
     for simpack in simpacks:
 
-        test_garlicsim.verify_sample_simpack_settings(simpack)
+        test_garlicsim.verify_simpack_settings(simpack)
         
         cruncher_types = \
             garlicsim.misc.SimpackGrokker(simpack).available_cruncher_types
@@ -60,8 +60,8 @@ def test_endable():
         
 def check(simpack, cruncher_type):
     
-    assert simpack._settings_for_testing.ENDABLE is True
-    assert simpack._settings_for_testing.CONSTANT_CLOCK_INTERVAL == 1
+    assert simpack._test_settings.ENDABLE is True
+    assert simpack._test_settings.CONSTANT_CLOCK_INTERVAL == 1
     
     my_simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
     
@@ -70,7 +70,7 @@ def check(simpack, cruncher_type):
     
     assert garlicsim.misc.simpack_grokker.step_type.StepType.get_step_type(
         my_simpack_grokker.default_step_function
-    ) == simpack._settings_for_testing.DEFAULT_STEP_FUNCTION_TYPE
+    ) == simpack._test_settings.DEFAULT_STEP_FUNCTION_TYPE
     
     step_profile = my_simpack_grokker.build_step_profile()
     deterministic = \
@@ -135,7 +135,7 @@ def check(simpack, cruncher_type):
     
     ### Setting up a project to run asynchronous tests:
     
-    project = garlicsim.Project(simpack)
+    project = garlicsim.Project(simpack) 
         
     project.crunching_manager.cruncher_type = cruncher_type
     
@@ -216,15 +216,13 @@ def check(simpack, cruncher_type):
     assert [len(p) for p in paths] == [5, 5, 5]
     
     
-    # Ensuring buffer on `ended_path` from `node_3` won't add a single node or
-    # end since we have a path to an existing end:
+    # Ensuring buffer on `ended_path` from `node_3` won't cause a new job to be
+    # created since we have a path to an existing end:
     project.ensure_buffer_on_path(node_3, ended_path, 10)
     project.ensure_buffer_on_path(node_3, ended_path, 1000)
     project.ensure_buffer_on_path(node_3, ended_path, infinity)
     total_nodes_added = 0    
-    while project.crunching_manager.jobs:
-        time.sleep(0.1)
-        total_nodes_added += project.sync_crunchers()
+    assert not project.crunching_manager.jobs
     assert len(project.tree.nodes) == 10
     
     # These `ensure_buffer_on_path` calls shouldn't have added any ends:

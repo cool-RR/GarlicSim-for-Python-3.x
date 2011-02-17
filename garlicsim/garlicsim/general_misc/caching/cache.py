@@ -6,27 +6,29 @@ Defines the `cache` decorator.
 
 See its documentation for more details.
 '''
+# todo: examine thread-safety
 
 import functools
 import collections
 import numbers
 
-from garlicsim.general_misc.third_party import decorator as decorator_module
+from garlicsim.general_misc import decorator_tools
 
 from garlicsim.general_misc.sleek_refs import SleekCallArgs
 from garlicsim.general_misc.infinity import infinity
 from garlicsim.general_misc import misc_tools
-from garlicsim.general_misc.third_party.ordered_dict import OrderedDict
+from garlicsim.general_misc.nifty_collections import OrderedDict
 
 
-
+@decorator_tools.helpful_decorator_builder
 def cache(max_size=infinity):
     '''
     Cache a function, saving results so they won't have to be computed again.
     
     This decorator understands function arguments. For example, it understands
     that for a function like this:
-    
+
+        @cache()
         def f(a, b=2):
             return whatever
             
@@ -50,41 +52,27 @@ def cache(max_size=infinity):
     # compile a function accordingly, so functions with a simple argspec won't
     # have to go through so much shit. update: probably it will help only for
     # completely argumentless function. so do one for those.
-    
-    if isinstance(max_size, collections.Callable) and \
-       not isinstance(max_size, numbers.Number):
-        raise TypeError('You entered the callable `%s` where you should have '
-                        'entered the `max_size` for the cache. You probably '
-                        'used `@cache`, while you should have used '
-                        '`@cache()`' % max_size)
 
-    if max_size == infinity:
+    def decorator(function):
         
-        def decorator(function):
-            # In case we're being given a function that is already cached:
-            if hasattr(function, 'cache'): return function
+        # In case we're being given a function that is already cached:
+        if getattr(function, 'is_cached', False): return function
+        
+        if max_size == infinity:
             
             cache_dict = {}
-            
+
             def cached(function, *args, **kwargs):
                 sleek_call_args = \
                     SleekCallArgs(cache_dict, function, *args, **kwargs)
                 try:
-                    return cached.cache[sleek_call_args]
+                    return cached._cache[sleek_call_args]
                 except KeyError:
-                    cached.cache[sleek_call_args] = value = \
+                    cached._cache[sleek_call_args] = value = \
                           function(*args, **kwargs)
                     return value
-                
-            cached.cache = cache_dict
-            
-            return decorator_module.decorator(cached, function)
-        
-    else: # max_size < infinity
-        
-        def decorator(function): 
-            # In case we're being given a function that is already cached:
-            if hasattr(function, 'cache'): return function
+    
+        else: # max_size < infinity
             
             cache_dict = OrderedDict()
             
@@ -92,18 +80,27 @@ def cache(max_size=infinity):
                 sleek_call_args = \
                     SleekCallArgs(cache_dict, function, *args, **kwargs)
                 try:
-                    result = cached.cache[sleek_call_args]
-                    cached.cache.move_to_end(sleek_call_args)
+                    result = cached._cache[sleek_call_args]
+                    cached._cache.move_to_end(sleek_call_args)
                     return result
                 except KeyError:
-                    cached.cache[sleek_call_args] = value = \
+                    cached._cache[sleek_call_args] = value = \
                         function(*args, **kwargs)
-                    if len(cached.cache) > max_size:
-                        cached.cache.popitem(last=False)
+                    if len(cached._cache) > max_size:
+                        cached._cache.popitem(last=False)
                     return value
                     
-            cached.cache = cache_dict
-            
-            return decorator_module.decorator(cached, function)
+        cached._cache = cache_dict
+        
+        result = decorator_tools.decorator(cached, function)
+        
+        def cache_clear():
+            '''Clear the cache, deleting all saved results.'''
+            cached._cache.clear()    
+        result.cache_clear = cache_clear
+        
+        result.is_cached = True
+        
+        return result
         
     return decorator

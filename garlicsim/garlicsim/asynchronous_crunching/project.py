@@ -12,7 +12,7 @@ from garlicsim.general_misc import cute_iter_tools
 from garlicsim.general_misc import misc_tools
 import garlicsim.general_misc.read_write_lock
 from garlicsim.general_misc.infinity import infinity
-import garlicsim.general_misc.third_party.decorator
+from garlicsim.general_misc import decorator_tools
 from garlicsim.general_misc import misc_tools
 from garlicsim.general_misc import address_tools
 
@@ -28,11 +28,14 @@ from .crunching_profile import CrunchingProfile
 __all__ = ['Project']
 
 
-@garlicsim.general_misc.third_party.decorator.decorator
+@decorator_tools.decorator
 def with_tree_lock(method, *args, **kwargs):
     '''
-    A decorator used in Project's methods to use the tree lock (in write mode)
-    as a context manager when calling the method.
+    Decorator used in `Project`'s methods to acquire/release the tree lock.
+    
+    The tree lock will be acquired in write mode before calling the method, and
+    released after the method is finished. (Note that it's a reentrant lock, so
+    it may still be owned by the current thread after releasing.)
     '''
     self = args[0]
     with self.tree.lock.write:

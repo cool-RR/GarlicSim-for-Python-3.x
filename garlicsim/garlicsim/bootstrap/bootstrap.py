@@ -9,10 +9,16 @@ It checks all prerequisites are installed.
 
 import sys
 
-
+### Confirming correct Python version: ########################################
+#                                                                             #
 if sys.version_info[0] <= 2:
     raise Exception('This package requires Python 3.x. For Python 2.5+, use '
                     '`garlicsim`, which you can find on PyPI.')
+#                                                                             #
+### Finished confirming correct Python version. ###############################
+
+
+frozen = getattr(sys, 'frozen', None)
 
 
 def __check_prerequisites():
@@ -42,7 +48,11 @@ def __check_prerequisites():
         else:
             return [pkg_resources]
     
-    def check_distribute():  
+    def check_distribute():
+        if frozen:
+            # Can't check that `distribute` is installed when frozen with
+            # `py2exe`.
+            return []
         import pkg_resources
         try:
             pkg_resources.require('distribute')

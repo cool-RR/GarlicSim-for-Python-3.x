@@ -37,30 +37,7 @@ def consecutive_pairs(iterable, wrap_around=False):
         
     if wrap_around:
         yield (current, first_item)
-
         
-def orderless_combinations(iterable, n, start=0):
-    '''
-    Iterate over combinations of items from the iterable.
-
-    `n` specifies the number of items. `start` specifies the member number from
-    which to start giving combinations. (Keep the default of 0 for doing the
-    whole iterable.)
-    
-    Example:
-    
-    `orderless_combinations([1, 2, 3, 4], n=2)` would be, in list form:
-    `[[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]]`.
-    '''
-    # todo: optimize or find 3rd party tool
-    
-    if n == 1:
-        for thing in itertools.islice(iterable, start, None):
-            yield [thing]
-    for (i, thing) in itertools.islice(enumerate(iterable), start, None):
-        for sub_result in orderless_combinations(iterable, n-1, start=i+1):
-            yield [thing] + sub_result
-    
     
 def shorten(iterable, n):
     '''
@@ -88,7 +65,7 @@ def shorten(iterable, n):
             raise StopIteration
         
         
-def enumerate(reversable, reverse_index=False):
+def enumerate(reversible, reverse_index=False):
     '''
     Iterate over `(i, item)` pairs, where `i` is the index number of `item`.
     
@@ -98,17 +75,25 @@ def enumerate(reversable, reverse_index=False):
     zero.
     '''
     if reverse_index is False:
-        return builtins.enumerate(reversable)
+        return builtins.enumerate(reversible)
     else:
-        my_list = list(builtins.enumerate(reversed(reversable)))
+        my_list = list(builtins.enumerate(reversed(reversible)))
         my_list.reverse()
         return my_list
 
     
 def is_iterable(thing):
     '''Return whether an object is iterable.'''
-    return hasattr(thing, '__iter__')
-
+    if hasattr(type(thing), '__iter__'):
+        return True
+    else:
+        try:
+            iter(thing)
+        except TypeError:
+            return False
+        else:
+            return True
+        
 
 def get_length(iterable):
     '''Get the length of an iterable.'''
@@ -132,7 +117,7 @@ def product(*args, **kwargs):
         list(product(range(2), repeat=2) == ['00', '01', '10', '11']
         
     '''
-    # todo: revamp
+    # todo: revamp, probably take from stdlib
     pools = list(map(tuple, args)) * kwargs.get('repeat', 1)
     result = [[]]
     for pool in pools:

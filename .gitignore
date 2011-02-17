@@ -14,5 +14,11 @@ garlicsim_lib_py3/build
 */docs/_build/*
 */docs/_deployed_build/*
 
+build
+*.exe
+
+nosetests.xml
+
+coverage.xml
 *.coverage
 htmlcov

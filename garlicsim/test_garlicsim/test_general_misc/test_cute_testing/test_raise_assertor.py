@@ -3,12 +3,11 @@
 
 '''Testing module for `garlicsim.general_misc.cute_testing.RaiseAssertor`.'''
 
-from __future__ import with_statement
-
 import re
 
 import nose
 
+from garlicsim.general_misc import cute_testing
 from garlicsim.general_misc.cute_testing import RaiseAssertor, Failure
 
 
@@ -59,6 +58,8 @@ def test_decorator():
         1/0
         
     f()
+    
+    cute_testing.assert_polite_wrapper(f)
 
     
 def test_string():
@@ -91,3 +92,25 @@ def test_regex():
     with RaiseAssertor(Failure):
         with RaiseAssertor(OSError, re.compile('^123\w*?456$')):
             raise SyntaxError('123qwerty456')
+        
+
+def test_assert_exact_type():
+    '''Test `RaiseAssertor`'s `assert_exact_type` option.'''
+    with RaiseAssertor(LookupError):
+        raise KeyError("Look at me, I'm a KeyError")
+    
+    error_message = (
+        "The exception `KeyError(\"Look at me, I'm a KeyError\",)` was "
+        "raised, and it *is* an instance of the `LookupError` we were "
+        "expecting; but its type is not `LookupError`, it's `KeyError`, which "
+        "is a subclass of `LookupError`, but you specified "
+        "`assert_exact_type=True`, so subclasses aren't acceptable."
+    )
+    
+    with RaiseAssertor(Failure, error_message):
+        with RaiseAssertor(LookupError, assert_exact_type=True):
+            raise KeyError("Look at me, I'm a KeyError")    
+    
+        
+        
+        

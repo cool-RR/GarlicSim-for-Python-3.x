@@ -9,6 +9,8 @@ Tests for `garlicsim.general_misc.temp_value_setters.TempRecursionLimitSetter`.
 
 import sys
 
+from garlicsim.general_misc import cute_testing
+
 from garlicsim.general_misc.temp_value_setters import TempRecursionLimitSetter
 
 
@@ -30,3 +32,5 @@ def test_as_decorator():
     assert sys.getrecursionlimit() == old_recursion_limit
     f()
     assert sys.getrecursionlimit() == old_recursion_limit
+    
+    cute_testing.assert_polite_wrapper(f)

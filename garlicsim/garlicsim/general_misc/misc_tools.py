@@ -7,6 +7,8 @@ import re
 import math
 import types
 
+from garlicsim.general_misc import cute_iter_tools
+
 
 def is_subclass(candidate, base_class):
     '''
@@ -15,8 +17,8 @@ def is_subclass(candidate, base_class):
     You may pass in a tuple of base classes instead of just one, and it will
     check whether `candidate` is a subclass of any of these base classes.
     
-    The advantage of this over the built-in `issubclass` is that it doesn't
-    throw an exception if `candidate` is not a type. (Python issue 10569.)
+    This has one advantage over the built-in `issubclass`: It doesn't throw an
+    exception if `candidate` is not a type. (Python issue 10569.)
     '''
     return isinstance(candidate, type) and \
            issubclass(candidate, base_class)
