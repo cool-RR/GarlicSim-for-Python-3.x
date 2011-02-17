@@ -23,7 +23,6 @@ proj.directory-list = [{'dirloc': loc('../../..'),
                         'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
-proj.main-file = loc('.')
 testing.auto-test-file-specs = ('test_garlicsim/test*.py',
                                 'test_garlicsim_lib/test*.py')
 testing.test-framework = {None: 'nose'}
