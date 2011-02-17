@@ -1,27 +1,44 @@
-# forked from Python 2.7
+# forked from Python 3.2
 
-from garlicsim.general_misc.third_party.abcs_collection import Mapping
-from operator import itemgetter as _itemgetter, eq as _eq
+from _collections import deque, defaultdict
+from operator import itemgetter as _itemgetter
+from keyword import iskeyword as _iskeyword
+import sys as _sys
 import heapq as _heapq
-from itertools import (repeat as _repeat, chain as _chain,
-                       starmap as _starmap, ifilter as _ifilter, 
-                       imap as _imap)
+from weakref import proxy as _proxy
+from itertools import repeat as _repeat, chain as _chain, starmap as _starmap
+
+
+########################################################################
+###  Counter
+########################################################################
+
+def _count_elements(mapping, iterable):
+    'Tally elements from the iterable.'
+    mapping_get = mapping.get
+    for elem in iterable:
+        mapping[elem] = mapping_get(elem, 0) + 1
+
+try:                                    # Load C helper function if available
+    from _collections import _count_elements
+except ImportError:
+    pass
 
 class Counter(dict):
     '''Dict subclass for counting hashable items.  Sometimes called a bag
     or multiset.  Elements are stored as dictionary keys and their counts
     are stored as dictionary values.
 
-    >>> c = Counter('abracadabra')      # count elements from a string
+    >>> c = Counter('abcdeabcdabcaba')  # count elements from a string
 
     >>> c.most_common(3)                # three most common elements
-    [('a', 5), ('r', 2), ('b', 2)]
+    [('a', 5), ('b', 4), ('c', 3)]
     >>> sorted(c)                       # list all unique elements
-    ['a', 'b', 'c', 'd', 'r']
+    ['a', 'b', 'c', 'd', 'e']
     >>> ''.join(sorted(c.elements()))   # list elements with repetitions
-    'aaaaabbcdrr'
+    'aaaaabbbbcccdde'
     >>> sum(c.values())                 # total of all counts
-    11
+    15
 
     >>> c['a']                          # count of letter 'a'
     5
@@ -29,8 +46,8 @@ class Counter(dict):
     ...     c[elem] += 1                # by adding 1 to each element's count
     >>> c['a']                          # now there are seven 'a'
     7
-    >>> del c['r']                      # remove all 'r'
-    >>> c['r']                          # now there are zero 'r'
+    >>> del c['b']                      # remove all 'b'
+    >>> c['b']                          # now there are zero 'b'
     0
 
     >>> d = Counter('simsalabim')       # make another counter
@@ -69,6 +86,7 @@ class Counter(dict):
         >>> c = Counter(a=4, b=2)                   # a new counter from keyword args
 
         '''
+        super().__init__()
         self.update(iterable, **kwds)
 
     def __missing__(self, key):
@@ -80,14 +98,14 @@ class Counter(dict):
         '''List the n most common elements and their counts from the most
         common to the least.  If n is None, then list all element counts.
 
-        >>> Counter('abracadabra').most_common(3)
-        [('a', 5), ('r', 2), ('b', 2)]
+        >>> Counter('abcdeabcdabcaba').most_common(3)
+        [('a', 5), ('b', 4), ('c', 3)]
 
         '''
         # Emulate Bag.sortedByCount from Smalltalk
         if n is None:
-            return sorted(self.iteritems(), key=_itemgetter(1), reverse=True)
-        return _heapq.nlargest(n, self.iteritems(), key=_itemgetter(1))
+            return sorted(self.items(), key=_itemgetter(1), reverse=True)
+        return _heapq.nlargest(n, self.items(), key=_itemgetter(1))
 
     def elements(self):
         '''Iterator over elements repeating each as many times as its count.
@@ -109,7 +127,7 @@ class Counter(dict):
 
         '''
         # Emulate Bag.do from Smalltalk and Multiset.begin from C++.
-        return _chain(*_starmap(_repeat, self.iteritems()))
+        return _chain.from_iterable(_starmap(_repeat, self.items()))
 
     # Override dict methods where necessary
 
@@ -141,17 +159,15 @@ class Counter(dict):
         # and outputs are allowed to contain zero and negative counts.
 
         if iterable is not None:
-            if Mapping.__instancecheck__(iterable):
+            if isinstance(iterable, Mapping):
                 if self:
                     self_get = self.get
-                    for elem, count in iterable.iteritems():
-                        self[elem] = self_get(elem, 0) + count
+                    for elem, count in iterable.items():
+                        self[elem] = count + self_get(elem, 0)
                 else:
-                    dict.update(self, iterable) # fast path when counter is empty
+                    super().update(iterable) # fast path when counter is empty
             else:
-                self_get = self.get
-                for elem in iterable:
-                    self[elem] = self_get(elem, 0) + 1
+                _count_elements(self, iterable)
         if kwds:
             self.update(kwds)
 
@@ -173,7 +189,7 @@ class Counter(dict):
         '''
         if iterable is not None:
             self_get = self.get
-            if Mapping.__instancecheck__(iterable):
+            if isinstance(iterable, Mapping):
                 for elem, count in iterable.items():
                     self[elem] = self_get(elem, 0) - count
             else:
@@ -186,10 +202,13 @@ class Counter(dict):
         'Like dict.copy() but returns a Counter instance instead of a dict.'
         return Counter(self)
 
+    def __reduce__(self):
+        return self.__class__, (dict(self),)
+
     def __delitem__(self, elem):
         'Like dict.__delitem__() but does not raise KeyError for missing values.'
         if elem in self:
-            dict.__delitem__(self, elem)
+            super().__delitem__(elem)
 
     def __repr__(self):
         if not self:
@@ -267,7 +286,7 @@ class Counter(dict):
         result = Counter()
         if len(self) < len(other):
             self, other = other, self
-        for elem in _ifilter(self.__contains__, other):
+        for elem in filter(self.__contains__, other):
             p, q = self[elem], other[elem]
             newcount = p if p < q else q
             if newcount > 0:
