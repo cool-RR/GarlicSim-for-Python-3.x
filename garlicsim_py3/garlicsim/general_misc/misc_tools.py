@@ -85,6 +85,12 @@ def is_legal_ascii_variable_name(name):
     '''Return whether `name` is a legal name for a Python variable.'''
     return bool(_ascii_variable_pattern.match(name))
 
+
+def is_magic_variable_name(name):
+    return is_legal_ascii_variable_name(name) and \
+           len(name) >= 5 and \
+           name[:2] == name[-2:] == '__'
+
     
 def is_number(x):
     '''Return whether `x` is a number.'''

@@ -31,11 +31,8 @@ class FunctionAnchoringType(type):
     
     This workaround is hacky, yes, but it seems like the best solution until
     Python learns how to pickle non-module-level functions.
-    
-    Put any methods you want to ignore in the `ignored_methods` argument.
     '''
-    def __new__(mcls, name, bases, namespace_dict,
-                ignored_methods=['__repr__', '__init__']):
+    def __new__(mcls, name, bases, namespace_dict):
         my_type = super(FunctionAnchoringType, mcls).__new__(mcls,
                                                              name,
                                                              bases,
@@ -47,8 +44,8 @@ class FunctionAnchoringType(type):
         # Repeat after me: "Getted, not dict."
         
         functions_to_anchor = [value for key, value in my_getted_vars.items()
-                               if isinstance(value, types.FunctionType) and key
-                               not in ignored_methods]
+                               if isinstance(value, types.FunctionType) and not
+                               misc_tools.is_magic_variable_name(key)]
         for function in functions_to_anchor:
             module_name = function.__module__
             module = sys.modules[module_name]
