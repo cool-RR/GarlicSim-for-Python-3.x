@@ -2,9 +2,6 @@
 # This program is distributed under the LGPL2.1 license.
 
 
-
-
-
 import re
 import os
 import types
@@ -40,7 +37,7 @@ def test():
     simpacks_dir = \
         os.path.dirname(simpacks_package.__file__)
     assert len(path_tools.list_sub_folders(simpacks_dir,
-                                           exclude='__pycache__'))) == \
+                                           exclude='__pycache__')) == \
            len(simpacks)
     
     for simpack in simpacks:

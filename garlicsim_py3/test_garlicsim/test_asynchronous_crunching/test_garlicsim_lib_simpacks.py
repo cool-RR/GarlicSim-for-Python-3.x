@@ -150,8 +150,8 @@ def check(simpack, cruncher_type):
     pickled_project = pickle.dumps(project, protocol=2)
     
     unpickled_project = pickle.loads(pickled_project)
-    path_pairs = itertools.izip(project.tree.all_possible_paths(),
-                                unpickled_project.tree.all_possible_paths())
+    path_pairs = zip(project.tree.all_possible_paths(),
+                     unpickled_project.tree.all_possible_paths())
     
     if simpack.State.__eq__ != garlicsim.data_structures.State.__eq__:
         
