@@ -13,15 +13,6 @@ GarlicSim-specific arguments:
 
     --from-zip
         Test GarlicSim when imported from zip files
-    
-    --from-py2exe
-        Test GarlicSim when imported from py2exe distribution
-        
-    --from-win-installer
-        Test GarlicSim when installed from Windows installer.        
-        Currently not fully implemented; Only creates a Windows installer for
-        you as `GarlicSim-x.y.z.exe`, you have to run it yourself and then run
-        `run_tests.exe` in the installation folder.
 
     --help
         Show this help screen
@@ -114,9 +105,8 @@ class TestProgram(nose.core.TestProgram):
             cfg_files = [os.path.join(our_path, 'setup.cfg')]
         else: # not frozen
             cfg_files = [
-                os.path.join(our_path, 'garlicsim', 'setup.cfg'),
-                os.path.join(our_path, 'garlicsim_lib', 'setup.cfg'),
-                os.path.join(our_path, 'garlicsim_wx', 'setup.cfg')
+                os.path.join(our_path, 'garlicsim_py3', 'setup.cfg'),
+                os.path.join(our_path, 'garlicsim_lib_py3', 'setup.cfg')
             ]
         if plugins:
             manager = nose.core.PluginManager(plugins=plugins)
@@ -190,8 +180,7 @@ def wantFile(self, file):
         wanted = plug_wants
     log.debug("wantFile %s? %s", file, wanted)
     return wanted    
-nose.selector.Selector.wantFile = \
-    types.MethodType(wantFile, None, nose.selector.Selector)
+nose.selector.Selector.wantFile = wantFile
 
 def loadTestsFromDir(self, path):
     """Load tests from the directory at path. This is a generator
@@ -270,21 +259,20 @@ def loadTestsFromDir(self, path):
         for p in paths_added:
           remove_path(p)
     plugins.afterDirectory(path)
-nose.loader.TestLoader.loadTestsFromDir = \
-    types.MethodType(loadTestsFromDir, None, nose.loader.TestLoader)
+nose.loader.TestLoader.loadTestsFromDir = loadTestsFromDir
 #                                                                             #
 ### Finished tweaking Nose. ###################################################
 
 
-package_names = ['garlicsim', 'garlicsim_lib', 'garlicsim_wx']
+package_names = ['garlicsim', 'garlicsim_lib']
 if frozen:
     test_packages_paths = [os.path.join(our_path, 'lib', 'test_%s' %
                            package_name) for package_name in package_names]
     
 else: # not frozen
     test_packages_paths = \
-        [os.path.join(our_path, package_name, 'test_%s' % package_name)
-         for package_name in package_names]
+        [os.path.join(our_path, '%s_py3' % package_name,
+         'test_%s' % package_name) for package_name in package_names]
 
 ###############################################################################
 
@@ -313,6 +301,10 @@ if __name__ == '__main__':
         ('--from-win-installer' in argv) or
         ((frozen is not None) and glob.glob(os.path.join(our_path, 'unins*')))
     )
+    
+    if testing_from_py2exe or testing_from_win_installer:
+        raise NotImplementedError("The Python 3 fork of GarlicSim can't "
+                                  "package with py2exe.")
     
     if testing_from_zip + testing_from_py2exe + testing_from_win_installer > 1:
         raise Exception("Can test either from repo, or from zip, or from "
