@@ -18,7 +18,7 @@ def filter_items(d, condition):
     # have more state, (like default factory.)
     dict_type = type(d)
     return dict_type(
-        (key, value) for (key, value) in d.iteritems() if condition(key, value)
+        (key, value) for (key, value) in d.items() if condition(key, value)
     )
 
 

@@ -438,28 +438,13 @@ class ArgumentsProfile(object):
     
     
     def items(self):
-        '''Get a tuple of all the `(argument_name, argument_value)` item.'''
+        '''Get all the `(argument_name, argument_value)` items.'''
         return self._arguments.items()
     
     
     def __iter__(self):
         '''Iterate on the argument names according to their order.'''
         return self._arguments.__iter__()
-    
-    
-    def iterkeys(self):
-        '''Iterate on the argument names according to their order.'''
-        return self._arguments.iterkeys()
-    
-    
-    def itervalues(self):        
-        '''Iterate on the argument value according to their order.'''
-        return self._arguments.itervalues()
-        
-    
-    def iteritems(self):
-        '''Iterate on `(argument_name, argument_value)` items by order.'''
-        return self._arguments.iteritems()
     
     
     def __contains__(self, argument_name):

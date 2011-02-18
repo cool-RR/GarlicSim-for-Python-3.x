@@ -31,8 +31,11 @@ class FunctionAnchoringType(type):
     
     This workaround is hacky, yes, but it seems like the best solution until
     Python learns how to pickle non-module-level functions.
+    
+    Put any methods you want to ignore in the `ignored_methods` argument.
     '''
-    def __new__(mcls, name, bases, namespace_dict):
+    def __new__(mcls, name, bases, namespace_dict,
+                ignored_methods=['__repr__', '__init__']):
         my_type = super(FunctionAnchoringType, mcls).__new__(mcls,
                                                              name,
                                                              bases,
@@ -43,8 +46,9 @@ class FunctionAnchoringType(type):
         my_getted_vars = misc_tools.getted_vars(my_type)
         # Repeat after me: "Getted, not dict."
         
-        functions_to_anchor = [value for value in my_getted_vars.values()
-                               if isinstance(value, types.FunctionType)]
+        functions_to_anchor = [value for key, value in my_getted_vars.items()
+                               if isinstance(value, types.FunctionType) and key
+                               not in ignored_methods]
         for function in functions_to_anchor:
             module_name = function.__module__
             module = sys.modules[module_name]
@@ -54,7 +58,7 @@ class FunctionAnchoringType(type):
             # be careful and ensure no object is already defined by the same
             # name in the module level: (todotest)
             try:
-                already_defined_object = getattr(module_name, function_name)
+                already_defined_object = getattr(module, function_name)
             except AttributeError:
                 # Good, there is no object defined under our anchor address.
                 # This is the normal case.
