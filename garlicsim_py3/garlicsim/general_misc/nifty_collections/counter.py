@@ -7,6 +7,7 @@ import sys as _sys
 import heapq as _heapq
 from weakref import proxy as _proxy
 from itertools import repeat as _repeat, chain as _chain, starmap as _starmap
+from collections import Mapping
 
 
 ########################################################################

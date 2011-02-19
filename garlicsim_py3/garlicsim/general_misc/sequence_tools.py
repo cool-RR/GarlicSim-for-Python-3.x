@@ -51,7 +51,7 @@ def combinations(sequence, n=None, start=0):
     if n is None:
         length = len(sequence) - start
         iterators = (combinations(sequence, n=i, start=start) for i
-                     in xrange(1, length + 1))
+                     in range(1, length + 1))
         for item in itertools.chain(*iterators):
             yield item
         

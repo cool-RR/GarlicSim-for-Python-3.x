@@ -192,14 +192,14 @@ def test_perfects():
     '''Test `cute_profile` on a function that finds perfect numbers.'''
     
     def get_divisors(x):
-        return [i for i in xrange(1, x) if (x % i == 0)]
+        return [i for i in range(1, x) if (x % i == 0)]
     
     def is_perfect(x):
         return sum(get_divisors(x)) == x
     
     @cute_profile.profile_ready()
     def get_perfects(top):
-        return [i for i in xrange(1, top) if is_perfect(i)]
+        return [i for i in range(1, top) if is_perfect(i)]
     
     result = get_perfects(30)
     get_perfects.profiling_on = True
