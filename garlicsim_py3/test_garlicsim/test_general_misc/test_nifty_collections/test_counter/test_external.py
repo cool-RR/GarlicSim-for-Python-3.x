@@ -6,8 +6,7 @@
 from random import randrange
 import copy
 import pickle
-import pickle
-from garlicsim.general_misc.third_party.abcs_collection import Mapping
+from collections import Mapping
 
 from garlicsim.general_misc.third_party import unittest2
 
