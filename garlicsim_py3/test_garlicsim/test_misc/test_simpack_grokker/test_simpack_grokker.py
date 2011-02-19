@@ -37,7 +37,7 @@ def test_simpacks():
         
 def check_simpack(simpack):
 
-    _test_flags = simpack._test_flags
+    x = simpack.x
     
     simpack_grokker = SimpackGrokker(simpack)
     
@@ -53,7 +53,7 @@ def check_simpack(simpack):
 
     
     assert len(simpack_grokker.all_step_functions) == \
-           _test_flags.N_STEP_FUNCTIONS 
+           x.N_STEP_FUNCTIONS 
 
     
     state = simpack.State.create_root()
@@ -61,7 +61,7 @@ def check_simpack(simpack):
 
     
     assert simpack_grokker.available_cruncher_types == \
-           simpack._test_flags.CRUNCHERS_LIST
+           simpack.x.CRUNCHERS_LIST
     assert simpack_grokker.available_cruncher_types == \
            [cruncher for cruncher, availability in 
             list(list(simpack_grokker.cruncher_types_availability.items()))
@@ -73,11 +73,11 @@ def check_simpack(simpack):
 
     
     assert simpack_grokker.default_step_function == \
-           _test_flags.DEFAULT_STEP_FUNCTION
+           x.DEFAULT_STEP_FUNCTION
     
     
     assert simpack_grokker.history_dependent == \
-           _test_flags.HISTORY_DEPENDENT
+           x.HISTORY_DEPENDENT
 
     
     settings = simpack_grokker.settings
@@ -103,7 +103,7 @@ def check_simpack(simpack):
         issubclass(StepType.get_step_type(step_function), BaseStep) for
         step_function in all_step_functions
     )
-    assert len(all_step_functions) == _test_flags.N_STEP_FUNCTIONS
+    assert len(all_step_functions) == x.N_STEP_FUNCTIONS
     
     
     

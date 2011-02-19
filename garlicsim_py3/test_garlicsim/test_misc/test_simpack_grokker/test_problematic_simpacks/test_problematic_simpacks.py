@@ -44,8 +44,8 @@ def test_simpacks():
         
 def check_simpack(simpack):
     '''Check that the problematic `simpack` raises the correct exception.'''
-    _test_flags = simpack._test_flags
-    PROBLEM = _test_flags.PROBLEM
+    x = simpack.x
+    PROBLEM = x.PROBLEM
     assert PROBLEM
     assert issubclass(PROBLEM, Exception)
            

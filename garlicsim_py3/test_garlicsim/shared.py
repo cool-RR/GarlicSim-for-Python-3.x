@@ -15,31 +15,31 @@ def verify_simpack_settings(sample_simpack):
     Verfiy that `sample_simpack` has all the testing flags with valid values.
     '''
     import_tools.normal_import(
-        sample_simpack.__name__ + '._test_flags'
+        sample_simpack.__name__ + '.x'
     )
-    _test_flags = sample_simpack._test_flags
-    assert isinstance(_test_flags.ENDABLE, bool)
-    bool(_test_flags.VALID)
-    assert (_test_flags.PROBLEM is None) or \
-           issubclass(_test_flags.PROBLEM, Exception)
-    assert isinstance(_test_flags.HISTORY_DEPENDENT, bool)
-    assert isinstance(_test_flags.N_STEP_FUNCTIONS, int)
-    if _test_flags.DEFAULT_STEP_FUNCTION is not None:
-        assert isinstance(_test_flags.DEFAULT_STEP_FUNCTION,
+    x = sample_simpack.x
+    assert isinstance(x.ENDABLE, bool)
+    bool(x.VALID)
+    assert (x.PROBLEM is None) or \
+           issubclass(x.PROBLEM, Exception)
+    assert isinstance(x.HISTORY_DEPENDENT, bool)
+    assert isinstance(x.N_STEP_FUNCTIONS, int)
+    if x.DEFAULT_STEP_FUNCTION is not None:
+        assert isinstance(x.DEFAULT_STEP_FUNCTION,
                           collections.Callable)
-    if _test_flags.DEFAULT_STEP_FUNCTION_TYPE is not None:
+    if x.DEFAULT_STEP_FUNCTION_TYPE is not None:
         assert issubclass(
-            _test_flags.DEFAULT_STEP_FUNCTION_TYPE,
+            x.DEFAULT_STEP_FUNCTION_TYPE,
             garlicsim.misc.simpack_grokker.step_type.BaseStep
         )
-    assert isinstance(_test_flags.CONSTANT_CLOCK_INTERVAL, int) or \
-           _test_flags.CONSTANT_CLOCK_INTERVAL is None
-    assert isinstance(_test_flags.CRUNCHERS_LIST, list)
-    for cruncher_type in _test_flags.CRUNCHERS_LIST:
+    assert isinstance(x.CONSTANT_CLOCK_INTERVAL, int) or \
+           x.CONSTANT_CLOCK_INTERVAL is None
+    assert isinstance(x.CRUNCHERS_LIST, list)
+    for cruncher_type in x.CRUNCHERS_LIST:
         assert issubclass(cruncher_type,
                           garlicsim.asynchronous_crunching.BaseCruncher)
         
     # Making sure there aren't any extraneous settings, so we'll know we
     # checked everything:
-    settings_names = [name for name in dir(_test_flags) if name.isupper()]
+    settings_names = [name for name in dir(x) if name.isupper()]
     assert len(settings_names) == 9

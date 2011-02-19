@@ -66,15 +66,15 @@ def check(simpack, cruncher_type):
     '''
     my_simpack_grokker = garlicsim.misc.SimpackGrokker(simpack)
     
-    assert simpack._test_flags.DEFAULT_STEP_FUNCTION_TYPE in \
+    assert simpack.x.DEFAULT_STEP_FUNCTION_TYPE in \
            [garlicsim.misc.simpack_grokker.step_types.InplaceStep,
             garlicsim.misc.simpack_grokker.step_types.InplaceStepGenerator]
     
     assert garlicsim.misc.simpack_grokker.step_type.StepType.get_step_type(
         my_simpack_grokker.default_step_function
-    ) == simpack._test_flags.DEFAULT_STEP_FUNCTION_TYPE
+    ) == simpack.x.DEFAULT_STEP_FUNCTION_TYPE
     
-    assert simpack._test_flags.CONSTANT_CLOCK_INTERVAL == 1
+    assert simpack.x.CONSTANT_CLOCK_INTERVAL == 1
     
     step_profile = my_simpack_grokker.build_step_profile()
     
