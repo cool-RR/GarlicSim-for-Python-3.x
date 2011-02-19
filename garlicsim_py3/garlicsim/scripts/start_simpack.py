@@ -98,9 +98,11 @@ def start_simpack(containing_folder, name):
         )
         
         _make_path_to_file(dest_file)
-        
-        source_string = \
-            pkg_resources.resource_string(simpack_template_package_name, file)
+                
+        source_string = pkg_resources.resource_string(
+            simpack_template_package_name,
+            file
+        ).decode()
             
         with open(dest_file, 'w') as destination:
             

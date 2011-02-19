@@ -3,9 +3,6 @@
 
 '''Testing module for tutorial-2.'''
 
-
-
-
 import os.path
 import shutil
 import tempfile
@@ -176,7 +173,7 @@ def assert_module_was_copied_with_correct_newlines(destination_path,
     number_of_newlines = cute_inspect.getsource(source_module).count('\n')
     
     with open(destination_path, 'rb') as destination_file:
-        destination_string = destination_file.read()
+        destination_string = destination_file.read().decode()
         
     assert destination_string.count(os.linesep) == number_of_newlines
     
