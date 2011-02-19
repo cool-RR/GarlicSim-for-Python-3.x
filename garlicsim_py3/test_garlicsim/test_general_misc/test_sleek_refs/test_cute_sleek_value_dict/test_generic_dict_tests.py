@@ -565,7 +565,7 @@ class GenericDictTest(unittest2.TestCase):
 
         
     def test_bad_key(self):
-        if garlicsim.__version_info__ <= (0, 6, 1):
+        if garlicsim.__version_info__ <= (0, 6, 2):
             raise nose.SkipTest('Not looked at this yet.')
         # Dictionary lookups should fail if __cmp__() raises an exception.
         class CustomException(Exception):
