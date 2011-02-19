@@ -6,7 +6,7 @@
 from random import randrange
 import copy
 import pickle
-import cPickle
+import pickle
 from garlicsim.general_misc.third_party.abcs_collection import Mapping
 
 from garlicsim.general_misc.third_party import unittest2
@@ -96,10 +96,10 @@ class TestCounter(unittest2.TestCase):
                     pickle.loads(pickle.dumps(words, 1)),
                     pickle.loads(pickle.dumps(words, 2)),
                     pickle.loads(pickle.dumps(words, -1)),
-                    cPickle.loads(cPickle.dumps(words, 0)),
-                    cPickle.loads(cPickle.dumps(words, 1)),
-                    cPickle.loads(cPickle.dumps(words, 2)),
-                    cPickle.loads(cPickle.dumps(words, -1)),
+                    pickle.loads(pickle.dumps(words, 0)),
+                    pickle.loads(pickle.dumps(words, 1)),
+                    pickle.loads(pickle.dumps(words, 2)),
+                    pickle.loads(pickle.dumps(words, -1)),
                     eval(repr(words)),
                     update_test,
                     Counter(words),
