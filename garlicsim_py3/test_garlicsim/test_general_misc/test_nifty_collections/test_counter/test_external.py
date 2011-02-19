@@ -34,9 +34,6 @@ class TestCounter(unittest2.TestCase):
                          [('a', 3), ('b', 2), ('c', 1)])
         self.assertEqual(c['b'], 2)
         self.assertEqual(c['z'], 0)
-    
-        self.assertEqual(c.has_key('c'), True)
-        self.assertEqual(c.has_key('z'), False)
         
         self.assertEqual(c.__contains__('c'), True)
         self.assertEqual(c.__contains__('z'), False)

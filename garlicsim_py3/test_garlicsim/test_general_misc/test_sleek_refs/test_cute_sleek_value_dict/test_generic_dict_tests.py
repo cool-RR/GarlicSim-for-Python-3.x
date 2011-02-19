@@ -79,17 +79,6 @@ class GenericDictTest(unittest2.TestCase):
         self.assertRaises(TypeError, d.items, None)
 
         
-    def test_has_key(self):
-        d = CuteSleekValueDict(null_callback)
-        self.assertFalse('a' in d)
-        d = CuteSleekValueDict(null_callback, {'a': 1, 'b': 2})
-        k = list(d.keys())
-        k.sort()
-        self.assertEqual(k, ['a', 'b'])
-
-        self.assertRaises(TypeError, d.has_key)
-
-        
     def test_contains(self):
         d = CuteSleekValueDict(null_callback)
         self.assertNotIn('a', d)
@@ -589,7 +578,6 @@ class GenericDictTest(unittest2.TestCase):
         for stmt in ['d[x2] = 2',
                      'z = d[x2]',
                      'x2 in d',
-                     'd.has_key(x2)',
                      'd.get(x2)',
                      'd.setdefault(x2, 42)',
                      'd.pop(x2)',

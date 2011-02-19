@@ -92,9 +92,6 @@ class WeakKeyIdentityDict(collections.MutableMapping):
         except TypeError:
             return 0
         return wr in self.data
-
-
-    has_key = __contains__
     
     
     def items(self):
