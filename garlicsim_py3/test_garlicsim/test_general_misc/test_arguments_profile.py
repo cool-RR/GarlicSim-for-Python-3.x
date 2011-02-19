@@ -5,8 +5,6 @@
 Testing module for `garlicsim.general_misc.arguments_profile.ArgumentsProfile`.
 '''
 
-
-
 import sys
 
 import nose
@@ -34,13 +32,13 @@ def test_only_defaultless():
     
     for arg_prof in [a1, a2, a3, a4, a5]:
         
-        ### Testing `.iteritems`: #############################################
+        ### Testing `.items`: #################################################
         #                                                                     #
         assert dict(arg_prof) == {'a': 1, 'b': 2, 'c': 3}
         assert OrderedDict(arg_prof) == \
             OrderedDict((('a', 1), ('b', 2), ('c', 3)))
         #                                                                     #
-        ### Finished testing `.iteritems`. ####################################
+        ### Finished testing `.items`. ########################################
         
         ### Testing `.__getitem__`: ###########################################
         #                                                                     #
@@ -267,7 +265,7 @@ def test_defaultfuls_and_star_kwargs():
     assert a2 == a3 == a4 == a5
     
     for arg_prof in [a2, a3, a4, a5]:
-        # Testing `.iteritems`:
+        # Testing `.items`:
         assert OrderedDict(arg_prof) == OrderedDict(
             (('a', 1), ('b', 2), ('c', 3), ('d', 'bombastic'), ('blue', True),
              ('zany', True))
@@ -292,19 +290,19 @@ def test_defaultfuls_and_star_kwargs():
         #                                                                     #
         ### Finished testing `.get`. ##########################################
         
-        ### Testing `.iterkeys`, `.keys` and `__iter__`: ######################
+        ### Testing `.keys` and `__iter__`: ###################################
         #                                                                     #
-        assert list(arg_prof.iterkeys()) == list(arg_prof.keys()) == \
-            list(arg_prof) == ['a', 'b', 'c', 'd', 'blue', 'zany']
+        assert list(arg_prof.keys()) == list(arg_prof) == \
+               ['a', 'b', 'c', 'd', 'blue', 'zany']
         #                                                                     #
-        ### Finished testing `.iterkeys`, `.keys` and `__iter__`. #############
+        ### Finished testing `.keys` and `__iter__`. ##########################
         
-        ### Testing `.itervalues` and `.values`: ##############################
+        ### Testing `.values`: ################################################
         #                                                                     #
-        assert list(arg_prof.itervalues()) == list(arg_prof.values()) == \
-            [1, 2, 3, 'bombastic', True, True]
+        assert list(arg_prof.values()) == \
+               [1, 2, 3, 'bombastic', True, True]
         #                                                                     #
-        ### Finished testing `.itervalues` and `.values`. #####################
+        ### Finished testing `.values`. #######################################
         
         ### Testing `.__contains__`: ##########################################
         #                                                                     #
@@ -348,7 +346,7 @@ def test_many_defaultfuls_and_star_args_and_star_kwargs():
     
     
     for arg_prof in [a2, a3]:
-        # Testing `.iteritems`:
+        # Testing `.items`:
         assert OrderedDict(arg_prof) == OrderedDict(
             (('a', 'one'), ('b', 'two'), ('c', 'three'), ('d', 'four'),
              ('e', 'five'), ('f', 'bombastic'), ('*', ('meow_frr',)),
@@ -377,30 +375,28 @@ def test_many_defaultfuls_and_star_args_and_star_kwargs():
         #                                                                     #
         ### Finished testing `.get`. ##########################################
         
-        ### Testing `.iterkeys`, `.keys` and `__iter__`: ######################
+        ### Testing `.keys` and `__iter__`: ###################################
         #                                                                     #
-        assert list(arg_prof.iterkeys()) == list(arg_prof.keys()) == \
-            list(arg_prof) == \
+        assert list(arg_prof.keys()) == list(arg_prof) == \
             ['a', 'b', 'c', 'd', 'e', 'f', '*', 'blue', 'zany', '_wet',
              '__funky']
         #                                                                     #
-        ### Finished testing `.iterkeys`, `.keys` and `__iter__`. #############
+        ### Finished testing `.keys` and `__iter__`. ##########################
         
-        ### Testing `.itervalues` and `.values`: ##############################
+        ### Testing `.values`: ################################################
         #                                                                     #
-        assert list(arg_prof.itervalues()) == list(arg_prof.values()) == \
+        assert list(arg_prof.values()) == \
             ['one', 'two', 'three', 'four', 'five', 'bombastic', ('meow_frr',),
              True, True, False, None]
         #                                                                     #
-        ### Finished testing `.itervalues` and `.values`. #####################
+        ### Finished testing `.values`. #######################################
         
-        ### Testing `.iteritems` and `.items`: ################################
+        ### Testing `.items`: #################################################
         #                                                                     #
-        items_1 = list(arg_prof.iteritems())
-        items_2 = arg_prof.items()
-        assert items_1 == items_2 == zip(arg_prof.keys(), arg_prof.values())
+        assert list(arg_prof.items()) == \
+               zip(arg_prof.keys(), arg_prof.values())
         #                                                                     #
-        ### Finished testing `.iteritems` and `.items`. #######################
+        ### Finished testing `.items`. ########################################
         
         ### Testing `.__contains__`: ##########################################
         #                                                                     #
