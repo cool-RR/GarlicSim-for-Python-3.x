@@ -58,11 +58,11 @@ def check(simpack, cruncher_type):
     assert my_simpack_grokker is garlicsim.misc.SimpackGrokker(simpack)
     # Ensuring caching works.
     
-    assert not simpack._test_settings.ENDABLE
+    assert not simpack._test_flags.ENDABLE
     
     assert garlicsim.misc.simpack_grokker.step_type.StepType.get_step_type(
         my_simpack_grokker.default_step_function
-    ) == simpack._test_settings.DEFAULT_STEP_FUNCTION_TYPE
+    ) == simpack._test_flags.DEFAULT_STEP_FUNCTION_TYPE
     
     step_profile = my_simpack_grokker.build_step_profile()
     deterministic = \

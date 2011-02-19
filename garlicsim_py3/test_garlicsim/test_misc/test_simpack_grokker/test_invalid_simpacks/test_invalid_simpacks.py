@@ -42,8 +42,8 @@ def test_simpacks():
         
 def check_simpack(simpack):
     '''Check that the invalid `simpack` raises the correct exception.'''
-    _test_settings = simpack._test_settings
-    VALID = _test_settings.VALID
+    _test_flags = simpack._test_flags
+    VALID = _test_flags.VALID
     assert not VALID
     assert isinstance(VALID, ReasonedBool)
     exception_we_should_get = VALID.reason
