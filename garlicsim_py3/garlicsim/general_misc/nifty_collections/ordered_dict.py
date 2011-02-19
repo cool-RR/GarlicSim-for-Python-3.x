@@ -23,6 +23,7 @@ class OrderedDict(dict, MutableMapping):
         because their insertion order is arbitrary.
 
         '''
+        self.__in_repr = False
         if len(args) > 1:
             raise TypeError('expected at most 1 arguments, got %d' % len(args))
         try:

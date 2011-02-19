@@ -394,7 +394,7 @@ def test_many_defaultfuls_and_star_args_and_star_kwargs():
         ### Testing `.items`: #################################################
         #                                                                     #
         assert list(arg_prof.items()) == \
-               zip(arg_prof.keys(), arg_prof.values())
+               list(zip(arg_prof.keys(), arg_prof.values()))
         #                                                                     #
         ### Finished testing `.items`. ########################################
         
