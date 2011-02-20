@@ -87,6 +87,7 @@ def is_legal_ascii_variable_name(name):
 
 
 def is_magic_variable_name(name):
+    '''Return whether `name` is a name of a magic variable (e.g. '__add__'.)'''
     return is_legal_ascii_variable_name(name) and \
            len(name) >= 5 and \
            name[:2] == name[-2:] == '__'
