@@ -82,7 +82,7 @@ __bootstrap()
 _default_nose_arguments = [   
     '--verbosity=3',
     '--detailed-errors',
-    '--with-xunit',
+    # '--with-xunit', Keeping xunit off cause it's buggy under Py3.
     '--cover-erase',
     '--cover-package=garlicsim,garlicsim_lib,garlicsim_wx,'
                     'test_garlicsim,test_garlicsim_lib,test_garlicsim_wx',
