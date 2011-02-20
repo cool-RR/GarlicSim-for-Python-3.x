@@ -3,4 +3,4 @@
 
 '''Scripts for `test_garlicsim_lib`.'''
 
-from . import _test_garlicsim_lib
+from . import _test_garlicsim_lib_py3

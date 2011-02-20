@@ -97,7 +97,7 @@ setuptools.setup(
     url='http://garlicsim.org',
     packages=get_packages(),
     scripts=['garlicsim/scripts/start_simpack.py',
-             'test_garlicsim/scripts/_test_garlicsim.py'],
+             'test_garlicsim/scripts/_test_garlicsim_py3.py'],
     license='LGPL v2.1',
     long_description = my_long_description,
     classifiers = my_classifiers,

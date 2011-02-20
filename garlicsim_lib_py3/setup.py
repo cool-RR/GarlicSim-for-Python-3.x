@@ -95,7 +95,7 @@ setuptools.setup(
     author_email='cool-rr@cool-rr.com',
     url='http://garlicsim.org',
     packages=get_packages(),
-    scripts=['test_garlicsim_lib/scripts/_test_garlicsim_lib.py'],
+    scripts=['test_garlicsim_lib/scripts/_test_garlicsim_lib_py3.py'],
     license='LGPL v2.1',
     long_description=my_long_description,
     classifiers=my_classifiers,
