@@ -101,12 +101,14 @@ def make_zip():
     
     ### Zipping packages into zip files: ######################################
     #                                                                         #
-    package_names = ['garlicsim', 'garlicsim_lib', 'garlicsim_wx']
+    package_names = ['garlicsim', 'garlicsim_lib']
     
     for i, package_name in enumerate(package_names):
         
         sys.stdout.write("Preparing to zip folder '%s'... " % package_name)
-        package_path = os.path.join(repo_root_path, package_name, package_name)
+        package_path = os.path.join(repo_root_path,
+                                    '%s_py3' %package_name,
+                                    package_name)
         assert os.path.isdir(package_path)
         zip_destination_path = os.path.join(build_folder,
                                             (str(i) + '.zip'))
