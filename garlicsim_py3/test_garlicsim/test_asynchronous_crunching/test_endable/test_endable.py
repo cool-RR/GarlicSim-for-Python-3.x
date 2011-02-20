@@ -26,6 +26,19 @@ import test_garlicsim
 from ..shared import MustachedThreadCruncher
 
 
+def non_ending_inplace_step(state):
+    '''A no-op inplace step that doesn't end the simulation.'''
+    pass
+
+
+def non_ending_history_step(history_browser):
+    '''A minimal history step that doesn't end the simulation.'''
+    old_state = history_browser[-1]
+    new_state = garlicsim.misc.state_deepcopy.state_deepcopy(old_state)
+    new_state.clock += 1
+    return new_state
+
+
 def test_endable():
     '''
     Test handling of endable simpacks.
@@ -324,5 +337,38 @@ def check(simpack, cruncher_type):
     
     #                                                                         #
     ### Finished testing `Project.simulate`. ##################################
+    
+    ### Testing end creation in middle of block: ##############################
+    #                                                                         #
+    
+    my_non_ending_step = non_ending_history_step if \
+        my_simpack_grokker.history_dependent else non_ending_inplace_step
+    
+    nodes_in_tree = len(project.tree.nodes)
+    nodes = list(project.iter_simulate(root, 8, my_non_ending_step))
+    assert len(project.tree.nodes) == nodes_in_tree + 8
+    
+    middle_node = nodes[-4]
+    assert middle_node.state.clock == 5
+    assert nodes[1].block == middle_node.block == nodes[-1].block
+    assert len(middle_node.block) == 8
+    
+
+    project.begin_crunching(middle_node, infinity, step_profile)
+    total_nodes_added = 0
+    assert project.crunching_manager.jobs
+    while project.crunching_manager.jobs:
+        time.sleep(0.1)
+        total_nodes_added += project.sync_crunchers()
+    assert total_nodes_added == 0
+    
+    assert len(middle_node.ends) == 1
+    assert middle_node.block is not nodes[-1].block
+    assert len(middle_node.block) == 5
+    assert len(nodes[-1].block) == 3
+        
+    #                                                                         #
+    ### Finished testing end creation in middle of block. #####################
+    
     
     

@@ -36,7 +36,7 @@ class End(TreeMember):
         '''
         The parent node of this end.
         
-        Note that this parent node will not have this end as a child; It will
+        Note that this parent node will not have this end as a child; it will
         list the end in its `.ends` attribute.
         '''
         
@@ -44,6 +44,9 @@ class End(TreeMember):
         
         self.step_profile = step_profile
         '''The step options profile with which the end was reached.'''
+        
+        if parent.block and not parent.is_last_on_block():
+            parent.block.split(parent)
         
         
     def __len__(self):

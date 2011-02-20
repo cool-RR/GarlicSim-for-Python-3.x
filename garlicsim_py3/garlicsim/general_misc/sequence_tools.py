@@ -14,7 +14,7 @@ def are_equal_regardless_of_order(seq1, seq2):
     regardless of the order of the elements.
     
     Currently will fail for items that have problems with comparing.
-    '''    
+    '''
     return Counter(seq1) == Counter(seq2)
         
 
