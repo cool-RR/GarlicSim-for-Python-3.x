@@ -7,7 +7,7 @@ This module defines the `BasePlayer` abstact base class.
 See its documentation for more information.
 '''
 
-from garlicsim.general_misc.third_party import abc
+import abc
 
 from garlicsim.general_misc import identities
 

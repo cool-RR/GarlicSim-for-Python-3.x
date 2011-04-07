@@ -10,7 +10,7 @@ See its documentation for more information.
 from __future__ import absolute_import
 
 import random
-from garlicsim.general_misc.third_party import abc
+import abc
 
 from garlicsim.general_misc import caching
 

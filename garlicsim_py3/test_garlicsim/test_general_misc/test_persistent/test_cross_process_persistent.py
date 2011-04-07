@@ -10,7 +10,6 @@ from __future__ import with_statement
 import multiprocessing
 import copy
 import pickle
-import cPickle
 
 from garlicsim.general_misc import cute_iter_tools
 from garlicsim.general_misc import cute_testing
@@ -136,7 +135,7 @@ def test_helpful_warnings_for_old_protocols():
     '''
     Test that helpful errors are given when trying to pickle with old protocol.
     '''
-    pickle_modules = [pickle, cPickle]
+    pickle_modules = [pickle]
     cross_process_persistents = [A(), CrossProcessPersistent()]
     old_protocols = [0, 1]
     
