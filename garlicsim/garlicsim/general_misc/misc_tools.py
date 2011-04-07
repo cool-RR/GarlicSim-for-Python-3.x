@@ -50,7 +50,7 @@ def frange(start, finish=None, step=1.):
     '''
     Make a `list` containing an arithmetic progression of numbers.
 
-    This is an extension of the builtin `range`; It allows using floating point
+    This is an extension of the builtin `range`; it allows using floating point
     numbers.
     '''
     if finish is None:
@@ -102,4 +102,12 @@ def is_number(x):
     else:
         return True
     
+def identity_function(thing):
+    '''
+    Return `thing`.
     
+    This function is useful when you want to use an identity function but can't
+    define a lambda one because it wouldn't be pickleable. Also using this
+    function might be faster as it's prepared in advance.
+    '''
+    return thing

@@ -13,6 +13,16 @@ GarlicSim-specific arguments:
 
     --from-zip
         Test GarlicSim when imported from zip files
+    
+    --from-py2exe
+        (NOT AVAILABLE ON PYTHON 3.) Test GarlicSim when imported from py2exe
+        distribution.
+        
+    --from-win-installer
+        (NOT AVAILABLE ON PYTHON 3.) Test GarlicSim when installed from Windows
+        installer. Currently not fully implemented; only creates a Windows
+        installer for you as `GarlicSim-x.y.z.exe`, you have to run it yourself
+        and then run `run_tests.exe` in the installation folder.
 
     --help
         Show this help screen
