@@ -26,7 +26,7 @@ def random_partition(sequence, partition_size, allow_reminder=False):
     shuffled_sequence = shuffled(sequence)
 
     subsequences = [shuffled_sequence[i::partition_size] for i in
-                    xrange(partition_size)]
+                    range(partition_size)]
     
     return zip(*subsequences)
 
