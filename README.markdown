@@ -1,4 +1,4 @@
-# Brief Video Introduction #
+`# Brief Video Introduction #
 
 [![](http://garlicsim.org/images/video_thumbnail.jpg)](http://garlicsim.org/brief_introduction.html)
 
@@ -32,18 +32,14 @@ For a more thorough introduction to how GarlicSim works, check out the [document
 
 GarlicSim itself is written in pure Python. The speed of simulations is mostly dependent on the simpack's performance - So it is possible to use C code in a simpack to make things faster.
 
-The `garlicsim_py3` and `garlicsim_lib_py3` projects are distributed under the **LGPL2.1 license**, and are copyright 2009-2010 Ram Rachum. 
+GarlicSim is distributed under the **LGPL2.1 license**, and is copyright 2009-2010 Ram Rachum. 
 
 
 # Mailing lists #
 
-All general discussion happens at **[the GarlicSim Google
-Group](https://groups.google.com/forum/#!forum/garlicsim)**. If you need help
-with GarlicSim, you're welcome to post your question and we'll try to help you.
+All general discussion happens at **[the GarlicSim Google Group](https://groups.google.com/forum/#!forum/garlicsim)**. If you need help with GarlicSim, you're welcome to post your question and we'll try to help you.
 
-The development mailing list is
-**[GarlicSim-dev](https://groups.google.com/forum/#!forum/garlicsim-dev)**.
-This is where we discuss the development of GarlicSim itself.
+The development mailing list is **[GarlicSim-dev](https://groups.google.com/forum/#!forum/garlicsim-dev)**. This is where we discuss the development of GarlicSim itself.
 
 
 # Looking for a gui? #
@@ -60,4 +56,4 @@ The [main GarlicSim fork](http://github.com/cool-RR/GarlicSim) supports Python v
 
 # Current state #
 
-GarlicSim is at version 0.6.2, which is an alpha release. At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.
+GarlicSim is at version 0.6.3, which is an alpha release. At this experimental stage of the project, backward compatibility will _not_ be maintained. However, I will be available to assist in issues related to backward compatibility.

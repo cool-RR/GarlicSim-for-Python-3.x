@@ -86,7 +86,7 @@ my_classifiers = [
 
 setuptools.setup(
     name='garlicsim_py3',
-    version='0.6.2',
+    version='0.6.3',
     requires=['distribute'],
     test_suite='nose.collector',
     install_requires=['distribute'],

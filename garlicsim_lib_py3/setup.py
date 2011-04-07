@@ -86,9 +86,9 @@ my_classifiers = [
 
 setuptools.setup(
     name='garlicsim_lib_py3',
-    version='0.6.2',
-    requires=['garlicsim_py3 (== 0.6.2)'],
-    install_requires=['garlicsim_py3 == 0.6.2'],
+    version='0.6.3',
+    requires=['garlicsim_py3 (== 0.6.3)'],
+    install_requires=['garlicsim_py3 == 0.6.3'],
     tests_require=['nose>=1.0.0'],
     description='Collection of GarlicSim simulation packages',
     author='Ram Rachum',

@@ -58,7 +58,7 @@ def test_simple_atomically_pickleables():
 
 def test_string_io():
     '''Test `StringIO` is considered pickleable.'''
-    if garlicsim.__version_info__ <= (0, 6, 2):
+    if garlicsim.__version_info__ <= (0, 6, 3):
         raise nose.SkipTest("Can't handle `StringIO` yet.")
     string_io = io.StringIO()
     assert is_pickle_successful(string_io)
