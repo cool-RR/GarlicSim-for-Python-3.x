@@ -4,13 +4,20 @@
 '''Defines several functions that may be useful when working with dicts.'''
 
 
-def filter_items(d, condition, _dict_constructor=dict):
+def filter_items(d, condition):
     '''
-    Get new `dict` with items from `d` that satisfy the `condition` functions.
+    Get new dict with items from `d` that satisfy the `condition` functions.
     
     `condition` is a function that takes a key and a value.
+    
+    The newly created dict will be of the same class as `d`, e.g. if you passed
+    an ordered dict as `d`, the result will be an ordered dict, using the
+    correct order.
     '''
-    return _dict_constructor(
+    # todo future: possibly shallow-copy `d` to allow for dict classes that
+    # have more state, (like default factory.)
+    dict_type = type(d)
+    return dict_type(
         (key, value) for (key, value) in d.items() if condition(key, value)
     )
 

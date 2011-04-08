@@ -187,10 +187,35 @@ def test_condition():
     assert call_and_check_if_profiled(lambda: f(3.1)) is False
     assert call_and_check_if_profiled(lambda: f(-4.9)) is False
     
+
+def test_perfects():
+    '''Test `cute_profile` on a function that finds perfect numbers.'''
     
-def test_signature_perservation():
-    '''Test that the `profile_ready` decorator preserves function signature.'''
-    cute_testing.assert_same_signature(
-        func,
-        cute_profile.profile_ready()(func)
+    def get_divisors(x):
+        return [i for i in range(1, x) if (x % i == 0)]
+    
+    def is_perfect(x):
+        return sum(get_divisors(x)) == x
+    
+    @cute_profile.profile_ready()
+    def get_perfects(top):
+        return [i for i in range(1, top) if is_perfect(i)]
+    
+    result = get_perfects(30)
+    get_perfects.profiling_on = True
+    def f():
+        assert get_perfects(30) == result
+    assert call_and_check_if_profiled(f) is True
+    
+    
+def test_polite_wrapper():
+    '''
+    Test that `profile_ready` decorator produces a polite function wrapper.
+    
+    e.g. that the name, documentation and signature of the original function
+    are used in the wrapper function, and a few other things.
+    '''
+    cute_testing.assert_polite_wrapper(
+        cute_profile.profile_ready()(func),
+        func
     )

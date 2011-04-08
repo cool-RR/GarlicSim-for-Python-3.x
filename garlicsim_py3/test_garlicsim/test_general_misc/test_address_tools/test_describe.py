@@ -6,6 +6,7 @@
 import nose
 
 from garlicsim.general_misc import import_tools
+from garlicsim.general_misc.temp_value_setters import TempValueSetter
 
 import garlicsim
 from garlicsim.general_misc.address_tools import (describe,
@@ -22,9 +23,9 @@ def test_locally_defined_class():
     # Testing for locally defined class:
     
     
-    if garlicsim.__version_info__ <= (0, 6, 1):
+    if garlicsim.__version_info__ <= (0, 6, 3):
         raise nose.SkipTest("This test doesn't pass in `garlicsim` version "
-                            "0.6 and below, because `describe` doesn't "
+                            "0.6.3 and below, because `describe` doesn't "
                             "support nested classes yet.")
     
     result = describe(A.B)
@@ -239,7 +240,7 @@ def test_bad_module_name():
     
     exec('def f(): pass', my_locals)
     exec(('class A(object):\n'
-          '    def m(self): pass'), my_locals)
+          '    def m(self): pass\n'), my_locals)
     
     f, A = my_locals['f'], my_locals['A']
     
@@ -283,8 +284,30 @@ def test_bad_module_name():
 
 def test_function_in_something():
     '''Test `describe` doesn't fail when describing `{1: sum}`.'''
-    if garlicsim.__version_info__ <= (0, 6, 1):
+    if garlicsim.__version_info__ <= (0, 6, 3):
         raise nose.SkipTest("This test doesn't pass in `garlicsim` version "
-                            "0.6 and below.")
+                            "0.6.3 and below.")
     assert describe({1: sum}) == '{1: sum}'
     assert describe((sum, sum, list, chr)) == '(sum, sum, list, chr)'
+    
+
+def test_function_in_main():
+    '''Test that a function defined in `__main__` is well-described.'''
+
+    ###########################################################################
+    # We can't really define a function in `__main__` in this test, so we
+    # emulate it:
+    with TempValueSetter((globals(), '__name__'), '__main__'):
+        def f(x):
+            pass
+    assert f.__module__ == '__main__'
+    import __main__
+    __main__.f = f
+    del __main__
+    #
+    ###########################################################################
+    
+    assert describe(f) == '__main__.f'
+    assert resolve(describe(f)) is f
+    
+    

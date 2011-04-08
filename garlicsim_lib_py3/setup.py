@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright 2009-2011 Ram Rachum.
 # This program is distributed under the LGPL2.1 license.
@@ -10,19 +10,61 @@ import sys
 import setuptools
 
 
+### Ensuring correct Python version: ##########################################
+#                                                                             #
 if sys.version_info[0] <= 2:
     raise Exception('This package requires Python 3.x. For Python 2.5+, use '
                     '`garlicsim_lib`, which you can find on PyPI.')
 
+#                                                                             #
+### Finished ensuring correct Python version. #################################
 
-def get_packages():
+
+def get_garlicsim_lib_packages():
+    '''
+    Get all the packages in `garlicsim_lib`.
+    
+    Returns something like:
+    
+        ['garlicsim_lib', 'garlicsim_lib.simpacks',
+        'garlicsim_lib.simpacks.life', ... ]
+        
+    '''
     return ['garlicsim_lib.' + p for p in
             setuptools.find_packages('./garlicsim_lib')] + \
            ['garlicsim_lib']
 
+
+def get_test_garlicsim_lib_packages():
+    '''
+    Get all the packages in `test_garlicsim_lib`.
+    
+    Returns something like:
+    
+        ['test_garlicsim_lib', 'test_garlicsim_lib.test_simpacks', ...]
+        
+    '''
+    return ['test_garlicsim_lib.' + p for p in
+            setuptools.find_packages('./test_garlicsim_lib')] + \
+           ['test_garlicsim_lib']
+
+
+def get_packages():
+    '''
+    Get all the packages in `garlicsim_lib` and `test_garlicsim_lib`.
+    
+    Returns something like:
+    
+        ['test_garlicsim_lib', 'garlicsim_lib', 'garlicsim_lib.simpacks',
+        'test_garlicsim_lib.test_simpacks', ... ]
+        
+    '''
+    return get_garlicsim_lib_packages() + get_test_garlicsim_lib_packages()
+
+
 my_long_description = \
 '''\
-A collection of GarlicSim simulation packages, for various scientific fields.
+Collection of GarlicSim simulation packages, for various scientific fields.
 
 To be used with `garlicsim`.
 
@@ -44,14 +86,16 @@ my_classifiers = [
 
 setuptools.setup(
     name='garlicsim_lib_py3',
-    version='0.6.1',
-    requires=['garlicsim_py3 (== 0.6.1)'],
-    install_requires=['garlicsim_py3 == 0.6.1'],
+    version='0.6.3',
+    requires=['garlicsim_py3 (== 0.6.3)'],
+    install_requires=['garlicsim_py3 == 0.6.3'],
+    tests_require=['nose>=1.0.0'],
     description='Collection of GarlicSim simulation packages',
     author='Ram Rachum',
     author_email='cool-rr@cool-rr.com',
     url='http://garlicsim.org',
     packages=get_packages(),
+    scripts=['test_garlicsim_lib/scripts/_test_garlicsim_lib_py3.py'],
     license='LGPL v2.1',
     long_description=my_long_description,
     classifiers=my_classifiers,

@@ -201,7 +201,7 @@ class BasicTestMappingProtocol(unittest.TestCase):
         # self.assertRaises((TypeError, AttributeError), d.update, None)
         self.assertRaises((TypeError, AttributeError), d.update, 42)
         
-        if garlicsim.__version_info__ <= (0, 6, 1):
+        if garlicsim.__version_info__ <= (0, 6, 3):
             raise nose.SkipTest
         
         outerself = self

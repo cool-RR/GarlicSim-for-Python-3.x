@@ -3,7 +3,9 @@
 
 '''A fork of the standard-library `inspect` module.'''
 
-from . import inspect
+from . import forked_inspect
 
-getargspec = inspect.getargspec
-getcallargs = inspect.getcallargs
+
+getargspec = forked_inspect.getargspec
+getcallargs = forked_inspect.getcallargs
+getsource = forked_inspect.getsource

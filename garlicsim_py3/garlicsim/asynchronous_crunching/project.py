@@ -12,7 +12,7 @@ from garlicsim.general_misc import cute_iter_tools
 from garlicsim.general_misc import misc_tools
 import garlicsim.general_misc.read_write_lock
 from garlicsim.general_misc.infinity import infinity
-import garlicsim.general_misc.third_party.decorator
+from garlicsim.general_misc import decorator_tools
 from garlicsim.general_misc import misc_tools
 from garlicsim.general_misc import address_tools
 
@@ -28,11 +28,14 @@ from .crunching_profile import CrunchingProfile
 __all__ = ['Project']
 
 
-@garlicsim.general_misc.third_party.decorator.decorator
+@decorator_tools.decorator
 def with_tree_lock(method, *args, **kwargs):
     '''
-    A decorator used in Project's methods to use the tree lock (in write mode)
-    as a context manager when calling the method.
+    Decorator used in `Project`'s methods to acquire/release the tree lock.
+    
+    The tree lock will be acquired in write mode before calling the method, and
+    released after the method is finished. (Note that it's a reentrant lock, so
+    it may still be owned by the current thread after releasing.)
     '''
     self = args[0]
     with self.tree.lock.write:
@@ -64,7 +67,7 @@ class Project(object):
     def __init__(self, simpack):
         
         if isinstance(simpack, garlicsim.misc.SimpackGrokker):
-            # The user entered a simpack grokker instead of a simpack; Let's be
+            # The user entered a simpack grokker instead of a simpack; let's be
             # nice and handle it.
             simpack_grokker = simpack
             simpack = simpack_grokker.simpack
@@ -553,14 +556,14 @@ class Project(object):
         function, `*args` and `**kwargs`. But in this function we're being a
         little smarter so the user will have less work.
         
-        You do not need to enter a step function; We will use the default one,
+        You do not need to enter a step function; we will use the default one,
         unless you specify a different one as `step_function`.
         
         You may also pass in a step profile as `step_profile`, and it will be
         noticed and used.
         '''
         # We are providing this method despite the fact that the simpack
-        # grokker already provides a `.build_step_profile` method; This is
+        # grokker already provides a `.build_step_profile` method; this is
         # because here we are using the *project's* default step function,
         # which the user is allowed to change.
         parse_arguments_to_step_profile = \

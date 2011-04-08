@@ -115,15 +115,7 @@ class WeakKeyDefaultDict(collections.MutableMapping): #todo: needs testing
 
         
     def get(self, key, default=None):
-        return self.data.get(ref(key),default)
-
-    
-    def has_key(self, key):
-        try:
-            wr = ref(key)
-        except TypeError:
-            return 0
-        return wr in self.data
+        return self.data.get(ref(key), default)
 
     
     def __contains__(self, key):

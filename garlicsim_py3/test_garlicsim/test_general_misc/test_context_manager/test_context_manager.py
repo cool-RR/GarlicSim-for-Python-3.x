@@ -3,8 +3,6 @@
 
 '''Test the `garlicsim.general_misc.context_manager` module.'''
 
-from __future__ import with_statement
-
 from garlicsim.general_misc import cute_testing
 
 from garlicsim.general_misc.context_manager import (ContextManager,
@@ -607,7 +605,7 @@ def check_context_manager_type(context_manager_type,
         
     new_g = context_manager_type('meow')(g)
         
-    with cute_testing.RaiseAssertor():
+    with cute_testing.RaiseAssertor(AssertionError):
         g('whatever')
         
     assert flag is None
@@ -616,7 +614,7 @@ def check_context_manager_type(context_manager_type,
     new_g('whatever')
     assert flag is None
     assert exception_type_caught is None
-    cute_testing.assert_same_signature(g, new_g)
+    cute_testing.assert_polite_wrapper(new_g, g)
     #                                                                         #
     ### Finished testing manually decorated function. #########################
     
@@ -748,7 +746,7 @@ def check_context_manager_type(context_manager_type,
         
     assert flag is None
     assert exception_type_caught is None
-    cute_testing.assert_same_signature(g, new_g)
+    cute_testing.assert_polite_wrapper(new_g, g)
     
     try:
         new_g('whatever')

@@ -11,7 +11,7 @@ import threading
 
 from garlicsim.general_misc import binary_search
 from garlicsim.general_misc import queue_tools
-import garlicsim.general_misc.third_party.decorator
+from garlicsim.general_misc import decorator_tools
 from garlicsim.general_misc.context_manager import ContextManager
 
 import garlicsim.misc
@@ -21,7 +21,7 @@ from .obsolete_cruncher_error import ObsoleteCruncherError
 __all__ = ['HistoryBrowser']
 
 
-@garlicsim.general_misc.third_party.decorator.decorator
+@decorator_tools.decorator
 def with_self(method, *args, **kwargs):
     '''Decorator for using the history browser as a context manager.'''
     self = args[0]
@@ -39,7 +39,7 @@ class HistoryBrowser(garlicsim.misc.BaseHistoryBrowser, ContextManager):
     
     With a `HistoryBrowser` one can request states from the simulation's
     timeline. States can be requested by clock time or position in the timeline
-    or by other measures; See documentation for this class's methods.
+    or by other measures; see documentation for this class's methods.
     
     Since we do not know whether the states we request have been implemented in
     the tree already, or they are still in the `.work_queue`, it's the job of

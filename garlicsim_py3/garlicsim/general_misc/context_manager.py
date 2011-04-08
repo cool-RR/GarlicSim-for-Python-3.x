@@ -44,7 +44,7 @@ has their own advantages and disadvantages over the others.
     relatively simple context managers that don't require defining an actual
     class.
                 
-    This usage is nothing new; It's also available when using the standard
+    This usage is nothing new; it's also available when using the standard
     library's `contextlib.contextmanager` decorator. One thing that is allowed
     here that `contextlib` doesn't allow is to yield the context manager itself
     by doing `yield SelfHook`.
@@ -59,7 +59,7 @@ has their own advantages and disadvantages over the others.
                     yield self
                     
     This approach is sometimes cleaner than defining `__enter__` and
-    `__exit__`; Especially when using another context manager inside
+    `__exit__`; especially when using another context manager inside
     `manage_context`. In our example we did `with other_context_manager` in our
     `manage_context`, which is shorter, more idiomatic and less
     double-underscore-y than the equivalent classic definition:
@@ -120,17 +120,15 @@ benefits.
 # that will cause it to be pickled by reference to the decorated function
 
 
-from __future__ import with_statement
-
 import collections
 import types
 import sys
 import abc
 
-from garlicsim.general_misc.third_party import decorator as decorator_module
+from garlicsim.general_misc import decorator_tools
 
 
-class SelfHook:
+class SelfHook(object):
     '''
     Hook that a context manager can yield in order to yield itself.
 
@@ -273,7 +271,7 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
             # If so, we need to be careful. It's okay for this class to be
             # using the enter/exit pair provided by the base `manage_context`;
             # It's also okay for this class to override these with its own
-            # `__enter__` and `__exit__` implementations; But it's *not* okay
+            # `__enter__` and `__exit__` implementations; but it's *not* okay
             # for this class to define just one of these methods, say
             # `__enter__`, because then it will not have an `__exit__` to work
             # with.
@@ -292,7 +290,7 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
                 assert '__enter__' in namespace
             
                 raise Exception("The %s class defines an `__enter__` method, "
-                                "but not an `__exit__` method; We cannot use "
+                                "but not an `__exit__` method; we cannot use "
                                 "the `__exit__` method of its base context "
                                 "manager class because it uses the "
                                 "`manage_context` generator function." %
@@ -305,7 +303,7 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
                 assert '__exit__' in namespace
                 
                 raise Exception("The %s class defines an `__exit__` method, "
-                                "but not an `__enter__` method; We cannot use "
+                                "but not an `__enter__` method; we cannot use "
                                 "the `__enter__` method of its base context "
                                 "manager class because it uses the "
                                 "`manage_context` generator function." %
@@ -328,10 +326,9 @@ class ContextManagerType(abc.ABCMeta, metaclass=ContextManagerTypeType):
             (cls.__module__ == 'garlicsim.general_misc.context_manager') and
             (cls.mro() == [cls, object])
         )
-                
-    
-    
-class ContextManager(metaclass=ContextManagerType):
+
+
+class ContextManager(object, metaclass=ContextManagerType):
     '''
     Allows running preparation code before a given suite and cleanup after.
     
@@ -353,7 +350,7 @@ class ContextManager(metaclass=ContextManagerType):
         def inner(function_, *args, **kwargs):
             with self:
                 return function_(*args, **kwargs)
-        return decorator_module.decorator(inner, function)
+        return decorator_tools.decorator(inner, function)
     
     
     @abc.abstractmethod
@@ -399,7 +396,7 @@ class ContextManager(metaclass=ContextManagerType):
                    generator_return_value
         
         except StopIteration:
-            raise RuntimeError("The generator didn't yield even one time; It "
+            raise RuntimeError("The generator didn't yield even one time; it "
                                "must yield one time exactly.")
     
         
@@ -420,7 +417,7 @@ class ContextManager(metaclass=ContextManagerType):
                 return
             else:
                 raise RuntimeError(
-                    "The generator didn't stop after the yield; Possibly you "
+                    "The generator didn't stop after the yield; possibly you "
                     "have more than one `yield` in the generator function? "
                     "The generator function must yield exactly one time.")
         else:
@@ -452,3 +449,9 @@ class ContextManager(metaclass=ContextManagerType):
                     "function? The generator function must yield exactly one "
                     "time."
                 )
+            
+            
+class BlankContextManager(ContextManager):
+    '''A context manager that does nothing.'''
+    def manage_context(self):
+        yield self

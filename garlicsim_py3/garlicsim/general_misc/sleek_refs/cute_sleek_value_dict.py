@@ -84,9 +84,6 @@ class CuteSleekValueDict(MutableMapping):
             if other[key] != value:
                 return False
         return True
-            
-    
-    has_key = __contains__
 
     
     def __repr__(self):

@@ -1,1 +1,0 @@
-@set PYTHONPATH=;../;../../garlicsim_lib_py3;

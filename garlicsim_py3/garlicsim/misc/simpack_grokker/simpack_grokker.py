@@ -13,7 +13,7 @@ from garlicsim.general_misc import import_tools
 from garlicsim.general_misc import misc_tools
 from garlicsim.general_misc import cute_iter_tools
 from garlicsim.general_misc.reasoned_bool import ReasonedBool
-from garlicsim.general_misc.third_party.ordered_dict import OrderedDict
+from garlicsim.general_misc.nifty_collections import OrderedDict
 from garlicsim.general_misc import caching
 
 import garlicsim
@@ -404,7 +404,7 @@ class SimpackGrokker(object, metaclass=caching.CachedType):
         function, `*args` and `**kwargs`. But in this function we're being a
         little smarter so the user will have less work.
         
-        You do not need to enter a step function; We will use the default one,
+        You do not need to enter a step function; we will use the default one,
         unless you specify a different one as `step_function`.
         
         You may also pass in a step profile as `step_profile`, and it will be

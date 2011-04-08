@@ -19,6 +19,7 @@ from garlicsim.general_misc.sleek_refs import CuteSleekValueDict
 
 
 null_callback = lambda: None
+null_callback()
 
 
 class GenericDictTest(unittest2.TestCase):
@@ -76,17 +77,6 @@ class GenericDictTest(unittest2.TestCase):
         self.assertEqual(list(d.items()), [(1, 2)])
 
         self.assertRaises(TypeError, d.items, None)
-
-        
-    def test_has_key(self):
-        d = CuteSleekValueDict(null_callback)
-        self.assertFalse('a' in d)
-        d = CuteSleekValueDict(null_callback, {'a': 1, 'b': 2})
-        k = list(d.keys())
-        k.sort()
-        self.assertEqual(k, ['a', 'b'])
-
-        self.assertRaises(TypeError, d.has_key)
 
         
     def test_contains(self):
@@ -564,7 +554,7 @@ class GenericDictTest(unittest2.TestCase):
 
         
     def test_bad_key(self):
-        if garlicsim.__version_info__ <= (0, 6, 1):
+        if garlicsim.__version_info__ <= (0, 6, 3):
             raise nose.SkipTest('Not looked at this yet.')
         # Dictionary lookups should fail if __cmp__() raises an exception.
         class CustomException(Exception):
@@ -588,7 +578,6 @@ class GenericDictTest(unittest2.TestCase):
         for stmt in ['d[x2] = 2',
                      'z = d[x2]',
                      'x2 in d',
-                     'd.has_key(x2)',
                      'd.get(x2)',
                      'd.setdefault(x2, 42)',
                      'd.pop(x2)',

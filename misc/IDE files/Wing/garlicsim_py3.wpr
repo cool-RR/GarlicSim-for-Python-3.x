@@ -1,0 +1,28 @@
+#!wing
+#!version=4.0
+##################################################################
+# Wing IDE project file                                          #
+##################################################################
+[project attributes]
+proj.directory-list = [{'dirloc': loc('../../..'),
+                        'excludes': [u'src',
+                                     u'garlicsim_lib_py3/build',
+                                     u'garlicsim_lib_py3/dist',
+                                     u'garlicsim_py3/build',
+                                     u'garlicsim_py3/dist',
+                                     u'garlicsim_py3/htmlcov',
+                                     u'garlicsim_py3/coverage.xml',
+                                     u'garlicsim_lib_py3/coverage.xml',
+                                     u'garlicsim_lib_py3/nosetests.xml',
+                                     u'htmlcov',
+                                     u'garlicsim_py3/nosetests.xml',
+                                     u'garlicsim_py3/garlicsim_py3.egg-info',
+                                     u'garlicsim_lib_py3/garlicsim_lib_py3.egg-info'],
+                        'filter': '*',
+                        'include_hidden': False,
+                        'recursive': True,
+                        'watch_for_changes': True}]
+proj.file-type = 'shared'
+testing.auto-test-file-specs = ('test_garlicsim/test*.py',
+                                'test_garlicsim_lib/test*.py')
+testing.test-framework = {None: 'nose'}
