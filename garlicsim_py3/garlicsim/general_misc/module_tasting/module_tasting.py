@@ -10,10 +10,8 @@ See its documentation for more information.
 # blocktodo: Will need thread safety for when another thread is importing at
 # the same time. probably make context manager for import lock from imp.
 
-from __future__ import with_statement
-
 import uuid
-import __builtin__
+import builtins
 import sys
 import os.path
 
@@ -48,7 +46,7 @@ zip_import_uses_import_hook = (sys.version_info[:2] == (2, 5))
 
 class MockImporter(object):
     def __init__(self, skip_first_import=False):
-        self.original_import = __builtin__.__import__
+        self.original_import = builtins.__import__
         self.skip_first_import = skip_first_import
         self.times_called = 0
         

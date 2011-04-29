@@ -4,12 +4,12 @@
 '''Defines various tools for manipulating sequences.'''
 
 import itertools
+import abc
+import collections
 
 from garlicsim.general_misc.nifty_collections import Counter
 from garlicsim.general_misc import caching
 from garlicsim.general_misc.infinity import infinity
-from garlicsim.general_misc.third_party import abc
-from garlicsim.general_misc.third_party import abcs_collection
 
         
 def are_equal_regardless_of_order(seq1, seq2):
@@ -70,16 +70,16 @@ def combinations(sequence, n=None, start=0):
 
 
 def is_sequence(thing):
-    return abcs_collection.Sequence.__instancecheck__(thing)
+    return collections.Sequence.__instancecheck__(thing)
 
 
 def is_mutable_sequence(thing):
-    return abcs_collection.MutableSequence.__instancecheck__(thing)
+    return collections.MutableSequence.__instancecheck__(thing)
 
 
 def is_immutable_sequence(thing):
-    return abcs_collection.Sequence.__instancecheck__(thing) and not \
-           abcs_collection.MutableSequence.__instancecheck__(thing)
+    return collections.Sequence.__instancecheck__(thing) and not \
+           collections.MutableSequence.__instancecheck__(thing)
 
 
 def parse_slice(s):
