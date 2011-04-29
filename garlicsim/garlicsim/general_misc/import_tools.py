@@ -7,6 +7,7 @@ import sys
 import os.path
 import imp
 import zipimport
+import zipfile
 
 from garlicsim.general_misc import package_finder
 from garlicsim.general_misc import caching
@@ -121,16 +122,113 @@ def import_if_exists(module_name, silent_fail=False):
     return normal_import(module_name)
 
 
-def _module_exists_in_some_zip_path(module_name):
+def exists(module_name):
+    '''
+    Return whether a module by the name `module_name` exists.
+    
+    This seems to be the best way to carefully import a module.
+    
+    Currently implemented for top-level packages only. (i.e. no dots.)
+    
+    Supports modules imported from a zip file.
+    '''
+    if '.' in module_name:
+        raise NotImplementedError
+    try:
+        find_module(module_name)
+    except ImportError:
+        return False
+    else:
+        return True
+
+def _import_by_path_from_zip(path, name=None):
+    '''
+    Import module/package by path. blocktododoc, psudopath inside zip? no file
+    extensions?
+    
+    You may specify a name: This is helpful only if it's an hierarchical name,
+    i.e. a name with dots like "orange.claw.hammer". This will become the
+    imported module's __name__ attribute. Otherwise only the short name,
+    "hammer", will be used, which might cause problems in some cases. (Like
+    when using multiprocessing.)
+    '''
+    assert '.zip' in path
+    
+    parent_path, child_name = path.rsplit(os.path.sep, 1)
+    zip_importer = zipimport.zipimporter(parent_path)
+    module = zip_importer.load_module(child_name)
+        
+    return module
+
+    
+def import_by_path(path, name=None, keep_in_sys_modules=True):
+    '''
+    Import module/package by path.
+    
+    You may specify a name: This is helpful only if it's an hierarchical name,
+    i.e. a name with dots like "orange.claw.hammer". This will become the
+    imported module's __name__ attribute. Otherwise only the short name,
+    "hammer", will be used, which might cause problems in some cases. (Like
+    when using multiprocessing.)
+    '''
+    if '.zip' in path:
+        if name is not None:
+            raise NotImplementedError
+        module = _import_by_path_from_zip(path)
+        
+    else: # '.zip' not in path
+        short_name = os.path.splitext(os.path.split(path)[1])[0]
+        if name is None: name = short_name
+        path_to_dir = os.path.dirname(path)
+        my_file = None
+        try:
+            (my_file, pathname, description) = \
+                imp.find_module(short_name, [path_to_dir])
+            module = imp.load_module(name, my_file, pathname, description)
+        finally:
+            if my_file is not None:
+                my_file.close()
+                
+    if not keep_in_sys_modules:
+        del sys.modules[module.__name__]
+        
+    return module
+
+
+def find_module(module_name, path=None, look_in_zip=True):
+    '''
+    blocktodo: test
+    '''
+    if path:
+        raise NotImplemented
+    
+    if look_in_zip:
+        try:
+            return _find_module_in_some_zip_path(module_name, path)
+        except ImportError:
+            pass        
+    
+    if '.' in module_name:
+        parent_name, child_name = module_name.rsplit('.', 1)
+        parent_path = find_module(parent_name)
+        return imp.find_module(child_name, [parent_path])[1]
+    else:
+        return imp.find_module(module_name, path)[1]
+
+    
+def _find_module_in_some_zip_path(module_name, path=None):
     '''
     Return whether a module by the name `module_name` exists in a zip archive.
-    
+    blocktododoc
     Used internally by `exists`.
     '''
-    assert '.' not in module_name
+    original_path_argument = path
     
-    zip_paths = [path for path in sys.path if '.zip' in path]
-    # todo: Find better way to filter zip paths.
+    if path is not None:
+        zip_paths = [path]
+    else:
+        zip_paths = [path for path in sys.path if '.zip' in path]
+        # todo: Find better way to filter zip paths.
     
     for zip_path in zip_paths:
 
@@ -146,55 +244,32 @@ def _module_exists_in_some_zip_path(module_name):
             # todo: should find smarter way of catching this, excepting
             # `ZipImportError` is not a good idea.
         
-        if zip_importer.find_module(module_name) is not None:    
-            return True
-        else:
+        result = zip_importer.find_module(
+            # Python's zip importer stupidly needs us to replace dots with path
+            # separators:  
+            _module_address_to_partial_path(module_name)
+        )
+        if result is None:
             continue
-        
-    return False
+        else:
+            assert result is zip_importer
+            
+            #if '.' in module_name:
+                #parent_package_name, child_module_name = \
+                    #module_name.rsplit('.')
+                #leading_path = \
+                    #_module_address_to_partial_path(parent_package_name)
+            #else:
+                #leading_path = ''
+                
+            return os.path.join(zip_path,
+                                _module_address_to_partial_path(module_name))
 
-
-def exists(module_name):
-    '''
-    Return whether a module by the name `module_name` exists.
-    
-    This seems to be the best way to carefully import a module.
-    
-    Currently implemented for top-level packages only. (i.e. no dots.)
-    
-    Supports modules imported from a zip file.
-    '''
-    assert '.' not in module_name
-    try:
-        imp.find_module(module_name)
-    except ImportError:
-        return _module_exists_in_some_zip_path(module_name)
+    if original_path_argument is not None:
+        raise ImportError('Module not found in the given zip path.')
     else:
-        return True
+        raise ImportError('Module not found in any of the zip paths.')
 
     
-# Unused for now:
-
-#def import_by_path(path, name=None):
-    #'''
-    #Import module/package by path.
-    
-    #You may specify a name: This is helpful only if it's an hierarchical name,
-    #i.e. a name with dots like "orange.claw.hammer". This will become the
-    #imported module's __name__ attribute. Otherwise only the short name,
-    #"hammer", will be used, which might cause problems in some cases. (Like
-    #when using multiprocessing.)
-    #'''
-    #short_name = os.path.splitext(os.path.split(path)[1])[0]
-    #if name is None: name = short_name
-    #path_to_dir = os.path.dirname(path)
-    #my_file = None
-    #try:
-        #(my_file, pathname, description) = \
-            #imp.find_module(short_name, [path_to_dir])
-        #module = imp.load_module(name, my_file, pathname, description)
-    #finally:
-        #if my_file is not None:
-            #my_file.close()
-        
-    #return module
+def _module_address_to_partial_path(module_address):
+    return os.path.sep.join(module_address.split('.'))

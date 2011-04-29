@@ -8,13 +8,13 @@ See its documentation for more details.
 '''
 
 import sys
+import collections
 
 from garlicsim.general_misc import cute_inspect
 from garlicsim.general_misc import cheat_hashing
 from garlicsim.general_misc.nifty_collections import OrderedDict
 from garlicsim.general_misc import dict_tools
-from garlicsim.general_misc import cmp_tools
-import collections
+from garlicsim.general_misc import comparison_tools
 
 
 class ArgumentsProfile(object):
@@ -362,7 +362,7 @@ class ArgumentsProfile(object):
                 list(list(getcallargs_result[s_star_kwargs].keys()))
             sorted_star_kwargs_names = sorted(
                 unsorted_star_kwargs_names,
-                key=lambda x: x.replace('_', chr(sys.maxunicode))
+                key=comparison_tools.underscore_hating_key
             )
             
             sorted_star_kwargs = OrderedDict(
