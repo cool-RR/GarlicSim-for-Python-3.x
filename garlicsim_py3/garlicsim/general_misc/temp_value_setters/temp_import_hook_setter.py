@@ -8,6 +8,7 @@ See its documentation for more details.
 '''
 
 import builtins
+import collections
 
 from .temp_value_setter import TempValueSetter
 
@@ -22,7 +23,7 @@ class TempImportHookSetter(TempValueSetter):
         
         `import_hook` is the function to be used as the import hook.
         '''
-        assert callable(import_hook)
+        assert isinstance(import_hook, collections.Callable)
         TempValueSetter.__init__(self,
                                  (builtins, '__import__'),
                                  value=import_hook)

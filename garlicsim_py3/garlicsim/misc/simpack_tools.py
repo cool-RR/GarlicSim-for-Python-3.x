@@ -3,6 +3,8 @@
 
 '''Defines various tools for working with simpacks.'''
 
+import collections
+
 from garlicsim.general_misc import address_tools
 from garlicsim.general_misc import import_tools
 from garlicsim.general_misc import caching
@@ -37,8 +39,7 @@ def _get_from_state_class(state_class):
         
     return simpack
 
-
-_SimpackMetadataBase = garlicsim.general_misc.third_party.namedtuple.namedtuple(
+_SimpackMetadataBase = collections.namedtuple(
     '_SimpackMetadataBase',
     'address name version description tags',
 )
