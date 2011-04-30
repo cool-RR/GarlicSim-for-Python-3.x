@@ -10,6 +10,7 @@ See its documentation for more information.
 from __future__ import with_statement
 
 import threading
+import itertools
 import collections
 
 from garlicsim.general_misc import cute_iter_tools
@@ -153,7 +154,7 @@ class LazyTuple(collections.Sequence, object):
             
         while len(self.collected_data) <= exhaustion_point:
             try:
-                self.collected_data.append(self._iterator.next())
+                self.collected_data.append(next(self._iterator))
             except StopIteration:
                 self.exhausted = True
                 break
@@ -177,8 +178,8 @@ class LazyTuple(collections.Sequence, object):
     def __eq__(self, other):
         if not sequence_tools.is_immutable_sequence(other):
             return False
-        for i, j in cute_iter_tools.izip_longest(self, other,
-                                                 fillvalue=_SENTINEL):
+        for i, j in itertools.zip_longest(self, other,
+                                          fillvalue=_SENTINEL):
             if (i is _SENTINEL) or (j is _SENTINEL):
                 return False
             if i != j:
@@ -202,8 +203,8 @@ class LazyTuple(collections.Sequence, object):
             return False
         elif not self and not other:
             return False
-        for a, b in cute_iter_tools.izip_longest(self, other,
-                                                 fillvalue=_SENTINEL):
+        for a, b in itertools.zip_longest(self, other,
+                                          fillvalue=_SENTINEL):
             if a is _SENTINEL:
                 # `self` ran out. Now there can be two cases: (a) `other` ran
                 # out too or (b) `other` didn't run out yet. In case of (a), we

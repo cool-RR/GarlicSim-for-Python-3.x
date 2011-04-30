@@ -8,7 +8,7 @@ import sys
 
 def underscore_hating_key(string):
     assert isinstance(string, str)
-    return string.replace('_', unichr(sys.maxunicode))
+    return string.replace('_', chr(sys.maxunicode))
 
 
 def total_ordering(cls): 
