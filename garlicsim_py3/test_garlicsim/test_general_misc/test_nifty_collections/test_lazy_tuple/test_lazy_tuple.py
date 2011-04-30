@@ -21,7 +21,7 @@ class SelfAwareUuidIterator(collections.Iterator):
     '''Iterator that gives UUIDs and keeps them all in an internal list.'''
     def __init__(self):
         self.data = []
-    def next(self):
+    def __next__(self):
         new_entry = uuid.uuid4()
         self.data.append(new_entry)
         return new_entry
@@ -124,7 +124,7 @@ def test_factory_decorator():
     my_count = count()
     assert isinstance(my_count, LazyTuple)
     assert repr(my_count) == '<LazyTuple: (...)>'
-    assert my_count[:10] == tuple(xrange(10))
+    assert my_count[:10] == tuple(range(10))
     
 
 def test_finite_iterator():

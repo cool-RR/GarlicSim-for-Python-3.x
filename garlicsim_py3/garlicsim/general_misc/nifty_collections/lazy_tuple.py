@@ -191,7 +191,7 @@ class LazyTuple(collections.Sequence, object):
         return not self.__eq__(other)
     
     
-    def __nonzero__(self):
+    def __bool__(self):
         self.exhaust(0)
         return bool(self.collected_data)
 
