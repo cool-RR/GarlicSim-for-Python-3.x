@@ -73,7 +73,7 @@ def taste_module(path_or_address):
     if not is_zip_module:
         assert os.path.exists(path)
         
-    skip_first_import = is_zip_module and zip_import_uses_import_hook
+    skip_first_import = True # is_zip_module and zip_import_uses_import_hook
     
     with SysModulesUnchangedAssertor():
             
