@@ -11,9 +11,7 @@ import sys
 from garlicsim.general_misc import context_managers
 
 
-known_false_positive_new_modules = set([
-    'garlicsim.general_misc.zlib'
-])
+known_false_positive_new_modules = {'garlicsim.general_misc.zlib'}
 
 
 class SysModulesUnchangedAssertor(context_managers.ContextManager):

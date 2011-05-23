@@ -25,10 +25,10 @@ class SimpackMetadata(_SimpackMetadataBase):
         
         _SimpackMetadataBase.__init__(self, *args, **kwargs)
         
-        assert isinstance(self.address, basestring) or self.address is None
-        assert isinstance(self.name, basestring) or self.name is None
-        assert isinstance(self.version, basestring) or self.version is None
-        assert isinstance(self.description, basestring) or self.description is None
+        assert isinstance(self.address, str) or self.address is None
+        assert isinstance(self.name, str) or self.name is None
+        assert isinstance(self.version, str) or self.version is None
+        assert isinstance(self.description, str) or self.description is None
         assert isinstance(self.tags, tuple) or self.tags is None        
         
         
