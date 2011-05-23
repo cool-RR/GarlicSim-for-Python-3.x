@@ -1,2 +1,0 @@
-test_garlicsim_lib
-garlicsim_lib
