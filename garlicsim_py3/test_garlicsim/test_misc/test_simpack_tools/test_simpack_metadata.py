@@ -5,7 +5,6 @@
 
 import copy
 import pickle
-import cPickle
 
 from garlicsim.misc.simpack_tools import SimpackMetadata
 
@@ -13,7 +12,6 @@ from garlicsim.misc.simpack_tools import SimpackMetadata
 def test_class_pickling():
     assert SimpackMetadata is copy.deepcopy(SimpackMetadata)
     assert SimpackMetadata is pickle.loads(pickle.dumps(SimpackMetadata))
-    assert SimpackMetadata is cPickle.loads(cPickle.dumps(SimpackMetadata))
     
 
 def test_on_garlicsim_lib():

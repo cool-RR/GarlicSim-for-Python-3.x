@@ -7,6 +7,8 @@ This module defines the `ContextManagerTypeType` metaclass.
 See its documentation for more information.
 '''
 
+import collections
+
 
 class ContextManagerTypeType(type):
     '''Metaclass for `ContextManagerType`. Shouldn't be used directly.'''
