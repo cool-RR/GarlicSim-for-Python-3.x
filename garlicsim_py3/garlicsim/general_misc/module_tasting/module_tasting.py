@@ -71,11 +71,17 @@ def taste_module(address):
     
     is_dotted_address = '.' in address    
     is_zip_module = '.zip' in path
+    
+    if is_dotted_address:
+        parent_module_address, _ = address.rsplit('.', 1)
+        import_tools.normal_import(parent_module_address)
         
     if not is_zip_module:
         assert os.path.exists(path)
         
-    skip_first_import = is_dotted_address and not is_zip_module
+    skip_first_import = not is_zip_module and \
+                        zip_import_uses_import_hook and \
+                        is_dotted_address    
     
     # todo: In the Python 2.x fork, the above line is this:
     # skip_first_import = is_zip_module and \
