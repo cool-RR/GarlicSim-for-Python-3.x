@@ -75,9 +75,14 @@ def taste_module(address):
     if not is_zip_module:
         assert os.path.exists(path)
         
-    skip_first_import = is_zip_module and \
-                        zip_import_uses_import_hook and \
-                        not is_dotted_address
+    skip_first_import = is_dotted_address and not is_zip_module
+    
+    # todo: In the Python 2.x fork, the above line is this:
+    # skip_first_import = is_zip_module and \
+    #                     zip_import_uses_import_hook and \
+    #                     #not is_dotted_address    
+    # I wonder why it's different here, but it seems to work while the Python
+    # 2.x way doesn't.
     
     with SysModulesUnchangedAssertor():
             
