@@ -5,7 +5,6 @@
 Testing module for `garlicsim.general_misc.persistent.CrossProcessPersistent`.
 '''
 
-from __future__ import with_statement
 
 import copy
 import pickle

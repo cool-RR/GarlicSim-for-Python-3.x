@@ -4,13 +4,13 @@
 '''Testing module for `garlicsim.general_misc.caching.cache`.'''
 
 import re
-import gc
 import weakref
 
 import nose.tools
 
 from garlicsim.general_misc.caching import cache
 from garlicsim.general_misc import cute_testing
+from garlicsim.general_misc import gc_tools
 
 
 def counting_func(a=1, b=2, *args, **kwargs):
@@ -49,7 +49,7 @@ def test_weakref():
     assert result == f(a) == f(a) == f(a)
     a_ref = weakref.ref(a)    
     del a
-    gc.collect()
+    gc_tools.collect()
     assert a_ref() is None
     
     a = A()
@@ -57,7 +57,7 @@ def test_weakref():
     assert result == f(meow=a) == f(meow=a) == f(meow=a)
     a_ref = weakref.ref(a)
     del a
-    gc.collect()
+    gc_tools.collect()
     
     assert a_ref() is None
     

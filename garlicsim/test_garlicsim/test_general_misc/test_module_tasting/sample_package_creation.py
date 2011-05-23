@@ -2,19 +2,17 @@
 # This program is distributed under the LGPL2.1 license.
 
 '''
-This module defines the `` class.
+This module defines the `create_sample_package` function.
 
 See its documentation for more information.
 '''
 
-from __future__ import with_statement
 
 import compileall
 import shutil
-import zipfile
 import os.path
 
-from garlicsim.general_misc import temp_file_tools 
+from garlicsim.general_misc import temp_file_tools
 from garlicsim.general_misc import zip_tools
 
 
@@ -22,11 +20,51 @@ formats = ('py', 'pyco', 'zip')
 
 
 def create_sample_package(format, folder):
+    """
+    Create a sample package from which we will taste modules.
+    
+    `format` may be either `py`, `pyco` or `zip`:
+    
+      - `py` means it will create `py` files, pyco` means it will create
+      - `compiled Python files only, without source, which may be either `pyc`
+        `files or `pyo` files, and
+      - `zip` will create a zip archive with `py` files in it.
+      
+    `folder` is the folder in which to create the package.
+    
+    The following directory structure will be created:
+    
+        my_package_meow_frrr/
+        
+            __init__.py[co]
+            
+                '''The tasted module's docstring.'''
+                 
+                from .submodule import woo
+                from .submodule.rarrr.rrsadg.sdv import meow
+    
+    
+                my_string = 'Just a string'
+    
+                my_list = ['A', 'list', 'of', 'stuff']
+            
+                
+            submodule.py[co]
+            
+                raise Exception('This module should never be imported.')
+    
+                
+            johnny.py[co]
+            
+                from . import submodule
+                number_nine = 9
+    
+    """
     assert format in formats
     
     assert not os.listdir(folder) # `folder` is empty
     
-    package_path = os.path.join(folder, 'my_package')
+    package_path = os.path.join(folder, 'my_package_meow_frrr')
     os.mkdir(package_path)
     
     init_file_path = os.path.join(package_path, '__init__.py')
@@ -95,3 +133,5 @@ def create_sample_package(format, folder):
             )
             
             return final_zip_path
+        
+    
