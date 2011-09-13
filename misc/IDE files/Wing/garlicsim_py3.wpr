@@ -25,10 +25,9 @@ proj.directory-list = [{'dirloc': loc('../../..'),
 proj.file-type = 'shared'
 proj.home-dir = loc('../../..')
 proj.pypath = {None: ('custom',
-                      'c:\\Documents and Settings\\User\\My Documents\\Pytho'\
-                      'n projects\\GarlicSim_py3\\garlicsim_lib_py3\\;c:\\Do'\
-                      'cuments and Settings\\User\\My Documents\\Python proj'\
-                      'ects\\GarlicSim_py3\\garlicsim_py3')}
+                      ':${WING:PROJECT_HOME}/garlicsim_py3:;${WING:PROJECT_H'\
+                      'OME}/garlicsim_py3;:${WING:PROJECT_HOME}/garlicsim_li'\
+                      'b_py3:;${WING:PROJECT_HOME}/garlicsim_lib_py3;')}
 proj.shared-attribute-names = ['proj.shared-attribute-names',
                                'proj.directory-list',
                                'proj.file-list',
