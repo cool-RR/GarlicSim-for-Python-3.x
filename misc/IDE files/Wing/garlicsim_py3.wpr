@@ -23,6 +23,22 @@ proj.directory-list = [{'dirloc': loc('../../..'),
                         'recursive': True,
                         'watch_for_changes': True}]
 proj.file-type = 'shared'
+proj.home-dir = loc('../../..')
+proj.pypath = {None: ('custom',
+                      'c:\\Documents and Settings\\User\\My Documents\\Pytho'\
+                      'n projects\\GarlicSim_py3\\garlicsim_lib_py3\\;c:\\Do'\
+                      'cuments and Settings\\User\\My Documents\\Python proj'\
+                      'ects\\GarlicSim_py3\\garlicsim_py3')}
+proj.shared-attribute-names = ['proj.shared-attribute-names',
+                               'proj.directory-list',
+                               'proj.file-list',
+                               'proj.file-type',
+                               'proj.main-file',
+                               'testing.test-file-list',
+                               'testing.auto-test-file-specs',
+                               'testing.test-framework',
+                               'proj.home-dir',
+                               'proj.pypath']
 testing.auto-test-file-specs = ('test_garlicsim/test*.py',
                                 'test_garlicsim_lib/test*.py')
 testing.test-framework = {None: 'nose'}
